@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2>{{ legend }}</h2>
+                <form method="POST" action="" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Car Details</legend>
+
+                        <div class="form-group">
+                            {{ form.title.label(class="form-control-label") }}
+                            {{ form.title(class="form-control form-control-lg", value=request.form.title if request.form.title else '') }}
+                            {% if form.title.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.title.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                 <span>Enter a descriptive title for your car ad.</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.description.label(class="form-control-label") }}
+                            {{ form.description(class="form-control form-control-lg", rows="4") }}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.description.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                 <span>Provide a detailed description of your car, including its features, condition, and history.</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.price.label(class="form-control-label") }}
+                            {{ form.price(class="form-control form-control-lg") }}
+                            {% if form.price.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.price.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                 <span>Enter the asking price for your car.</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                {{ form.year.label(class="form-control-label") }}
+                                {{ form.year(class="form-control form-control-lg") }}
+                                {% if form.year.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.year.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                     <span>Enter the year your car was manufactured.</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                {{ form.make.label(class="form-control-label") }}
+                                {{ form.make(class="form-control form-control-lg") }}
+                                {% if form.make.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.make.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                </div>
+                                {% else %}
+                                     <span>Enter the make (manufacturer) of your car.</span>
+                            {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.model.label(class="form-control-label") }}
+                            {{ form.model(class="form-control form-control-lg") }}
+                            {% if form.model.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.model.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                 <span>Enter the model name of your car.</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.transmission.label(class="form-control-label") }}
+                            {{ form.transmission(class="form-control form-control-lg") }}
+                            {% if form.transmission.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.transmission.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                 <span>Select the transmission type of your car.</span>
+                            {% endif %}
+                        </div>
+
+                         <div class="form-group">
+                            {{ form.state.label(class="form-control-label") }}
+                            {{ form.state(class="form-control form-control-lg") }}
+                            {% if form.state.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.state.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                 <span>Select the state where the car is located.</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.district.label(class="form-control-label") }}
+                            {{ form.district(class="form-control form-control-lg") }}
+                            {% if form.district.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.district.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                 <span>Enter the district or city where the car is located.</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="images">Car Images (Up to 10)</label>
+                            <small class="form-text text-muted">
+                                Upload up to 10 high-quality images showcasing your car's interior, exterior, and any notable features.
+                            </small>
+                            {{ form.images(class="form-control-file") }}
+                            {% if form.images.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.images.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- ADD THIS SECTION -->
+                        <div class="form-group">
+                            {{ form.registration_card.label(class="form-control-label") }}
+                            {{ form.registration_card(class="form-control-file") }}
+                            {% if form.registration_card.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.registration_card.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <small class="form-text text-muted">
+                                    Upload the car registration card to automatically fill in some details.
+                                    <b>Please verify the information after upload.</b>
+                                </small>
+                            {% endif %}
+                        </div>
+
+                        <!-- MODIFY EXISTING FIELDS TO PRE-POPULATE AND SHOW WARNINGS -->
+                        <div class="form-group">
+                            <label class="form-control-label" for="registration_number">Registration Number (Verify!)</label>
+                            <input type="text" class="form-control form-control-lg" id="registration_number" name="registration_number"
+                                   value="{{ request.form.get('registration_number', '') }}" >
+                            <small class="form-text text-warning">Extracted from registration card. Please verify!</small>
+                        </div>
+
+                        <!-- ADD Registration Expiry -->
+                        <div class="form-group">
+                            <label class="form-control-label" for="registration_expiry">Registration Expiry (Verify!)</label>
+                            <input type="text" class="form-control form-control-lg" id="registration_expiry" name="registration_expiry"
+                                   value="{{ request.form.get('registration_expiry', '') }}" >
+                            <small class="form-text text-warning">Extracted from registration card. Please verify!</small>
+                        </div>
+
+                        <!-- ADD VIN -->
+                        <div class="form-group">
+                            <label class="form-control-label" for="vin">VIN (Verify!)</label>
+                            <input type="text" class="form-control form-control-lg" id="vin" name="vin"
+                                   value="{{ request.form.get('vin', '') }}" >
+                            <small class="form-text text-warning">Extracted from registration card. Please verify!</small>
+                        </div>
+
+                    </fieldset>
+
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block scripts %}
+    <script>
+        document.getElementById('state').addEventListener('change', function() {
+            var state = this.value;
+            var districtSelect = document.getElementById('district');
+            districtSelect.innerHTML = '<option value="">Select District</option>';  // Clear existing options
+
+            {% for state, districts in indian_states_districts.items() %}
+                if (state === '{{ state }}') {
+                    {% for district in districts %}
+                        var option = document.createElement('option');
+                        option.value = '{{ district }}';
+                        option.text = '{{ district }}';
+                        districtSelect.add(option);
+                    {% endfor %}
+                }
+            {% endfor %}
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{# templates/buyer_dashboard.html #}
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Buyer Dashboard</h1>
+
+    <h2>My Wishlist</h2>
+    {% if wishlist_items %}
+        <ul>
+            {% for item in wishlist_items %}
+                <li><a href="{{ url_for('cars.car', car_id=item.car_id) }}">{{ item.car.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Your wishlist is empty.</p>
+    {% endif %}
+
+    <h2>My Appointments</h2>
+    {% if buying_appointments %}
+        <ul>
+            {% for appointment in buying_appointments %}
+                <li>
+                    Car: <a href="{{ url_for('cars.car', car_id=appointment.car_id) }}">{{ appointment.car.title }}</a>,
+                    Time: {{ appointment.appointment_time }},
+                    Status: {{ appointment.status }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no scheduled appointments.</p>
+    {% endif %}
+{% endblock %}

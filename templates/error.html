@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error</title>
+</head>
+<body>
+    <h1>An Error Occurred</h1>
+    <p>Sorry, an error occurred while processing your request.</p>
+    {% if error %}
+        <p>Error Message: {{ error }}</p>
+    {% endif %}
+</body>
+</html>

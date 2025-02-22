@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container admin-dashboard">
+        <h1>Reported Ads</h1>
+
+        {% if reports %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Report ID</th>
+                        <th>Car ID</th>
+                        <th>Reported By User ID</th>
+                        <th>Reason</th>
+                        <th>Report Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in reports %}
+                        <tr>
+                            <td>{{ report.id }}</td>
+                            <td><a href="{{ url_for('cars.car', car_id=report.car_id) }}">{{ report.car_id }}</a></td>  <!-- Link to the car -->
+                            <td>{{ report.reported_by }}</td>
+                            <td>{{ report.reason }}</td>
+                            <td>{{ report.report_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>  <!-- Format the date -->
+                            <td>
+                                <a href="{{ url_for('admin.delete_report', report_id=report.id) }}" class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Are you sure you want to delete this report?')">
+                                    Delete Report
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No ad reports found.</p>
+        {% endif %}
+
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+{% endblock %}

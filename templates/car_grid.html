@@ -1,0 +1,67 @@
+{# templates/car_grid.html #}
+<div class="car-grid">
+    {% if cars %}
+        {% for car in cars %}
+            <div class="car-card">
+                {% if car.is_approved %}
+                    <div class="verified-tag">Verified</div>
+                {% endif %}
+
+                {% if car.date_posted and (datetime.now(timezone.utc) - car.date_posted).days < 7 %}
+                    <div class="just-listed-tag">Just Listed</div>
+                {% endif %}
+
+                <div class="image-slider">
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            {% if car.images %}
+                                {% for image in car.images %}
+                                    <div class="swiper-slide">
+                                        <img src="{{ url_for('static', filename='images/' + image.url) }}"
+                                             alt="{{ car.title }}" width="300" height="200">
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="swiper-slide">
+                                    <img src="{{ url_for('static', filename='images/default.jpg') }}"
+                                         alt="Default Image" width="300" height="200">
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% if car.images|length > 1 %}
+                            <div class="swiper-pagination"></div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="car-details">
+                    <h5 class="car-title">{{ car.title }}</h5>
+                    <p class="car-price">${{ car.price }}</p>
+
+                    <div class="car-info">
+                        <div>
+                            <i class="fas fa-calendar"></i> {{ car.year }}
+                        </div>
+                        <div>
+                            <i class="fas fa-cog"></i> {{ car.transmission or 'N/A' }}
+                        </div>
+                    </div>
+                    <div class="car-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{ car.city or 'N/A' }}, {{ car.state or 'N/A' }}
+                    </div>
+                    <div class="car-mileage">
+                        <i class="fas fa-tachometer-alt"></i>
+                        {{ car.kilometers or 'N/A' }} km
+                    </div>
+                    <a href="{{ url_for('cars.car', car_id=car.id) }}" class="view-details">View Details</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No cars found.</p>
+    {% endif %}
+</div>
+<script src="{{ url_for('static', filename='js/car_grid.js') }}"></script>

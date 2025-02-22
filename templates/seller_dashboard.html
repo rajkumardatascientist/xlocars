@@ -1,0 +1,33 @@
+{# templates/seller_dashboard.html #}
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Seller Dashboard</h1>
+
+    <h2>My Listings</h2>
+    {% if cars %}
+        <ul>
+            {% for car in cars %}
+                <li><a href="{{ url_for('cars.car', car_id=car.id) }}">{{ car.title }}</a> - Price: ${{ car.price }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no active listings.</p>
+    {% endif %}
+
+    <h2>My Appointments</h2>
+    {% if selling_appointments %}
+        <ul>
+            {% for appointment in selling_appointments %}
+                <li>
+                    Buyer: {{ appointment.buyer.username }},
+                    Car: <a href="{{ url_for('cars.car', car_id=appointment.car_id) }}">{{ appointment.car.title }}</a>,
+                    Time: {{ appointment.appointment_time }},
+                    Status: {{ appointment.status }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no scheduled appointments.</p>
+    {% endif %}
+{% endblock %}

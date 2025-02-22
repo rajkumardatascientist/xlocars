@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/car_grid.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
+
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        /* Global box-sizing for better layout control */
+        html {
+            box-sizing: border-box;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: inherit;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 100;
+        }
+
+        .whatsapp-float i {
+            margin-top: 16px;
+        }
+
+        .swiper-container {
+            width: 100%;
+            height: 300px;
+        }
+
+        .swiper-slide {
+            text-align: center;
+            font-size: 18px;
+            background: #fff;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+
+        .swiper-slide img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .top-tier {
+            background-color: #2c3e50;
+            padding: 0.3rem 0;
+            font-size: 0.9rem;
+        }
+
+
+        .dropdown-menu {
+            background-color: #2c3e50;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .dropdown-item {
+            color: white;
+            padding: 0.5rem 1rem;
+        }
+
+        .dropdown-item:hover {
+            background-color: #1a242f;
+            color: white;
+        }
+
+        .dropdown-submenu {
+            position: relative;
+        }
+
+        .dropdown-submenu > .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -6px;
+        }
+
+        .city-selector-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            width: 250px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .city-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .city-list li a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .city-list li a:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Car Detail Page Styles (from car_detail.html) */
+        .car-detail-container {
+            margin-top: 20px;
+        }
+
+        .car-image-gallery {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden; /* Ensure carousel images don't overflow rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        .car-details-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .car-details-list li {
+            margin-bottom: 10px; /* Slightly increased spacing */
+            font-size: 1rem;
+            display: flex; /* Align icon and text horizontally */
+            align-items: center;
+        }
+
+        .car-details-list li i {
+            margin-right: 10px; /* Increased spacing between icon and text */
+            color: #3498db;
+            width: 20px; /* Ensure consistent icon width */
+            text-align: center; /* Center the icon within its width */
+        }
+
+        .emi-calculator {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            background-color: #f9f9f9; /* Light background */
+        }
+
+        .emi-calculator h2 {
+            font-size: 1.6rem; /* Slightly larger heading */
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .emi-calculator .form-group {
+            margin-bottom: 15px; /* Increased form group spacing */
+        }
+
+        .emi-calculator label {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .interested-section {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .interested-section h5 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* Updated Button Styling */
+        .btn {
+            padding: 0.75rem 1.25rem; /* Increased padding for better touch targets */
+            border-radius: 6px; /* Slightly rounded corners */
+            font-weight: 500; /* Semi-bold font */
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smoother transition */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            border: none; /* Remove border */
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+        }
+
+        .btn-success {
+            background-color: #2ecc71;
+            border: none;
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-info {
+            background-color: #f39c12;
+            border: none;
+            color: #fff;
+        }
+
+        .btn-info:hover {
+            background-color: #e67e22;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-warning {
+            background-color: #e74c3c;
+            border: none;
+            color: #fff;
+        }
+
+        .btn-warning:hover {
+            background-color: #c0392b;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+    {% block styles %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark top-tier">
+        <div class="container">
+            <a class="navbar-brand" href="/">Car Listing</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNavbarDropdown"
+                    aria-controls="topNavbarDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="topNavbarDropdown">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="locationDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-map-marker-alt fa-lg"></i>
+                            <span class="ml-1 d-none d-md-inline">
+                                {% if selected_state and selected_district %}
+                                    {{ selected_district }}, {{ selected_state }}
+                                {% else %}
+                                    Select Location
+                                {% endif %}
+                            </span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="locationDropdown">
+                            {% for state, districts in indian_states_districts.items() %}
+                                <div class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#">{{ state }}</a>
+                                    <div class="dropdown-menu">
+                                        {% for district in districts %}
+                                            <a class="dropdown-item"
+                                               href="{{ url_for('cars.home', state=state, district=district) }}">{{ district }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('cars.home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about.about') }}">About Us</a>
+                    </li>
+
+                    {# Account Dropdown #}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Account
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="accountDropdown">
+                            {% if current_user.is_authenticated %}
+                                {#  Removed direct links to dashboard, relying on automatic redirect after login #}
+                                {# <a class="dropdown-item" href="{{ url_for('dashboard.buyer') }}">Buyer Dashboard</a> #}
+                                {# <a class="dropdown-item" href="{{ url_for('dashboard.seller') }}">Seller Dashboard</a> #}
+                                <a class="dropdown-item" href="{{ url_for('cars.show_wishlist') }}">Wishlist</a>
+
+                                {% if current_user.is_admin %}
+                                    <a class="dropdown-item" href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
+                                    <a class="dropdown-item" href="{{ url_for('admin.list_users') }}">List Users</a>
+                                {% endif %}
+                                <a class="dropdown-item" href="{{ url_for('cars.new_car') }}">Post Ad</a>
+                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
+                            {% else %}
+                                <a class="dropdown-item" href="{{ url_for('auth.login') }}">Login</a>
+                                <a class="dropdown-item" href="{{ url_for('auth.register') }}">Register</a>
+                            {% endif %}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <a href="https://wa.me/919380002829" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <footer class="bg-dark text-light text-center py-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 mb-2">
+                    <p class="small">📍 XloCars – India’s Trusted Car Marketplace</p>
+                </div>
+                <div class="col-md-12 mb-2">
+                    <h6 class="small">Quick Links:</h6>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('cars.new_car') }}" class="btn btn-sm btn-outline-light me-1">Post Your Ad</a>
+                    {% endif %}
+                    <a href="{{ url_for('cars.home') }}" class="btn btn-sm btn-outline-light me-1">Browse Cars</a>
+                    <a href="#" class="btn btn-sm btn-outline-light me-1">Feature Your Ad</a>
+                    <a href="#" class="btn btn-sm btn-outline-light">Contact Us</a>
+                </div>
+                <div class="col-md-12 mb-2">
+                    <p class="small">
+                        📧 Email: support@xlocars.com<br>
+                        📲 Call/WhatsApp: <a href="https://wa.me/919380002829" target="_blank"
+                                            class="text-light">+91-9380002829</a>
+                    </p>
+                </div>
+                <div class="col-md-12 mb-2">
+                    <h6 class="small">Follow Us on Social Media</h6>
+                    <a href="#" class="me-1 text-light"><i class="fab fa-facebook-square fa-lg"></i></a>
+                    <a href="#" class="me-1 text-light"><i class="fab fa-instagram fa-lg"></i></a>
+                    <a href="#" class="me-1 text-light"><i class="fab fa-twitter-square fa-lg"></i></a>
+                    <a href="#" class="text-light"><i class="fab fa-linkedin fa-lg"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- All scripts moved here -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const locationSelector = document.getElementById('location-selector');
+            const citySelectorContainer = document.getElementById('city-selector-container');
+            const cityList = document.getElementById('city-list');
+
+            if (locationSelector) {
+                locationSelector.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    if (citySelectorContainer) {
+                        citySelectorContainer.style.display = (citySelectorContainer.style.display === 'block') ? 'none' : 'block';
+                    }
+                });
+            }
+
+            $('.dropdown-submenu a.dropdown-toggle').on("click", function (e) {
+                $(this).next('ul').toggle();
+                e.stopPropagation();
+                e.preventDefault();
+            });
+        });
+    </script>
+
+    {% block scripts %}
+        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                document.addEventListener('DOMContentLoaded', function() {
+                    const swipers = document.querySelectorAll('.swiper-container');
+
+                    swipers.forEach(swiperElement => {
+                        new Swiper(swiperElement, {
+                            direction: 'horizontal',
+                            loop: true,
+
+                            pagination: {
+                                el: '.swiper-pagination',
+                            },
+
+                            navigation: {
+                                nextEl: '.swiper-button-next',
+                                prevEl: '.swiper-button-prev',
+                            },
+                            autoplay: {
+                                delay: 2500,
+                                disableOnInteraction: false,
+                            },
+                            spaceBetween: 30,
+                        });
+                    });
+                });
+            });
+        </script>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container admin-dashboard">
+        <h1>Admin Dashboard</h1>
+
+        <h2><i class="fas fa-car"></i> Pending Car Approvals</h2>
+        {% if pending_cars %}
+            <ul>
+                {% for car in pending_cars %}
+                    <li>
+                        {{ car.title }} -
+                        <a href="{{ url_for('admin.approve_car', car_id=car.id) }}">Approve</a> |
+                        <a href="{{ url_for('admin.reject_car', car_id=car.id) }}">Reject</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No cars pending approval.</p>
+        {% endif %}
+
+        <h2><i class="fas fa-money-bill-wave"></i> Pending Featured Payments</h2>
+        {% if featured_payments %}
+            <ul>
+                {% for payment in featured_payments %}
+                    <li>
+                        Payment ID: {{ payment.id }} - Car ID: {{ payment.car_id }} - Seller ID: {{ payment.seller_id }} -
+                        <a href="{{ url_for('admin.activate_feature_payment', payment_id=payment.id) }}">Activate</a> |
+                        <a href="{{ url_for('admin.deactivate_feature_payment', payment_id=payment.id) }}">Deactivate</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No featured payments pending.</p>
+        {% endif %}
+
+        <h2><i class="fas fa-dollar-sign"></i> Pending Buyer Payments</h2>
+        {% if buyer_payments %}
+            <ul>
+                {% for payment in buyer_payments %}
+                    <li>
+                        Payment ID: {{ payment.id }} - Car ID: {{ payment.car_id }} - Buyer ID: {{ payment.buyer_id }}
+                        -
+                        <a href="{{ url_for('admin.activate_buyer_payment', payment_id=payment.id) }}">Activate</a> |
+                        <a href="{{ url_for('admin.deactivate_buyer_payment', payment_id=payment.id) }}">Deactivate</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No buyer payments pending.</p>
+        {% endif %}
+
+        <h2><i class="fas fa-calendar-alt"></i> Pending Appointments</h2>
+        {% if appointments %}
+            <ul>
+                {% for appointment in appointments %}
+                    <li>
+                        Appointment ID: {{ appointment.id }} -
+                        Car: <a href="{{ url_for('cars.car', car_id=appointment.car_id) }}">{{ appointment.car.title }}</a> -
+                        Buyer: {{ appointment.buyer.username }} -
+                        Time: {{ appointment.appointment_time }}
+                        -
+                        <a href="{{ url_for('admin.approve_appointment', appointment_id=appointment.id) }}" class="btn btn-success btn-sm">Approve</a> |
+                        <a href="{{ url_for('admin.reject_appointment', appointment_id=appointment.id) }}" class="btn btn-danger btn-sm">Reject</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No appointments pending approval.</p>
+        {% endif %}
+
+        <h2><i class="fas fa-search"></i> Search</h2>
+        <form action="{{ url_for('admin.search') }}" method="GET">
+            <input type="text" name="query" placeholder="Search users or cars" value="{{ search_query or '' }}">
+            <button type="submit">Search</button>
+        </form>
+
+        {% if results %}
+            <h3>Search Results</h3>
+            <h4><i class="fas fa-users"></i> Users:</h4>
+            {% if results.users %}
+                <ul>
+                    {% for user in results.users %}
+                        <li>{{ user.username }} - {{ user.email }} - ID: {{ user.id }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No users found.</p>
+            {% endif %}
+
+            <h4><i class="fas fa-car"></i> Cars:</h4>
+            {% if results.cars %}
+                <ul>
+                    {% for car in results.cars %}
+                        <li>
+                            <b>{{ car.title }}</b> -
+                            Model: {{ car.model }} -
+                            Registration: {{ car.registration_number }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No cars found.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

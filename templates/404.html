@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <h1>404 Not Found</h1>
+        <p>Sorry, the page you were looking for could not be found.</p>
+        <p>You may have mistyped the address or the page may have been removed.</p>
+        <p><a href="{{ url_for('cars.home') }}">Return to the homepage</a></p>
+    </div>
+{% endblock %}
