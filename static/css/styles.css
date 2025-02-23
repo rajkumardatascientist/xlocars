@@ -330,11 +330,11 @@ footer a:hover {
     position: relative;
 }
 
-.image-slider img {
+.image-slider {
     width: 100%;
-    height: 100%;
-    object-fit: contain; /* Try 'contain' if 'cover' doesn't look right */
-    display: block;
+    height: 200px; /* This should match your max-height in the img tag */
+    overflow: hidden;
+    position: relative;
 }
 
 /* ==========================================================================
