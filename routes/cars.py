@@ -14,8 +14,8 @@ from sqlalchemy.exc import IntegrityError
 import logging
 from forms.report_forms import ReportForm
 from sqlalchemy import or_
-from forms.appointment_forms import AppointmentForm # Import AppointmentForm
-from models.payment import PaymentStatus, BuyerPayments  # Import PaymentStatus, BuyerPayments
+from forms.appointment_forms import AppointmentForm
+from models.payment import PaymentStatus, BuyerPayments
 
 try:
     from locations import indian_states_districts
@@ -25,11 +25,11 @@ except ImportError as e:
     indian_states = []
     indian_states_districts = {}
 
-
 cars_bp = Blueprint('cars', __name__, __name__, url_prefix='/cars')
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-UPLOAD_FOLDER = 'static/images'
+UPLOAD_FOLDER = os.path.join('static', 'images')  # Use os.path.join
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # Important: Set in app config!
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -74,17 +74,14 @@ def home():
             cars = cars_query.all()
             featured_cars = Car.query.filter_by(is_featured=True).options(joinedload(Car.images)).limit(4).all()
 
-            print(f"Type of cars: {type(cars)}")
-            print(f"Value of cars: {cars}")  # Be careful if 'cars' is very large!
-            print(f"Type of featured_cars: {type(featured_cars)}")
-            print(f"Value of featured_cars: {featured_cars}")  # Be careful if 'featured_cars' is very large!
+            #Removed the print statements as it slows the code
 
             return render_template('home.html', cars=cars,
                                    featured_cars=featured_cars, makes=makes, models=models,
                                    datetime=datetime, timezone=timezone,
                                    indian_states_districts=indian_states_districts,
-                                   selected_state=state,  # Pass it to template
-                                   selected_district=district  # Pass it to template
+                                   selected_state=state,
+                                   selected_district=district
                                    )
     except Exception as e:
         logging.exception("Error in home route: %s", e)
@@ -190,10 +187,9 @@ def listings():
 @cars_bp.route("/car/new", methods=['GET', 'POST'])
 @login_required
 def new_car():
-    form = CarForm(request.form)  # Pass request.form to populate on validation failure
+    form = CarForm(request.form)
 
     if request.method == 'POST':
-        # Manually populate the choices for the district field
         state = request.form.get('state')
         if state and state in indian_states_districts:
             form.district.choices = [(d, d) for d in indian_states_districts[state]]
@@ -203,8 +199,6 @@ def new_car():
     if form.validate_on_submit():
         logging.info("Form is valid. Processing car data...")
 
-
-        # 2. Create Car object (using form data)
         car = Car(
             title=form.title.data,
             description=form.description.data,
@@ -221,8 +215,6 @@ def new_car():
             no_of_owners=form.no_of_owners.data,
             registration_expiry=datetime.now().date(),
             vin="",
-
-            # ADD ALL OF THESE, populating from the form:
             body_type=form.body_type.data,
             fuel_type=form.fuel_type.data,
             engine_type=form.engine_type.data,
@@ -236,11 +228,17 @@ def new_car():
 
                 for image in request.files.getlist(form.images.name):
                     if image and allowed_file(image.filename):
-                        image_url = save_picture(image)
-                        image_db = Image(url=image_url, car_id=car.id)
-                        db.session.add(image_db)
+                        try:
+                            image_url = save_picture(image)
+                            image_db = Image(url=image_url, car_id=car.id)
+                            db.session.add(image_db)
+                            db.session.commit()  # Commit each image immediately
+                        except Exception as image_err:
+                            db.session.rollback()
+                            logging.error(f"Error saving image: {image_err}")
+                            flash(f"Error saving image: {image_err}", "error")
+                            return render_template("error.html", error=str(image_err))
 
-                db.session.commit()
                 flash('Your car ad has been created! It is pending approval.', 'success')
                 return redirect(url_for('cars.home'))
 
@@ -264,23 +262,28 @@ def new_car():
 
 
 def save_picture(form_image):
+    """Saves the uploaded picture and returns the filename."""
     random_hex = secrets.token_hex(8)
-    f_name, f_ext = os.path.splitext(form_image.filename)
+    _, f_ext = os.path.splitext(form_image.filename)
     picture_fn = random_hex + f_ext
-    picture_path = os.path.join(current_app.root_path, 'static/images', picture_fn)
+    picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_fn)  # Use app.config
 
-    output_size = (800, 600)
-    i = PILImage.open(form_image)
-    i.thumbnail(output_size)
-    i.save(picture_path)
-
-    return picture_fn
+    try:
+        output_size = (800, 600)
+        i = PILImage.open(form_image)
+        i.thumbnail(output_size)
+        i.save(picture_path)
+        return picture_fn
+    except Exception as e:
+        logging.error(f"Error saving picture: {e}")
+        raise  # Re-raise the exception after logging
 
 
 @cars_bp.route("/car/<int:car_id>")
 def car(car_id):
+    """Displays a specific car's details."""
     car = Car.query.options(joinedload(Car.seller), joinedload(Car.images)).get_or_404(car_id)
-    report_form = ReportForm()  # <---ADD THIS LINE
+    report_form = ReportForm()
     buyer_can_view_contact = False
     wishlist_status = False
 
@@ -289,21 +292,18 @@ def car(car_id):
             payment = BuyerPayments.query.filter_by(
                 buyer_id=current_user.id,
                 car_id=car_id,
-                payment_status=PaymentStatus.PAYMENT_SUCCESSFUL,  # Use ENUM value
+                payment_status=PaymentStatus.PAYMENT_SUCCESSFUL,
                 is_contact_unlocked=True
             ).first()
 
-            if payment:
-                buyer_can_view_contact = True
-            else:
-                buyer_can_view_contact = False
+            buyer_can_view_contact = bool(payment)
 
         wishlist_status = is_car_in_wishlist(current_user.id, car_id)
 
     return render_template('car_detail.html',
                            title=car.title,
                            car=car,
-                           report_form=report_form,  # <--ADD THIS LINE
+                           report_form=report_form,
                            buyer_can_view_contact=buyer_can_view_contact,
                            wishlist_status=wishlist_status)
 
@@ -311,6 +311,7 @@ def car(car_id):
 @cars_bp.route("/car/<int:car_id>/interested", methods=['GET', 'POST'])
 @login_required
 def interested(car_id):
+    """Handles buyer interest in a car."""
     car = Car.query.get_or_404(car_id)
     form = InterestedForm(request.form)
 
@@ -339,15 +340,16 @@ def interested(car_id):
 
 
 def is_car_in_wishlist(user_id, car_id):
+    """Checks if a car is in the user's wishlist."""
     with app.app_context():
-        wishlist_item = Wishlist.query.filter_by(user_id=user_id,
-                                                   car_id=car_id).first()
+        wishlist_item = Wishlist.query.filter_by(user_id=user_id, car_id=car_id).first()
     return bool(wishlist_item)
 
 
 @cars_bp.route("/car/<int:car_id>/wishlist/add", methods=['POST'])
 @login_required
 def add_to_wishlist(car_id):
+    """Adds a car to the user's wishlist."""
     car = Car.query.get_or_404(car_id)
 
     if is_car_in_wishlist(current_user.id, car_id):
@@ -369,6 +371,7 @@ def add_to_wishlist(car_id):
 @cars_bp.route("/car/<int:car_id>/wishlist/remove", methods=['POST'])
 @login_required
 def remove_from_wishlist(car_id):
+    """Removes a car from the user's wishlist."""
     car = Car.query.get_or_404(car_id)
     with app.app_context():
         wishlist_item = Wishlist.query.filter_by(user_id=current_user.id,
@@ -391,6 +394,7 @@ def remove_from_wishlist(car_id):
 @cars_bp.route("/wishlist")
 @login_required
 def show_wishlist():
+    """Displays the user's wishlist."""
     with app.app_context():
         wishlist_items = Wishlist.query.filter_by(user_id=current_user.id).all()
     return render_template('wishlist.html', wishlist_items=wishlist_items)
@@ -398,6 +402,7 @@ def show_wishlist():
 
 @cars_bp.route("/about")
 def about():
+    """Displays the about page."""
     return render_template('about.html')
 
 
@@ -405,6 +410,7 @@ def about():
            methods=['GET', 'POST'])
 @login_required
 def request_appointment(car_id):
+    """Handles appointment requests for a car."""
     car = Car.query.get_or_404(car_id)
     form = AppointmentForm()
 
@@ -433,11 +439,10 @@ def request_appointment(car_id):
     return render_template('appointment.html', form=form, car=car)
 
 
-# Add car reports routes
-
 @cars_bp.route("/car/<int:car_id>/report", methods=['GET', 'POST'])
 @login_required
 def report_ad(car_id):
+    """Handles reporting of car ads."""
     car = Car.query.get_or_404(car_id)
     form = ReportForm()
 
