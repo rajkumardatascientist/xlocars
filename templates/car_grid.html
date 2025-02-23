@@ -7,20 +7,27 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/car_grid.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <style>
+        .car-tags {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .car-tags .verified-tag,
+        .car-tags .just-listed-tag {
+            position: static;
+            font-size: 0.7rem;
+        }
+    </style>
 </head>
 <body>
     <div class="car-grid">
         {% if cars %}
             {% for car in cars %}
                 <div class="car-card">
-                    <div class="car-header">
-                        {% if car.is_approved %}
-                            <span class="verified-tag">Verified</span>
-                        {% endif %}
-                        {% if car.date_posted and (datetime.now(timezone.utc) - car.date_posted).days < 7 %}
-                            <span class="just-listed-tag">Just Listed</span>
-                        {% endif %}
-                    </div>
 
                     <!-- Image Slider -->
                     <div class="image-slider">
@@ -31,7 +38,7 @@
                                         <div class="swiper-slide">
                                             <img src="{{ image.url }}"
                                                  alt="{{ car.title }}" width="300" height="auto"
-                                                 style="max-height: 200px; object-fit: contain;">
+                                                 style="max-height: 250px; object-fit: cover;">
                                         </div>
                                     {% endfor %}
                                 {% else %}
@@ -39,7 +46,7 @@
                                     <div class="swiper-slide">
                                         <img src="https://i.imgur.com/placeholder.jpg"
                                              alt="No Image Available" width="300" height="auto"
-                                             style="max-height: 200px; object-fit: contain;">
+                                             style="max-height: 250px; object-fit: cover;">
                                     </div>
                                 {% endif %}
                             </div>
@@ -71,6 +78,17 @@
                             <i class="fas fa-tachometer-alt"></i>
                             {{ car.kilometers or 'N/A' }} km
                         </div>
+
+                         <!-- Moved tags here -->
+                        <div class="car-tags">
+                            {% if car.is_approved %}
+                                <span class="verified-tag">Verified</span>
+                            {% endif %}
+                            {% if car.date_posted and (datetime.now(timezone.utc) - car.date_posted).days < 7 %}
+                                <span class="just-listed-tag">Just Listed</span>
+                            {% endif %}
+                        </div>
+
                         <a href="{{ url_for('cars.car', car_id=car.id) }}" class="view-details">View Details</a>
                     </div>
                 </div>
