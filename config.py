@@ -1,15 +1,15 @@
 import os
 import secrets
 
-# Generate a secret key if not set
+# Generate a secret key if one doesn't exist
 SECRET_KEY = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
 
-DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+DEBUG = True  # Disable in production
 
-# Use Railway-provided DATABASE_URL
+# Use Render's DATABASE_URL environment variable
 SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 
 if not SQLALCHEMY_DATABASE_URI:
-    print("⚠️ DATABASE_URL is not set! Make sure it's configured in Railway.")
+    raise ValueError("❌ DATABASE_URL is not set. Please configure it in Render.")
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
