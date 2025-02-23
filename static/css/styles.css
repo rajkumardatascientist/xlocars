@@ -325,16 +325,18 @@ footer a:hover {
 /* Style for .image-slider */
 .image-slider {
     width: 100%;
-    height: 200px; /* Adjust this value as needed */
+    height: 250px; /* Increased height to fill more space */
     overflow: hidden;
     position: relative;
 }
 
-.image-slider img {
+/* Style the img tag */
+.image-slider img.imageTag {
     width: 100%;
     height: 100%;
     object-fit: contain; /* Try 'contain' if 'cover' doesn't look right */
     display: block;
+    margin: auto;
 }
 
 /* ==========================================================================
@@ -713,3 +715,21 @@ label {
     position: static;
     font-size: 0.7rem;
 }
+/* ==========================================================================
+   Image Tag
+   ========================================================================== */
+   .image-slider {
+       width: 100%;
+       height: 250px; /* Increased height to fill more space */
+       overflow: hidden;
+       position: relative;
+   }
+   
+   /* Style the img tag */
+   .image-slider img.imageTag {
+       width: 100%;
+       height: 100%;
+       object-fit: contain; /* Try 'contain' if 'cover' doesn't look right */
+       display: block;
+       margin: auto;
+   }
