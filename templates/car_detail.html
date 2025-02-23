@@ -337,7 +337,7 @@
                         {% if car.images %}
                             {% for image in car.images %}
                                 <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                    <img src="{{ url_for('static', filename='images/' + image.url) }}"
+                                    <img src="{{ image.url }}"
                                          class="d-block w-100" alt="Car Image">
                                 </div>
                             {% endfor %}
