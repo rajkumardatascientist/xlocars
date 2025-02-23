@@ -295,22 +295,23 @@ def new_car():
                            legend='New Car Ad')
 
 
-def save_picture(form_image):
-    """Saves the uploaded picture and returns the filename."""
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(form_image.filename)
-    picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_fn)  # Use app.config
-
-    try:
-        output_size = (800, 600)
-        i = PILImage.open(form_image)
-        i.thumbnail(output_size)
-        i.save(picture_path)
-        return picture_fn
-    except Exception as e:
-        logging.error(f"Error saving picture: {e}")
-        raise  # Re-raise the exception after logging
+# REMOVE THIS FUNCTION, since all images are saved to imgur now.
+# def save_picture(form_image):
+#     """Saves the uploaded picture and returns the filename."""
+#     random_hex = secrets.token_hex(8)
+#     _, f_ext = os.path.splitext(form_image.filename)
+#     picture_fn = random_hex + f_ext
+#     picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_fn)  # Use app.config
+#
+#     try:
+#         output_size = (800, 600)
+#         i = PILImage.open(form_image)
+#         i.thumbnail(output_size)
+#         i.save(picture_path)
+#         return picture_fn
+#     except Exception as e:
+#         logging.error(f"Error saving picture: {e}")
+#         raise  # Re-raise the exception after logging
 
 
 @cars_bp.route("/car/<int:car_id>")
