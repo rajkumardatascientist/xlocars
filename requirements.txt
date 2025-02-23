@@ -6,4 +6,5 @@ flask_sqlalchemy
 flask_migrate
 flask-wtf
 psycopg2-binary
+Pillow
 
