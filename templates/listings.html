@@ -142,17 +142,13 @@
                                 <div class="new-listing-badge">Just Listed</div>
                             {% endif %}
 
-                            <!-- DEBUGGING: Print image URLs -->
                             {% if car.images %}
                                 {% for image in car.images %}
-                                    <p>Image URL: {{ image.url }}</p>
-                                    <!-- NEW: Conditional URL generation -->
+                                    <!-- Conditional URL generation -->
                                     {% if image.url.startswith('http') %}
-                                        <p>Full URL: {{ image.url }}</p>  <!-- Already a full URL -->
                                         <img src="{{ image.url }}" alt="{{ car.title }}"
                                              style="width:200px; height:auto;">
                                     {% else %}
-                                        <p>Full URL: {{ url_for('static', filename='images/' + image.url) }}</p>
                                         <img src="{{ url_for('static', filename='images/' + image.url) }}"
                                              alt="{{ car.title }}" style="width:200px; height:auto;">
                                     {% endif %}
@@ -162,31 +158,6 @@
                                      alt="Default Image" style="width:200px; height:auto;">
                             {% endif %}
 
-                            <!-- Option 2: Original Swiper Code (Commented Out) -->
-                            <!--
-                            <div class="image-slider">
-                                <div class="swiper-container">
-                                    <div class="swiper-wrapper">
-                                        {% if car.images %}
-                                            {% for image in car.images %}
-                                                <div class="swiper-slide">
-                                                    <img src="{{ url_for('static', filename='images/' + image.url) }}"
-                                                         alt="{{ car.title }}">
-                                                </div>
-                                            {% endfor %}
-                                        {% else %}
-                                            <div class="swiper-slide">
-                                                <img src="{{ url_for('static', filename='images/default.jpg') }}"
-                                                     alt="Default Image">
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="swiper-pagination"></div>
-                                    <div class="swiper-button-prev"></div>
-                                    <div class="swiper-button-next"></div>
-                                </div>
-                            </div>
-                            -->
                             <div class="car-details">
                                 <h5 class="car-title">{{ car.title }}</h5>
                                 <p class="car-price">${{ car.price }}</p>
