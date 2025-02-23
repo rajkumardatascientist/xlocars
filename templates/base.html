@@ -424,32 +424,32 @@
     {% block scripts %}
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
         <script>
-            $(document).ready(function() {
-                document.addEventListener('DOMContentLoaded', function() {
-                    const swipers = document.querySelectorAll('.swiper-container');
 
-                    swipers.forEach(swiperElement => {
-                        new Swiper(swiperElement, {
-                            direction: 'horizontal',
-                            loop: true,
+            document.addEventListener('DOMContentLoaded', function() {
+                const swipers = document.querySelectorAll('.swiper-container');
 
-                            pagination: {
-                                el: '.swiper-pagination',
-                            },
+                swipers.forEach(swiperElement => {
+                    new Swiper(swiperElement, {
+                        direction: 'horizontal',
+                        loop: true,
 
-                            navigation: {
-                                nextEl: '.swiper-button-next',
-                                prevEl: '.swiper-button-prev',
-                            },
-                            autoplay: {
-                                delay: 2500,
-                                disableOnInteraction: false,
-                            },
-                            spaceBetween: 30,
-                        });
+                        pagination: {
+                            el: '.swiper-pagination',
+                        },
+
+                        navigation: {
+                            nextEl: '.swiper-button-next',
+                            prevEl: '.swiper-button-prev',
+                        },
+                        autoplay: {
+                            delay: 2500,
+                            disableOnInteraction: false,
+                        },
+                        spaceBetween: 30,
                     });
                 });
             });
+
         </script>
     {% endblock %}
 </body>
