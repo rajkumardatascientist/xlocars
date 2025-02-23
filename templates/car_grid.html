@@ -22,21 +22,23 @@
                         {% endif %}
                     </div>
 
+                    <!-- Image Slider -->
                     <div class="image-slider">
                         <div class="swiper-container">
                             <div class="swiper-wrapper">
                                 {% if car.images %}
                                     {% for image in car.images %}
                                         <div class="swiper-slide">
-                                            <img src="{{ url_for('static', filename='images/' + image.url) }}"
-                                                 alt="{{ car.title }}" width="300" height="auto" 
+                                            <img src="{{ image.url }}"
+                                                 alt="{{ car.title }}" width="300" height="auto"
                                                  style="max-height: 250px; object-fit: cover;">
                                         </div>
                                     {% endfor %}
                                 {% else %}
+                                    <!-- Default Placeholder Image -->
                                     <div class="swiper-slide">
-                                        <img src="{{ url_for('static', filename='images/default.jpg') }}"
-                                             alt="Default Image" width="300" height="auto" 
+                                        <img src="https://i.imgur.com/placeholder.jpg"
+                                             alt="No Image Available" width="300" height="auto"
                                              style="max-height: 250px; object-fit: cover;">
                                     </div>
                                 {% endif %}
@@ -49,9 +51,10 @@
                         </div>
                     </div>
 
+                    <!-- Car Details -->
                     <div class="car-details">
                         <h5 class="car-title">{{ car.title }}</h5>
-                        <p class="car-price">${{ car.price }}</p>
+                        <p class="car-price">₹{{ "{:,.0f}".format(car.price) }}</p>
                         <div class="car-info">
                             <div>
                                 <i class="fas fa-calendar"></i> {{ car.year }}
@@ -77,6 +80,18 @@
         {% endif %}
     </div>
 
-    <script src="{{ url_for('static', filename='js/car_grid.js') }}"></script>
+    <script>
+        var swiper = new Swiper(".swiper-container", {
+            loop: true,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        });
+    </script>
 </body>
 </html>
