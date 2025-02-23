@@ -335,10 +335,6 @@ footer a:hover {
     overflow: hidden;
     position: relative;
 }
-.image-slider img {
-    object-fit: contain !important;
-    max-height: 200px !important;
-}
 /* ==========================================================================
    Car Card Content Styles
    ========================================================================== */
