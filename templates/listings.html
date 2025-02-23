@@ -12,13 +12,14 @@
 
                     <div class="filter-group">
                         <h4>Location</h4>
-                         <form method="GET" action="{{ url_for('cars.listings') }}">
+                        <form method="GET" action="{{ url_for('cars.listings') }}">
                             <div class="form-group">
                                 <label for="state">State:</label>
                                 <select class="form-control" id="state" name="state">
                                     <option value="">Select State</option>
                                     {% for state in indian_states %}
-                                        <option value="{{ state }}" {% if request.args.get('state') == state %} selected {% endif %}>
+                                        <option value="{{ state }}" {% if request.args.get('state') == state %}
+                                                selected {% endif %}>
                                             {{ state }}
                                         </option>
                                     {% endfor %}
@@ -27,7 +28,8 @@
 
                             <div class="form-group">
                                 <label for="city">City:</label>
-                                <input type="text" class="form-control" id="city" name="city" value="{{ request.args.get('city', '') }}" placeholder="Enter City">
+                                <input type="text" class="form-control" id="city" name="city"
+                                       value="{{ request.args.get('city', '') }}" placeholder="Enter City">
                             </div>
 
                             <button type="submit" class="btn btn-primary">Apply Location</button>
@@ -42,22 +44,24 @@
                         </ul>
                     </div>
 
-                     <div class="filter-group">
+                    <div class="filter-group">
                         <h4>Price Range</h4>
                         <form method="GET" action="{{ url_for('cars.listings') }}">
                             <div class="form-group">
                                 <label for="min_price">Min Price:</label>
-                                <input type="number" class="form-control" id="min_price" name="min_price" value="{{ request.args.get('min_price', '') }}" placeholder="Min Price">
+                                <input type="number" class="form-control" id="min_price" name="min_price"
+                                       value="{{ request.args.get('min_price', '') }}" placeholder="Min Price">
                             </div>
                             <div class="form-group">
                                 <label for="max_price">Max Price:</label>
-                                <input type="number" class="form-control" id="max_price" name="max_price" value="{{ request.args.get('max_price', '') }}" placeholder="Max Price">
+                                <input type="number" class="form-control" id="max_price" name="max_price"
+                                       value="{{ request.args.get('max_price', '') }}" placeholder="Max Price">
                             </div>
                             <button type="submit" class="btn btn-primary">Apply Price</button>
                         </form>
                     </div>
 
-                     <div class="filter-group">
+                    <div class="filter-group">
                         <h4>Year</h4>
                         <form method="GET" action="{{ url_for('cars.listings') }}">
                             <div class="form-group">
@@ -65,7 +69,8 @@
                                 <select class="form-control" id="min_year" name="min_year">
                                     <option value="">Select Min Year</option>
                                     {% for year in range(2010, datetime.now().year + 1) %}
-                                         <option value="{{ year }}" {% if request.args.get('min_year')|int == year %} selected {% endif %}>
+                                        <option value="{{ year }}" {% if request.args.get('min_year') | int == year %}
+                                                selected {% endif %}>
                                             {{ year }}
                                         </option>
                                     {% endfor %}
@@ -77,7 +82,8 @@
                                 <select class="form-control" id="max_year" name="max_year">
                                     <option value="">Select Max Year</option>
                                     {% for year in range(2010, datetime.now().year + 1) %}
-                                         <option value="{{ year }}" {% if request.args.get('max_year')|int == year %} selected {% endif %}>
+                                        <option value="{{ year }}" {% if request.args.get('max_year') | int == year %}
+                                                selected {% endif %}>
                                             {{ year }}
                                         </option>
                                     {% endfor %}
@@ -92,21 +98,26 @@
                         <!-- You can generate these dynamically from your database -->
                         <ul>
                             {% for make in makes %}
-                                <li><a href="{{ url_for('cars.listings', make=make[0]) }}" {% if request.args.get('make') == make[0] %} class="active" {% endif %}>{{ make[0] }}</a></li> <!-- Access the make name -->
+                                <li>
+                                    <a href="{{ url_for('cars.listings', make=make[0]) }}" {% if request.args.get('make') == make[0] %}
+                                       class="active" {% endif %}>{{ make[0] }}</a></li>
+                            <!-- Access the make name -->
                             {% endfor %}
                         </ul>
                     </div>
 
-                       <div class="filter-group">
+                    <div class="filter-group">
                         <h4>KM Driven</h4>
                         <form method="GET" action="{{ url_for('cars.listings') }}">
                             <div class="form-group">
                                 <label for="min_km">Min KM:</label>
-                                <input type="number" class="form-control" id="min_km" name="min_km" value="{{ request.args.get('min_km', '') }}" placeholder="Min KM">
+                                <input type="number" class="form-control" id="min_km" name="min_km"
+                                       value="{{ request.args.get('min_km', '') }}" placeholder="Min KM">
                             </div>
                             <div class="form-group">
                                 <label for="max_km">Max KM:</label>
-                                <input type="number" class="form-control" id="max_km" name="max_km" value="{{ request.args.get('max_km', '') }}" placeholder="Max KM">
+                                <input type="number" class="form-control" id="max_km" name="max_km"
+                                       value="{{ request.args.get('max_km', '') }}" placeholder="Max KM">
                             </div>
                             <button type="submit" class="btn btn-primary">Apply KM</button>
                         </form>
@@ -117,96 +128,101 @@
 
             <!-- Car Grid (Right) -->
             <div class="col-md-9">
-                 <div class="search-container">
-                     <form method="GET" action="{{ url_for('cars.listings') }}">
-                        <input type="text" name="search" value="{{ request.args.get('search', '') }}" placeholder="Search Car Here..."/>
-                         <button type="submit" class="btn btn-primary">Search</button>
-                     </form>
+                <div class="search-container">
+                    <form method="GET" action="{{ url_for('cars.listings') }}">
+                        <input type="text" name="search" value="{{ request.args.get('search', '') }}"
+                               placeholder="Search Car Here..."/>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
                 </div>
                 <div class="car-grid">
                     {% for car in cars %}
-                     <div class="car-card">
-                        {% if car.date_posted and (now_utc - car.date_posted).days < 7 %}
-                            <div class="new-listing-badge">Just Listed</div>
-                        {% endif %}
+                        <div class="car-card">
+                            {% if car.date_posted and (now_utc - car.date_posted).days < 7 %}
+                                <div class="new-listing-badge">Just Listed</div>
+                            {% endif %}
 
-                        <!-- DEBUGGING: Print image URLs -->
-                        {% if car.images %}
-                            {% for image in car.images %}
-                                <p>Image URL: {{ image.url }}</p>
-                                <p>Full URL: {{ url_for('static', filename='images/' + image.url) }}</p>
-                            {% endfor %}
-                        {% else %}
-                            <p>No Images for this Car</p>
-                        {% endif %}
-
-                        <!-- Option 1:  Debugging - Simple Image Display (No Swiper) -->
-                        {% if car.images %}
-                            {% for image in car.images %}
-                                <img src="{{ url_for('static', filename='images/' + image.url) }}" alt="{{ car.title }}" style="width:200px; height:auto;">
-                            {% endfor %}
-                        {% else %}
-                            <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="Default Image" style="width:200px; height:auto;">
-                        {% endif %}
-
-                       <!-- Option 2: Original Swiper Code (Commented Out)
-                        <div class="image-slider">
-                            <div class="swiper-container">
-                                <div class="swiper-wrapper">
-                                    {% if car.images %}
-                                        {% for image in car.images %}
-                                            <div class="swiper-slide">
-                                                <img src="{{ url_for('static', filename='images/' + image.url) }}"
-                                                     alt="{{ car.title }}">
-                                            </div>
-                                        {% endfor %}
+                            <!-- DEBUGGING: Print image URLs -->
+                            {% if car.images %}
+                                {% for image in car.images %}
+                                    <p>Image URL: {{ image.url }}</p>
+                                    <!-- NEW: Conditional URL generation -->
+                                    {% if image.url.startswith('http') %}
+                                        <p>Full URL: {{ image.url }}</p>  <!-- Already a full URL -->
+                                        <img src="{{ image.url }}" alt="{{ car.title }}"
+                                             style="width:200px; height:auto;">
                                     {% else %}
-                                        <div class="swiper-slide">
-                                            <img src="{{ url_for('static', filename='images/default.jpg') }}"
-                                                 alt="Default Image">
-                                        </div>
+                                        <p>Full URL: {{ url_for('static', filename='images/' + image.url) }}</p>
+                                        <img src="{{ url_for('static', filename='images/' + image.url) }}"
+                                             alt="{{ car.title }}" style="width:200px; height:auto;">
                                     {% endif %}
-                                </div>
-                                <div class="swiper-pagination"></div>
-                                <div class="swiper-button-prev"></div>
-                                <div class="swiper-button-next"></div>
-                            </div>
-                        </div>
-                       -->
-                        <div class="car-details">
-                            <h5 class="car-title">{{ car.title }}</h5>
-                            <p class="car-price">${{ car.price }}</p>
+                                {% endfor %}
+                            {% else %}
+                                <img src="{{ url_for('static', filename='images/default.jpg') }}"
+                                     alt="Default Image" style="width:200px; height:auto;">
+                            {% endif %}
 
-                            <div class="car-info">
+                            <!-- Option 2: Original Swiper Code (Commented Out) -->
+                            <!--
+                            <div class="image-slider">
+                                <div class="swiper-container">
+                                    <div class="swiper-wrapper">
+                                        {% if car.images %}
+                                            {% for image in car.images %}
+                                                <div class="swiper-slide">
+                                                    <img src="{{ url_for('static', filename='images/' + image.url) }}"
+                                                         alt="{{ car.title }}">
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="swiper-slide">
+                                                <img src="{{ url_for('static', filename='images/default.jpg') }}"
+                                                     alt="Default Image">
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="swiper-pagination"></div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-button-next"></div>
+                                </div>
+                            </div>
+                            -->
+                            <div class="car-details">
+                                <h5 class="car-title">{{ car.title }}</h5>
+                                <p class="car-price">${{ car.price }}</p>
+
+                                <div class="car-info">
                                 <span class="car-info-item">
                                     <i class="fas fa-calendar"></i> {{ car.year }}
                                 </span>
-                                <span class="car-info-item">
+                                    <span class="car-info-item">
                                     <i class="fas fa-map-marker-alt"></i>
-                                    {% if car.city %}
-                                        {{ car.city }}
-                                    {% else %}
-                                        Location Unavailable
-                                    {% endif %}
+                                        {% if car.city %}
+                                            {{ car.city }}
+                                        {% else %}
+                                            Location Unavailable
+                                        {% endif %}
                                 </span>
-                            </div>
+                                </div>
 
-                            <div class="car-specs">
+                                <div class="car-specs">
                                 <span class="car-spec-item">
                                     <i class="fas fa-tachometer-alt"></i> {{ car.kilometers or 'N/A' }} km
                                 </span>
-                                <span class="car-spec-item">
+                                    <span class="car-spec-item">
                                     <i class="fas fa-cog"></i> {{ car.transmission or 'N/A' }}
                                 </span>
-                                <span class="car-spec-item">
+                                    <span class="car-spec-item">
                                     <i class="fas fa-user-friends"></i> {{ car.no_of_owners or 'N/A' }} Owners
                                 </span>
-                            </div>
+                                </div>
 
-                            <a href="{{ url_for('cars.car', car_id=car.id) }}" class="view-details">View Details</a>
+                                <a href="{{ url_for('cars.car', car_id=car.id) }}" class="view-details">View
+                                    Details</a>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
