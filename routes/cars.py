@@ -1,3 +1,4 @@
+import os
 from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, session
 from forms.car_forms import CarForm
 from forms.interested_forms import InterestedForm
@@ -16,6 +17,8 @@ from forms.report_forms import ReportForm
 from sqlalchemy import or_
 from forms.appointment_forms import AppointmentForm
 from models.payment import PaymentStatus, BuyerPayments
+import requests  # For Imgur upload
+
 
 try:
     from locations import indian_states_districts
@@ -31,6 +34,11 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER = os.path.join('static', 'images')  # Use os.path.join
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # Important: Set in app config!
 
+# Imgur Configuration
+IMGUR_CLIENT_ID = os.environ.get("IMGUR_CLIENT_ID")  # Retrieve from environment
+if not IMGUR_CLIENT_ID:
+    raise ValueError("IMGUR_CLIENT_ID environment variable not set.")
+
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -45,6 +53,22 @@ def populate_filters():
         makes = db.session.query(Car.make).distinct().order_by(Car.make).all()
         models = db.session.query(Car.model).distinct().order_by(Car.model).all()
         return makes, models
+
+
+def upload_to_imgur(image):
+    """Uploads an image file to Imgur and returns the image URL"""
+    url = "https://api.imgur.com/3/upload"
+    headers = {"Authorization": f"Client-ID {IMGUR_CLIENT_ID}"}
+
+    try:
+        response = requests.post(url, headers=headers, files={"image": image})
+        response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
+
+        return response.json()["data"]["link"]  # Returns Imgur URL
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error during Imgur upload: {e}")
+        return None
 
 
 @cars_bp.route("/", methods=['GET', 'POST'])
@@ -73,8 +97,6 @@ def home():
 
             cars = cars_query.all()
             featured_cars = Car.query.filter_by(is_featured=True).options(joinedload(Car.images)).limit(4).all()
-
-            #Removed the print statements as it slows the code
 
             return render_template('home.html', cars=cars,
                                    featured_cars=featured_cars, makes=makes, models=models,
@@ -229,10 +251,19 @@ def new_car():
                 for image in request.files.getlist(form.images.name):
                     if image and allowed_file(image.filename):
                         try:
-                            image_url = save_picture(image)
-                            image_db = Image(url=image_url, car_id=car.id)
-                            db.session.add(image_db)
-                            db.session.commit()  # Commit each image immediately
+                           # image_url = save_picture(image) # Saves images locally.
+                           image_url = upload_to_imgur(image) # Saves the image in Imgur server
+                           if image_url:
+                               image_db = Image(url=image_url, car_id=car.id)
+                               db.session.add(image_db)
+                               db.session.commit()  # Commit each image immediately
+                           else:
+                               db.session.rollback()
+                               logging.error("Imgur upload failed for one of the images.")
+                               flash("Imgur upload failed for one of the images.", "error")
+                               return render_template("error.html", error="Imgur upload failed.")
+
+
                         except Exception as image_err:
                             db.session.rollback()
                             logging.error(f"Error saving image: {image_err}")
