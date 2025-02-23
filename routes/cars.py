@@ -245,30 +245,33 @@ def new_car():
 
         with app.app_context():
             db.session.add(car)
-            try:
-                db.session.commit()
 
+            try:
+                db.session.commit()  # Commit the car first
+
+                image_objects = []  # Create a list to hold Image objects
                 for image in request.files.getlist(form.images.name):
                     if image and allowed_file(image.filename):
                         try:
-                           # image_url = save_picture(image) # Saves images locally.
-                           image_url = upload_to_imgur(image) # Saves the image in Imgur server
-                           if image_url:
-                               image_db = Image(url=image_url, car_id=car.id)
-                               db.session.add(image_db)
-                               db.session.commit()  # Commit each image immediately
-                           else:
-                               db.session.rollback()
-                               logging.error("Imgur upload failed for one of the images.")
-                               flash("Imgur upload failed for one of the images.", "error")
-                               return render_template("error.html", error="Imgur upload failed.")
+                            image_url = upload_to_imgur(image)  # Saves the image in Imgur server
+                            if image_url:
+                                image_db = Image(url=image_url, car_id=car.id)
+                                image_objects.append(image_db)  # Add to the list
 
+                            else:
+                                db.session.rollback()
+                                logging.error("Imgur upload failed for one of the images.")
+                                flash("Imgur upload failed for one of the images.", "error")
+                                return render_template("error.html", error="Imgur upload failed.")
 
                         except Exception as image_err:
                             db.session.rollback()
                             logging.error(f"Error saving image: {image_err}")
                             flash(f"Error saving image: {image_err}", "error")
                             return render_template("error.html", error=str(image_err))
+
+                db.session.add_all(image_objects)  # Bulk add the images
+                db.session.commit()  # Commit all images at once
 
                 flash('Your car ad has been created! It is pending approval.', 'success')
                 return redirect(url_for('cars.home'))
@@ -292,22 +295,22 @@ def new_car():
                            legend='New Car Ad')
 
 
-# def save_picture(form_image):
-#     """Saves the uploaded picture and returns the filename."""
-#     random_hex = secrets.token_hex(8)
-#     _, f_ext = os.path.splitext(form_image.filename)
-#     picture_fn = random_hex + f_ext
-#     picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_fn)  # Use app.config
-#
-#     try:
-#         output_size = (800, 600)
-#         i = PILImage.open(form_image)
-#         i.thumbnail(output_size)
-#         i.save(picture_path)
-#         return picture_fn
-#     except Exception as e:
-#         logging.error(f"Error saving picture: {e}")
-#         raise  # Re-raise the exception after logging
+def save_picture(form_image):
+    """Saves the uploaded picture and returns the filename."""
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_image.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_fn)  # Use app.config
+
+    try:
+        output_size = (800, 600)
+        i = PILImage.open(form_image)
+        i.thumbnail(output_size)
+        i.save(picture_path)
+        return picture_fn
+    except Exception as e:
+        logging.error(f"Error saving picture: {e}")
+        raise  # Re-raise the exception after logging
 
 
 @cars_bp.route("/car/<int:car_id>")
