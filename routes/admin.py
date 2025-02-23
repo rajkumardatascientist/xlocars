@@ -4,7 +4,7 @@ from app import db
 from flask_login import login_required, current_user
 from sqlalchemy import or_  # Import the or_ function
 # Import the ReportForm
-from forms import ReportForm
+from forms import ReportForm  # Make sure this form is correctly defined
 from models.payment import PaymentStatus  # Import PaymentStatus ENUM
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -18,8 +18,22 @@ def dashboard():
         return redirect(url_for('cars.home'))
 
     pending_cars = Car.query.filter_by(is_approved=False).all()
-    featured_payments = FeaturedPayments.query.filter_by(payment_status=False).all()
-    buyer_payments = BuyerPayments.query.filter_by(payment_status=False).all()
+
+    #  Choose the correct filter for featured_payments based on what "unsuccessful" means
+    # Option 1: Only PAYMENT_FAILED is considered unsuccessful
+    # featured_payments = FeaturedPayments.query.filter(FeaturedPayments.payment_status == PaymentStatus.PAYMENT_FAILED).all()
+
+    # Option 2: PENDING_PAYMENT, PAYMENT_FAILED, and PAYMENT_REFUNDED are considered unsuccessful
+    featured_payments = FeaturedPayments.query.filter(FeaturedPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all()
+
+    #  Choose the correct filter for buyer_payments based on what "unsuccessful" means
+    # Option 1: Only PAYMENT_FAILED is considered unsuccessful
+    # buyer_payments = BuyerPayments.query.filter(BuyerPayments.payment_status == PaymentStatus.PAYMENT_FAILED).all()
+
+    # Option 2: PENDING_PAYMENT, PAYMENT_FAILED, and PAYMENT_REFUNDED are considered unsuccessful
+    buyer_payments = BuyerPayments.query.filter(BuyerPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all()
+
+
     appointments = Appointment.query.filter_by(status="Pending").all()
     reports = ReportedAds.query.all()  # Fetch all reports
     return render_template('admin_dashboard.html', pending_cars=pending_cars, featured_payments=featured_payments,
@@ -52,14 +66,14 @@ def reject_car(car_id):
     return redirect(url_for('admin.dashboard'))
 
 
-@admin_bp.route("/activate_feature_payment/<int:payment_id>")
+@admin_bp.route("/activate_feature_payment/<int:payment_id}")
 @login_required
 def activate_feature_payment(payment_id):
     if not current_user.is_admin:
         flash("You don't have permission to access this page.", "danger")
         return redirect(url_for('cars.home'))
     payment = FeaturedPayments.query.get_or_404(payment_id)
-    payment.payment_status = True
+    payment.payment_status = PaymentStatus.PAYMENT_SUCCESSFUL  # Corrected to use ENUM
     payment.is_featured = True  # Mark car as featured
     car = Car.query.get_or_404(payment.car_id)
     car.is_featured = True
@@ -75,7 +89,7 @@ def activate_buyer_payment(payment_id):
         flash("You don't have permission to access this page.", "danger")
         return redirect(url_for('cars.home'))
     payment = BuyerPayments.query.get_or_404(payment_id)
-    payment.payment_status = True
+    payment.payment_status = PaymentStatus.PAYMENT_SUCCESSFUL # Corrected to use ENUM
     payment.is_contact_unlocked = True  # Unlock contact
     db.session.commit()
     flash(f"Buyer Payment ID '{payment.id}' activated!", 'success')
@@ -89,7 +103,7 @@ def deactivate_feature_payment(payment_id):
         flash("You don't have permission to access this page.", "danger")
         return redirect(url_for('cars.home'))
     payment = FeaturedPayments.query.get_or_404(payment_id)
-    payment.payment_status = False
+    payment.payment_status = PaymentStatus.PAYMENT_FAILED  #  or PENDING_PAYMENT or whatever is correct  - Use ENUM
     payment.is_featured = False
     car = Car.query.get_or_404(payment.car_id)
     car.is_featured = False
@@ -105,7 +119,7 @@ def deactivate_buyer_payment(payment_id):
         flash("You don't have permission to access this page.", "danger")
         return redirect(url_for('cars.home'))
     payment = BuyerPayments.query.get_or_404(payment_id)
-    payment.payment_status = False
+    payment.payment_status = PaymentStatus.PAYMENT_FAILED # or PENDING_PAYMENT or whatever is correct - Use ENUM
     payment.is_contact_unlocked = False
     db.session.commit()
     flash(f"Buyer Payment ID '{payment.id}' deactivated!", 'success')
@@ -159,8 +173,8 @@ def search():
 
     return render_template('admin_dashboard.html',
                            pending_cars=Car.query.filter_by(is_approved=False).all(),
-                           featured_payments=FeaturedPayments.query.filter_by(payment_status=False).all(),
-                           buyer_payments=BuyerPayments.query.filter_by(payment_status=False).all(),
+                           featured_payments=FeaturedPayments.query.filter(FeaturedPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all(), # Choose the right filter
+                           buyer_payments=BuyerPayments.query.filter(BuyerPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all(), # Choose the right filter
                            appointments=Appointment.query.filter_by(status="Pending").all(),
                            results=results,
                            search_query=search_query, reports=ReportedAds.query.all())
