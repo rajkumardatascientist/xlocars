@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, session
 from forms.car_forms import CarForm
 from forms.interested_forms import InterestedForm
-from models import Car, InterestedBuyers, Wishlist, Appointment, BuyerPayments, Image, ReportedAds
+from models import Car, InterestedBuyers, Wishlist, Appointment, Image, ReportedAds
 from app import db, app
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
@@ -14,6 +14,8 @@ from sqlalchemy.exc import IntegrityError
 import logging
 from forms.report_forms import ReportForm
 from sqlalchemy import or_
+from forms.appointment_forms import AppointmentForm # Import AppointmentForm
+from models.payment import PaymentStatus, BuyerPayments  # Import PaymentStatus, BuyerPayments
 
 try:
     from locations import indian_states_districts
@@ -287,8 +289,10 @@ def car(car_id):
             payment = BuyerPayments.query.filter_by(
                 buyer_id=current_user.id,
                 car_id=car_id,
-                payment_status=True,
-                is_contact_unlocked=True).first()
+                payment_status=PaymentStatus.PAYMENT_SUCCESSFUL,  # Use ENUM value
+                is_contact_unlocked=True
+            ).first()
+
             if payment:
                 buyer_can_view_contact = True
             else:
