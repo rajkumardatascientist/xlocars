@@ -12,7 +12,6 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError
 import logging
-from utils import process_registration_card
 from forms.report_forms import ReportForm
 from sqlalchemy import or_
 
@@ -202,22 +201,8 @@ def new_car():
     if form.validate_on_submit():
         logging.info("Form is valid. Processing car data...")
 
-        # 1. Process Registration Card (OCR and Data Extraction)
-        registration_data = {}
-        if form.registration_card.data:
-            try:
-                registration_data = process_registration_card(form.registration_card.data)
-                logging.info(f"Registration Data Extracted: {registration_data}")
-            except Exception as e:
-                logging.exception("Error processing registration card: %s", e)
-                flash(f"Error processing registration card: {e}.  Please try again or enter the details manually.",
-                      "error")
-                return render_template('create_car.html',
-                                       title='New Car',
-                                       form=form,
-                                       legend='New Car Ad')
 
-        # 2. Create Car object (using form data AND extracted registration data)
+        # 2. Create Car object (using form data)
         car = Car(
             title=form.title.data,
             description=form.description.data,
@@ -232,9 +217,8 @@ def new_car():
             is_approved=False,
             kilometers=form.kilometers.data,
             no_of_owners=form.no_of_owners.data,
-            registration_number=form.registration_card.data.filename,
             registration_expiry=datetime.now().date(),
-            vin=form.registration_card.data.filename,
+            vin="",
 
             # ADD ALL OF THESE, populating from the form:
             body_type=form.body_type.data,
