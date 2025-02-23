@@ -17,20 +17,28 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
         }
 
-        .car-details-list {
+        /* Updated Car Details List Styling */
+        .car-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+            gap: 15px; /* Increased gap */
             list-style: none;
             padding: 0;
+            margin: 0;
         }
 
-        .car-details-list li {
-            margin-bottom: 10px; /* Slightly increased spacing */
+        .car-details-grid li {
             font-size: 1rem;
             display: flex; /* Align icon and text horizontally */
             align-items: center;
+            padding: 8px 12px; /* Add padding for a better visual appearance */
+            border: 1px solid #eee; /* Add a subtle border */
+            border-radius: 6px; /* Slightly rounded corners */
+            background-color: #f9f9f9; /* Light background color */
         }
 
-        .car-details-list li i {
-            margin-right: 10px; /* Increased spacing between icon and text */
+        .car-details-grid li i {
+            margin-right: 8px; /* Reduced spacing between icon and text */
             color: #3498db;
             width: 20px; /* Ensure consistent icon width */
             text-align: center; /* Center the icon within its width */
@@ -126,7 +134,8 @@
             background-color: #c0392b;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-         /* EMI Calculator Styling */
+
+        /* EMI Calculator Styling */
         .emi-calculator {
             margin-top: 30px;
             padding: 20px;
@@ -353,7 +362,7 @@
 
                 <p>{{ car.description }}</p>
 
-                <ul class="car-details-list">
+                <ul class="car-details-grid">
                     <li><i class="fas fa-tag"></i> Price: ${{ car.price }}</li> <!-- Changed icon -->
                     <li><i class="far fa-calendar-alt"></i> Year: {{ car.year }}</li> <!-- Changed icon -->
                     <li><i class="fas fa-industry"></i> Make: {{ car.make }}</li> <!-- Changed icon -->
@@ -380,7 +389,7 @@
                         {% endif %}
                     </li>
                 </ul>
-        </div>
+            </div>
 
             <div class="col-md-4">
                 <div class="interested-section">
@@ -507,6 +516,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -534,7 +544,7 @@
             updateValues();  // Initialize the displayed values on page load.
             calculateValues(); // Initial EMI calculation
             // Corrected the input events to include calling calculateValues as well as update Values
-             function calculateValues() {
+            function calculateValues() {
                 let loanAmount = parseInt(document.getElementById("loanAmount").value);
                 let interestRate = 0.10; // 10% annual interest
                 let loanTenure = parseInt(document.getElementById("loanTenure").value);
@@ -544,13 +554,12 @@
 
                 // Calculate EMI using the formula
                 let emi = (loanAmount * monthlyInterestRate) / (1 - Math.pow((1 + monthlyInterestRate), -loanTenure));
-                   // Ensure it's a valid calculation.  If loan amount zero, this could be NAN.
-                if (!isNaN(emi) && isFinite(emi)){
+                // Ensure it's a valid calculation.  If loan amount zero, this could be NAN.
+                if (!isNaN(emi) && isFinite(emi)) {
                     document.getElementById("emiResult").innerText = emi.toFixed(2);
+                } else {
+                    document.getElementById("emiResult").innerText = "N/A"
                 }
-                 else {
-                      document.getElementById("emiResult").innerText = "N/A"
-                 }
 
                 //Calculate total interest and total payment
                 let totalInterest = (emi * loanTenure) - loanAmount;
@@ -560,19 +569,20 @@
                 document.getElementById("interestPayable").innerText = totalInterest.toLocaleString();
                 document.getElementById("totalPayable").innerText = totalPayable.toLocaleString();
             }
-            document.getElementById("loanAmount").addEventListener("input", function(){
+
+            document.getElementById("loanAmount").addEventListener("input", function () {
                 updateValues()
                 calculateValues();
             });
-            document.getElementById("downPayment").addEventListener("input",function(){
+            document.getElementById("downPayment").addEventListener("input", function () {
                 updateValues()
                 calculateValues();
             });
-            document.getElementById("loanTenure").addEventListener("input", function(){
+            document.getElementById("loanTenure").addEventListener("input", function () {
                 updateValues();
                 calculateValues();
             });
-         calculateValues()
+            calculateValues()
         });
 
     </script>
