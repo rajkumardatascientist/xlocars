@@ -329,14 +329,16 @@ footer a:hover {
     overflow: hidden;
     position: relative;
 }
-
 .image-slider {
     width: 100%;
     height: 200px; /* This should match your max-height in the img tag */
     overflow: hidden;
     position: relative;
 }
-
+.image-slider img {
+    object-fit: contain !important;
+    max-height: 200px !important;
+}
 /* ==========================================================================
    Car Card Content Styles
    ========================================================================== */
