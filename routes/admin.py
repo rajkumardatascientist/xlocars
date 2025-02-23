@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 from sqlalchemy import or_  # Import the or_ function
 # Import the ReportForm
 from forms import ReportForm
+from models.payment import PaymentStatus  # Import PaymentStatus ENUM
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
