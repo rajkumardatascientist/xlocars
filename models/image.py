@@ -1,6 +1,7 @@
-#image.py
+# image.py
 from extensions import db
 from sqlalchemy import Column, Integer, String, ForeignKey
+
 
 class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
