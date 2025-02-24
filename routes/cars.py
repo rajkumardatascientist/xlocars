@@ -1,3 +1,5 @@
+# cars.py (Modified)
+
 import os
 from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, session
 from forms.car_forms import CarForm
@@ -245,33 +247,30 @@ def new_car():
 
         with app.app_context():
             db.session.add(car)
-
             try:
-                db.session.commit()  # Commit the car first
+                db.session.commit()
 
-                image_objects = []  # Create a list to hold Image objects
                 for image in request.files.getlist(form.images.name):
                     if image and allowed_file(image.filename):
                         try:
-                            image_url = upload_to_imgur(image)  # Saves the image in Imgur server
-                            if image_url:
-                                image_db = Image(url=image_url, car_id=car.id)
-                                image_objects.append(image_db)  # Add to the list
+                           # image_url = save_picture(image) # Saves images locally.
+                           image_url = upload_to_imgur(image) # Saves the image in Imgur server
+                           if image_url:
+                               image_db = Image(url=image_url, car_id=car.id)
+                               db.session.add(image_db)
+                               db.session.commit()  # Commit each image immediately
+                           else:
+                               db.session.rollback()
+                               logging.error("Imgur upload failed for one of the images.")
+                               flash("Imgur upload failed for one of the images.", "error")
+                               return render_template("error.html", error="Imgur upload failed.")
 
-                            else:
-                                db.session.rollback()
-                                logging.error("Imgur upload failed for one of the images.")
-                                flash("Imgur upload failed for one of the images.", "error")
-                                return render_template("error.html", error="Imgur upload failed.")
 
                         except Exception as image_err:
                             db.session.rollback()
                             logging.error(f"Error saving image: {image_err}")
                             flash(f"Error saving image: {image_err}", "error")
                             return render_template("error.html", error=str(image_err))
-
-                db.session.add_all(image_objects)  # Bulk add the images
-                db.session.commit()  # Commit all images at once
 
                 flash('Your car ad has been created! It is pending approval.', 'success')
                 return redirect(url_for('cars.home'))
@@ -295,23 +294,22 @@ def new_car():
                            legend='New Car Ad')
 
 
-# REMOVE THIS FUNCTION, since all images are saved to imgur now.
-# def save_picture(form_image):
-#     """Saves the uploaded picture and returns the filename."""
-#     random_hex = secrets.token_hex(8)
-#     _, f_ext = os.path.splitext(form_image.filename)
-#     picture_fn = random_hex + f_ext
-#     picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_fn)  # Use app.config
-#
-#     try:
-#         output_size = (800, 600)
-#         i = PILImage.open(form_image)
-#         i.thumbnail(output_size)
-#         i.save(picture_path)
-#         return picture_fn
-#     except Exception as e:
-#         logging.error(f"Error saving picture: {e}")
-#         raise  # Re-raise the exception after logging
+def save_picture(form_image):
+    """Saves the uploaded picture and returns the filename."""
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_image.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.config['UPLOAD_FOLDER'], picture_fn)  # Use app.config
+
+    try:
+        output_size = (800, 600)
+        i = PILImage.open(form_image)
+        i.thumbnail(output_size)
+        i.save(picture_path)
+        return picture_fn
+    except Exception as e:
+        logging.error(f"Error saving picture: {e}")
+        raise  # Re-raise the exception after logging
 
 
 @cars_bp.route("/car/<int:car_id>")
@@ -498,3 +496,71 @@ def report_ad(car_id):
             return render_template("error.html", error=str(e))
 
     return render_template('report_ad.html', form=form, car=car)
+
+
+@cars_bp.route("/delete_car/<int:car_id>", methods=['POST'])
+@login_required
+def delete_car(car_id):
+    """Deletes a car listing."""
+    car = Car.query.get_or_404(car_id)
+
+    if car.seller_id != current_user.id:
+        flash("You are not authorized to delete this listing.", "error")
+        return redirect(url_for('cars.home'))  # Or appropriate error page
+
+    try:
+        db.session.delete(car)
+        db.session.commit()
+        flash("Listing deleted successfully.", "success")
+    except Exception as e:
+        db.session.rollback()
+        logging.exception("Error deleting car: %s", e)
+        flash(f"Error deleting listing: {e}", "error")
+        return render_template("error.html", error=str(e))
+
+    return redirect(url_for('users.seller_dashboard'))  # Redirect to seller dashboard
+
+
+@cars_bp.route("/pause_car/<int:car_id>", methods=['POST'])
+@login_required
+def pause_car(car_id):
+    """Pauses a car listing (sets is_active to False)."""
+    car = Car.query.get_or_404(car_id)
+
+    if car.seller_id != current_user.id:
+        flash("You are not authorized to pause this listing.", "error")
+        return redirect(url_for('cars.home'))  # Or appropriate error page
+
+    car.is_active = False #Set Car model to active or inactive
+    try:
+        db.session.commit()
+        flash("Listing paused successfully.", "success")
+    except Exception as e:
+        db.session.rollback()
+        logging.exception("Error pausing car: %s", e)
+        flash(f"Error pausing listing: {e}", "error")
+        return render_template("error.html", error=str(e))
+
+    return redirect(url_for('users.seller_dashboard'))  # Redirect to seller dashboard
+
+@cars_bp.route("/unpause_car/<int:car_id>", methods=['POST'])
+@login_required
+def unpause_car(car_id):
+    """Unpauses a car listing (sets is_active to True)."""
+    car = Car.query.get_or_404(car_id)
+
+    if car.seller_id != current_user.id:
+        flash("You are not authorized to unpause this listing.", "error")
+        return redirect(url_for('cars.home'))  # Or appropriate error page
+
+    car.is_active = True
+    try:
+        db.session.commit()
+        flash("Listing unpaused successfully.", "success")
+    except Exception as e:
+        db.session.rollback()
+        logging.exception("Error unpausing car: %s", e)
+        flash(f"Error unpausing listing: {e}", "error")
+        return render_template("error.html", error=str(e))
+
+    return redirect(url_for('users.seller_dashboard'))  # Redirect to seller dashboard
