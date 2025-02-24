@@ -32,9 +32,13 @@ class Car(db.Model):
     engine_capacity = db.Column(db.Float)  # e.g., 2.0 for 2.0L engine
     no_of_owners = db.Column(db.Integer) # Added no_of_owners
     seller_id = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
-    is_approved = db.Column(db.Boolean, default=False) #<--------------- ADD THIS LINE
+    is_approved = db.Column(db.Boolean, default=False)
     is_featured = db.Column(db.Boolean, default=False)  # Add the is_featured column
     date_posted = db.Column(db.DateTime(timezone=True), default=datetime.now(timezone.utc))
+
+    # ADD THIS LINE
+    is_active = db.Column(db.Boolean, default=True)  #  Add is_active
+
     # Relationships
     interested_buyers = relationship('InterestedBuyers', backref='car', lazy=True)
     wishlist_entries = relationship('Wishlist', backref='car', lazy=True)
