@@ -304,6 +304,19 @@ footer a:hover {
 }
 
 /* Styling for the badge */
+.new-listing-badge,
+.verified-tag {
+    position: absolute;
+    top: 10px;
+    right: auto; /* Changed to auto */
+    left: 10px; /* Added */
+    background-color: #5cb85c;  /* Forcing it to be green */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    z-index: 10;
+}
 
 /* Style adjustment for .verified-tag */
 .verified-tag {
@@ -319,9 +332,9 @@ footer a:hover {
 }
 
 .image-slider img {
-    width: auto; /* CHANGED */
+    width: auto;
     height: 100%;
-    object-fit: cover;  /*CHANGED*/
+    object-fit: cover;
     display: block;
     margin: auto;
 }
@@ -700,20 +713,32 @@ label {
     display: block;
     margin: auto;
 }
+
 /* CarTag styling and position tags in top right  */
 .car-tags {
     position: absolute;
     top: 10px;
-    right: 10px;
+    left: 10px;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;  /*Important: Space between tags*/
     align-items: center;
-    gap: 5px;
+    width: 90%; /* Added to take full width */
     z-index: 2;
 }
+
 /*verified and just listing tags badges look  */
-.new-listing-badge, .verified-tag {
-    background-color: #f0ad4e;
+.new-listing-badge, 
+.verified-tag {
+    background-color: #5cb85c;  /*Forcing it to be green */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    z-index: 10;
+}
+
+.just-listed-tag {
+    background-color: #f0ad4e; /* set Just Listed color */
     color: white;
     padding: 5px 10px;
     border-radius: 4px;
