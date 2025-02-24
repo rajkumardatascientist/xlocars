@@ -303,26 +303,6 @@ footer a:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Styling for the badge */
-.new-listing-badge,
-.verified-tag {
-    position: absolute;
-    top: 10px;
-    right: auto; /* Changed to auto */
-    left: 10px; /* Added */
-    background-color: #5cb85c;  /* Forcing it to be green */
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    z-index: 10;
-}
-
-/* Style adjustment for .verified-tag */
-.verified-tag {
-    background-color: #5cb85c;
-}
-
 /* Style for .image-slider */
 .image-slider {
     width: 100%;
@@ -337,6 +317,41 @@ footer a:hover {
     object-fit: cover;
     display: block;
     margin: auto;
+}
+
+/* CarTag styling and position tags in top right  */
+.car-tags {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    justify-content: space-between;  /*Important: Space between tags*/
+    align-items: center;
+    width: 90%; /* Added to take full width */
+    z-index: 2;
+}
+
+/*verified and just listing tags badges look  */
+.new-listing-badge, 
+.verified-tag {
+    background-color: #5cb85c;  /*Forcing it to be green */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    z-index: 10;
+    margin-right: auto; /* push to left  */
+}
+
+/* just listed tag is correct color format look  */
+.just-listed-tag {
+    background-color: #f0ad4e; /* set Just Listed color */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    z-index: 10;
+    margin-left: auto;   /* push to right */
 }
 
 /* ==========================================================================
@@ -719,29 +734,33 @@ label {
     position: absolute;
     top: 10px;
     left: 10px;
+    right: 10px;
     display: flex;
-    justify-content: space-between;  /*Important: Space between tags*/
+    justify-content: space-between;
     align-items: center;
-    width: 90%; /* Added to take full width */
+    width: 90%;
     z-index: 2;
 }
 
 /*verified and just listing tags badges look  */
 .new-listing-badge, 
 .verified-tag {
-    background-color: #5cb85c;  /*Forcing it to be green */
+    background-color: #5cb85c;
     color: white;
     padding: 5px 10px;
     border-radius: 4px;
     font-size: 0.8rem;
     z-index: 10;
+    margin-right: auto; /* push to left  */
 }
 
+/* just listed tag is correct color format look  */
 .just-listed-tag {
-    background-color: #f0ad4e; /* set Just Listed color */
+    background-color: #f0ad4e;
     color: white;
     padding: 5px 10px;
     border-radius: 4px;
     font-size: 0.8rem;
     z-index: 10;
+    margin-left: auto;   /* push to right */
 }
