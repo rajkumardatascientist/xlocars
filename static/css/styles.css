@@ -303,20 +303,20 @@ footer a:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Style for the image container */
-.image-container {
+/* Style for .image-slider */
+.image-slider {
     width: 100%;
     height: 250px;
     overflow: hidden;
     position: relative;
 }
 
-/* Style for the static car image */
-.car-image {
-    width: 100%;
+.image-slider img {
+    width: auto;
     height: 100%;
-    object-fit: cover; /* Or "contain" if you want to avoid cropping */
+    object-fit: cover;
     display: block;
+    margin: auto;
 }
 
 /* CarTag styling and position tags in top right  */
@@ -325,16 +325,16 @@ footer a:hover {
     top: 10px;
     left: 10px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between;  /*Important: Space between tags*/
     align-items: center;
-    width: 90%;
+    width: 90%; /* Added to take full width */
     z-index: 2;
 }
 
 /*verified and just listing tags badges look  */
 .new-listing-badge, 
 .verified-tag {
-    background-color: #5cb85c;
+    background-color: #5cb85c;  /*Forcing it to be green */
     color: white;
     padding: 5px 10px;
     border-radius: 4px;
@@ -345,7 +345,7 @@ footer a:hover {
 
 /* just listed tag is correct color format look  */
 .just-listed-tag {
-    background-color: #f0ad4e;
+    background-color: #f0ad4e; /* set Just Listed color */
     color: white;
     padding: 5px 10px;
     border-radius: 4px;
@@ -638,7 +638,6 @@ label {
 
     .view-details {
         font-size: 0.6rem;
-        }
     }
 
      /* Smaller filter sidebar on small screens */
@@ -715,15 +714,15 @@ label {
 }
 
 /* Image Tag */
-.image-container {
+.image-slider {
     width: 100%;
     height: 250px;
     overflow: hidden;
     position: relative;
 }
 
-.car-image {
-    width: 100%;
+.image-slider img {
+    width: auto;
     height: 100%;
     object-fit: cover;
     display: block;
@@ -735,6 +734,7 @@ label {
     position: absolute;
     top: 10px;
     left: 10px;
+    right: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
