@@ -319,9 +319,6 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="accountDropdown">
                             {% if current_user.is_authenticated %}
-                                {#  Removed direct links to dashboard, relying on automatic redirect after login #}
-                                {# <a class="dropdown-item" href="{{ url_for('dashboard.buyer') }}">Buyer Dashboard</a> #}
-                                {# <a class="dropdown-item" href="{{ url_for('dashboard.seller') }}">Seller Dashboard</a> #}
 
                                 {% if current_user.role == 'buyer' %}
                                     <a class="dropdown-item" href="{{ url_for('dashboard.buyer') }}">Buyer Dashboard</a>
