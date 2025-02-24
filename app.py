@@ -9,15 +9,6 @@ import sys  # Import sys
 # Import db and migrate from extensions.py
 from extensions import db, migrate
 
-# Import all necessary models AFTER creating the app instance
-from models import User, Car, InterestedBuyers, Wishlist, Appointment, FeaturedPayments, BuyerPayments, ReportedAds
-try:
-    from locations import indian_states_districts  # Try this import style
-except ImportError as e:
-    print(f"ImportError: Could not import indian_states_districts from locations.py.  Please verify the file exists and is in the correct directory. {e}") # ADDED THIS LINE FOR DIAGNOSTICS
-    indian_states_districts = {}  # Fallback, so the app doesn't crash during development. REMOVE in production!
-
-
 app = Flask(__name__)
 
 # Load configurations from config.py
@@ -39,6 +30,16 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(payments_bp)
 app.register_blueprint(about_bp)
 app.register_blueprint(dashboard_bp) #ADD THIS LINE
+
+# Import all necessary models AFTER creating the app instance and AFTER registering the Blueprints
+from models import User, Car, InterestedBuyers, Wishlist, Appointment, FeaturedPayments, BuyerPayments, ReportedAds
+try:
+    from locations import indian_states_districts  # Try this import style
+except ImportError as e:
+    print(f"ImportError: Could not import indian_states_districts from locations.py.  Please verify the file exists and is in the correct directory. {e}") # ADDED THIS LINE FOR DIAGNOSTICS
+    indian_states_districts = {}  # Fallback, so the app doesn't crash during development. REMOVE in production!
+
+
 
 # Define Indian states (moved here to be accessible globally within the app)
 indian_states = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"]
