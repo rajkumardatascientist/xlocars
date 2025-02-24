@@ -1,99 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Listings</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/car_grid.css') }}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-</head>
-<body>
-    <div class="car-grid">
-        {% if cars %}
-            {% for car in cars %}
-                <div class="car-card">
-
-                    <!-- Image Slider -->
-                    <div class="image-slider">
-                        <div class="swiper-container">
-                            <div class="swiper-wrapper">
-                                {% if car.images %}
-                                    {% for image in car.images %}
-                                        <div class="swiper-slide">
-                                            <img src="{{ image.url }}"
-                                                 alt="{{ car.title }}"
-                                                 class="imageTag">
-                                        </div>
-                                    {% endfor %}
-                                {% else %}
-                                    <!-- Default Placeholder Image -->
-                                    <div class="swiper-slide">
-                                        <img src="https://i.imgur.com/placeholder.jpg"
-                                             alt="No Image Available"
-                                             class="imageTag">
-                                    </div>
-                                {% endif %}
-                            </div>
-                            {% if car.images|length > 1 %}
-                                <div class="swiper-pagination"></div>
-                                <div class="swiper-button-prev"></div>
-                                <div class="swiper-button-next"></div>
-                            {% endif %}
-                        </div>
-
-                        <!-- Car tags (badges) moved here -->
-                        <div class="car-tags">
-                            {% if car.is_approved %}
-                                <span class="verified-tag">Verified</span>
-                            {% endif %}
-                            {% if car.date_posted and (datetime.now(timezone.utc) - car.date_posted).days < 7 %}
-                                <span class="just-listed-tag">Just Listed</span>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <!-- Car Details -->
-                    <div class="car-details">
-                        <h5 class="car-title">{{ car.title }}</h5>
-                        <p class="car-price">₹{{ "{:,.0f}".format(car.price) }}</p>
-                        <div class="car-info">
-                            <div>
-                                <i class="fas fa-calendar"></i> {{ car.year }}
-                            </div>
-                            <div>
-                                <i class="fas fa-cog"></i> {{ car.transmission or 'N/A' }}
-                            </div>
-                        </div>
-                        <div class="car-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            {{ car.city or 'N/A' }}, {{ car.state or 'N/A' }}
-                        </div>
-                        <div class="car-mileage">
-                            <i class="fas fa-tachometer-alt"></i>
-                            {{ car.kilometers or 'N/A' }} km
-                        </div>
-                        <a href="{{ url_for('cars.car', car_id=car.id) }}" class="view-details">View Details</a>
-                    </div>
-                </div>
-            {% endfor %}
+<div class="car-card">
+    <!-- Static Image -->
+    <div class="image-container">
+        {% if car.images %}
+            <img src="{{ car.images[0].url }}"
+                 alt="{{ car.title }}"
+                 class="car-image">
         {% else %}
-            <p>No cars found.</p>
+            <!-- Default Placeholder Image -->
+            <img src="https://i.imgur.com/placeholder.jpg"
+                 alt="No Image Available"
+                 class="car-image">
         {% endif %}
     </div>
 
-    <script>
-        var swiper = new Swiper(".swiper-container", {
-            loop: true,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-        });
-    </script>
-</body>
-</html>
+    <!-- Car tags (badges) moved here -->
+    <div class="car-tags">
+        {% if car.is_approved %}
+            <span class="verified-tag">Verified</span>
+        {% endif %}
+        {% if car.date_posted and (datetime.now(timezone.utc) - car.date_posted).days < 7 %}
+            <span class="just-listed-tag">Just Listed</span>
+        {% endif %}
+    </div>
+
+    <!-- Car Details -->
+    <div class="car-details">
+        <h5 class="car-title">{{ car.title }}</h5>
+        <p class="car-price">₹{{ "{:,.0f}".format(car.price) }}</p>
+        <div class="car-info">
+            <div>
+                <i class="fas fa-calendar"></i> {{ car.year }}
+            </div>
+            <div>
+                <i class="fas fa-cog"></i> {{ car.transmission or 'N/A' }}
+            </div>
+        </div>
+        <div class="car-location">
+            <i class="fas fa-map-marker-alt"></i>
+            {{ car.city or 'N/A' }}, {{ car.state or 'N/A' }}
+        </div>
+        <div class="car-mileage">
+            <i class="fas fa-tachometer-alt"></i>
+            {{ car.kilometers or 'N/A' }} km
+        </div>
+        <a href="{{ url_for('cars.car', car_id=car.id) }}" class="view-details">View Details</a>
+    </div>
+</div>
