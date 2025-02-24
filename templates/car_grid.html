@@ -23,9 +23,7 @@
                                         <div class="swiper-slide">
                                             <img src="{{ image.url }}"
                                                  alt="{{ car.title }}"
-                                                 class="imageTag" 
-                                                 width="300" 
-                                                 height="auto">
+                                                 class="imageTag">
                                         </div>
                                     {% endfor %}
                                 {% else %}
@@ -33,16 +31,24 @@
                                     <div class="swiper-slide">
                                         <img src="https://i.imgur.com/placeholder.jpg"
                                              alt="No Image Available"
-                                             class="imageTag"
-                                             width="300" 
-                                             height="auto">
-                                        </div>
+                                             class="imageTag">
+                                    </div>
                                 {% endif %}
                             </div>
                             {% if car.images|length > 1 %}
                                 <div class="swiper-pagination"></div>
                                 <div class="swiper-button-prev"></div>
                                 <div class="swiper-button-next"></div>
+                            {% endif %}
+                        </div>
+                    
+                        <!-- Car tags (badges) moved here -->
+                         <div class="car-tags">
+                            {% if car.is_approved %}
+                                <span class="verified-tag">Verified</span>
+                            {% endif %}
+                            {% if car.date_posted and (datetime.now(timezone.utc) - car.date_posted).days < 7 %}
+                                <span class="just-listed-tag">Just Listed</span>
                             {% endif %}
                         </div>
                     </div>
@@ -66,14 +72,6 @@
                         <div class="car-mileage">
                             <i class="fas fa-tachometer-alt"></i>
                             {{ car.kilometers or 'N/A' }} km
-                        </div>
-                        <div class="car-tags">
-                           {% if car.is_approved %}
-                               <span class="verified-tag">Verified</span>
-                           {% endif %}
-                           {% if car.date_posted and (datetime.now(timezone.utc) - car.date_posted).days < 7 %}
-                               <span class="just-listed-tag">Just Listed</span>
-                           {% endif %}
                         </div>
                         <a href="{{ url_for('cars.car', car_id=car.id) }}" class="view-details">View Details</a>
                     </div>
