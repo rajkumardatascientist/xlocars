@@ -312,7 +312,7 @@ footer a:hover {
 }
 
 .image-slider img {
-    width: 100%; /* Corrected to cover full width */
+    width: auto;
     height: 100%;
     object-fit: cover;
     display: block;
@@ -333,9 +333,9 @@ footer a:hover {
 }
 
 /*verified and just listing tags badges look  */
-.new-listing-badge,
+.new-listing-badge, 
 .verified-tag {
-    background-color: #5cb85c; /*Forcing it to be green */
+    background-color: #5cb85c;  /*Forcing it to be green */
     color: white;
     padding: 5px 10px;
     border-radius: 4px;
@@ -352,7 +352,7 @@ footer a:hover {
     border-radius: 4px;
     font-size: 0.8rem;
     z-index: 10;
-    margin-left: auto; /* push to right */
+    margin-left: auto;   /* push to right */
 }
 
 /* ==========================================================================
@@ -641,10 +641,10 @@ label {
         font-size: 0.6rem;
     }
 
-    /* Smaller filter sidebar on small screens */
+     /* Smaller filter sidebar on small screens */
     .filter-sidebar {
         padding: 10px;
-        max-width: 100%; /* Allow sidebar to take full width on smaller screens */
+        max-width: 100%;  /* Allow sidebar to take full width on smaller screens */
     }
 
     .filter-sidebar h4 {
@@ -689,12 +689,12 @@ label {
     }
 
     .admin-dashboard form[action="{{ url_for('admin.search') }}"] button {
-        width: 100%;
+          width: 100%;
     }
 
-    .car-grid {
-        grid-template-columns: 1fr; /* One column layout for phones */
-    }
+     .car-grid {
+         grid-template-columns: 1fr; /* One column layout for phones */
+     }
 }
 
 @media (min-width: 1200px) {
@@ -723,7 +723,7 @@ label {
 }
 
 .image-slider img {
-    width: 100%; /* Corrected to cover full width */
+    width: auto;
     height: 100%;
     object-fit: cover;
     display: block;
@@ -744,7 +744,7 @@ label {
 }
 
 /*verified and just listing tags badges look  */
-.new-listing-badge,
+.new-listing-badge, 
 .verified-tag {
     background-color: #5cb85c;
     color: white;
@@ -763,7 +763,7 @@ label {
     border-radius: 4px;
     font-size: 0.8rem;
     z-index: 10;
-    margin-left: auto; /* push to right */
+    margin-left: auto;   /* push to right */
 }
 
 /* Dashboard Specific CSS*/
@@ -830,8 +830,7 @@ label {
     margin-top: 10px;
 }
 
-.dashboard-table th,
-.dashboard-table td {
+.dashboard-table th, .dashboard-table td {
     border: 1px solid #dee2e6;
     padding: 8px;
     text-align: left;
@@ -860,113 +859,5 @@ label {
     .dashboard-section li {
         font-size: 0.9rem;
         padding: 6px 10px;
-    }
-}
-
-/* Car Card Specific Styling */
-.car-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.2s;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 400px;  /* Adjusted for a bit more space */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
-}
-
-.car-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.car-details {
-    padding: 15px;
-}
-
-.car-title {
-    font-size: 1.3rem; /* Slightly larger title */
-    margin-bottom: 5px;
-    color: #333;
-    font-weight: 600; /* Semi-bold title */
-}
-
-.car-price {
-    font-size: 1.2rem; /* Slightly larger price */
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #e74c3c;
-}
-
-.car-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-size: 0.9rem;
-    color: #555;  /* Slightly darker info */
-}
-
-.car-info-item {
-    font-size: 0.9rem;
-    color: #777;
-}
-
-.view-details {
-    display: block;
-    text-align: center;
-    background-color: #3498db; /* More vibrant button color */
-    color: white;
-    padding: 10px 15px; /* Slightly larger button */
-    border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.2s;
-    font-weight: 500;  /* Semi-bold button text */
-}
-
-.view-details:hover {
-    background-color: #2980b9;
-}
-
-/* Additional Car Card tweaks */
-.car-card .car-details {
-    flex-grow: 1; /*  Ensure car details take up remaining space */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Distribute content evenly */
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
-    .car-grid {
-        grid-template-columns: 1fr; /* Single column on smaller screens */
-    }
-
-    .car-card {
-        min-height: 350px; /* Adjust min-height for smaller screens */
-    }
-
-    .car-title {
-        font-size: 1.1rem;
-    }
-
-    .car-price {
-        font-size: 1rem;
-    }
-
-    .car-info {
-        font-size: 0.8rem;
-    }
-
-    .view-details {
-        font-size: 0.9rem;
-        padding: 8px 12px;
-    }
-
-     /*  Adjust grid gap and padding on smaller screens */
-    .car-grid {
-        gap: 10px;
-        padding: 10px;
     }
 }
