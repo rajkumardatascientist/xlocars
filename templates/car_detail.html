@@ -44,6 +44,7 @@
             text-align: center; /* Center the icon within its width */
         }
 
+
         .interested-section {
             padding: 20px;
             border: 1px solid #ddd;
@@ -110,6 +111,7 @@
             background-color: #c0392b;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
+
     </style>
 {% endblock %}
 
@@ -124,7 +126,7 @@
                         {% if car.images %}
                             {% for image in car.images %}
                                 <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                    <img src="{{ url_for('static', filename='images/' + image.url) }}"
+                                    <img src="{{ image.url }}"
                                          class="d-block w-100" alt="Car Image">
                                 </div>
                             {% endfor %}
@@ -237,6 +239,7 @@
                         <a href="{{ url_for('cars.request_appointment', car_id=car.id) }}"
                            class="btn btn-primary mt-3"><i class="far fa-calendar-check"></i> Request Appointment</a>
                     {% endif %}
+
                 </div>
             </div>
         </div>
@@ -244,4 +247,5 @@
 {% endblock %}
 
 {% block scripts %}
+
 {% endblock %}
