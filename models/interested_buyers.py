@@ -2,6 +2,7 @@
 from extensions import db
 from sqlalchemy import Column, Integer, ForeignKey
 
+
 class InterestedBuyers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
