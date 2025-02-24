@@ -322,6 +322,13 @@
                                 {#  Removed direct links to dashboard, relying on automatic redirect after login #}
                                 {# <a class="dropdown-item" href="{{ url_for('dashboard.buyer') }}">Buyer Dashboard</a> #}
                                 {# <a class="dropdown-item" href="{{ url_for('dashboard.seller') }}">Seller Dashboard</a> #}
+
+                                {% if current_user.role == 'buyer' %}
+                                    <a class="dropdown-item" href="{{ url_for('dashboard.buyer') }}">Buyer Dashboard</a>
+                                {% elif current_user.role == 'seller' %}
+                                    <a class="dropdown-item" href="{{ url_for('dashboard.seller') }}">Seller Dashboard</a>
+                                {% endif %}
+
                                 <a class="dropdown-item" href="{{ url_for('cars.show_wishlist') }}">Wishlist</a>
 
                                 {% if current_user.is_admin %}
