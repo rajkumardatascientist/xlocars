@@ -333,9 +333,9 @@ footer a:hover {
 }
 
 /*verified and just listing tags badges look  */
-.new-listing-badge, 
+.new-listing-badge,
 .verified-tag {
-    background-color: #5cb85c;  /*Forcing it to be green */
+    background-color: #5cb85c;
     color: white;
     padding: 5px 10px;
     border-radius: 4px;
@@ -352,7 +352,7 @@ footer a:hover {
     border-radius: 4px;
     font-size: 0.8rem;
     z-index: 10;
-    margin-left: auto;   /* push to right */
+    margin-left: auto; /* push to right */
 }
 
 /* ==========================================================================
@@ -608,6 +608,43 @@ label {
     background-color: #2980b9;
 }
 
+/*=========================
+        Car Actions Section
+ =========================*/
+.admin-dashboard .car-actions-section {
+    margin-top: 20px; /* Or adjust as needed for spacing */
+    border-top: 1px solid #eee; /* Add a subtle divider */
+    padding-top: 15px;
+}
+
+.admin-dashboard .car-actions-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.admin-dashboard .car-actions-section li {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.admin-dashboard .car-actions-section li:last-child {
+    border-bottom: none;
+}
+
+.admin-dashboard .car-actions-section .badge {
+    margin-right: 10px; /* Space between badge and buttons */
+}
+
+/* Adjust button styles to match existing ones (if needed) */
+.admin-dashboard .car-actions-section .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
 /* ==========================================================================
    Media Queries
    ========================================================================== */
@@ -641,7 +678,7 @@ label {
         font-size: 0.6rem;
     }
 
-     /* Smaller filter sidebar on small screens */
+    /* Smaller filter sidebar on small screens */
     .filter-sidebar {
         padding: 10px;
         max-width: 100%;  /* Allow sidebar to take full width on smaller screens */
@@ -689,29 +726,26 @@ label {
     }
 
     .admin-dashboard form[action="{{ url_for('admin.search') }}"] button {
-          width: 100%;
+        width: 100%;
     }
+
+     /* Smaller screen Car actions  */
+        .admin-dashboard .car-actions-section li {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .admin-dashboard .car-actions-section .badge {
+          margin-bottom: 5px;
+        }
+
+         .admin-dashboard .car-actions-section .btn {
+          margin-top: 5px;
+        }
 
      .car-grid {
          grid-template-columns: 1fr; /* One column layout for phones */
      }
-}
-
-@media (min-width: 1200px) {
-    .car-grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 15px;
-        padding: 15px;
-    }
-
-    .car-card {
-        width: 280px;
-        font-size: 0.9rem;
-    }
-
-    .image-slider {
-        height: 160px; /* Adjust for larger screens */
-    }
 }
 
 /* Image Tag */
@@ -744,7 +778,7 @@ label {
 }
 
 /*verified and just listing tags badges look  */
-.new-listing-badge, 
+.new-listing-badge,
 .verified-tag {
     background-color: #5cb85c;
     color: white;
@@ -763,7 +797,7 @@ label {
     border-radius: 4px;
     font-size: 0.8rem;
     z-index: 10;
-    margin-left: auto;   /* push to right */
+    margin-left: auto; /* push to right */
 }
 
 /* Dashboard Specific CSS*/
