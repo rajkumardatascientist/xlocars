@@ -1,3 +1,4 @@
+{# templates/admin_dashboard.html #}
 {% extends "base.html" %}
 {% block content %}
     <div class="container admin-dashboard">
@@ -9,8 +10,8 @@
                 {% for car in pending_cars %}
                     <li>
                         {{ car.title }} -
-                        <a href="{{ url_for('admin.approve_car', car_id=car.id) }}">Approve</a> |
-                        <a href="{{ url_for('admin.reject_car', car_id=car.id) }}">Reject</a>
+                        <a href="{{ url_for('admin.approve_car', car_id=car.id) }}" class="btn btn-success btn-sm">Approve</a> |
+                        <a href="{{ url_for('admin.reject_car', car_id=car.id) }}" class="btn btn-danger btn-sm">Reject</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -24,8 +25,8 @@
                 {% for payment in featured_payments %}
                     <li>
                         Payment ID: {{ payment.id }} - Car ID: {{ payment.car_id }} - Seller ID: {{ payment.seller_id }} -
-                        <a href="{{ url_for('admin.activate_feature_payment', payment_id=payment.id) }}">Activate</a> |
-                        <a href="{{ url_for('admin.deactivate_feature_payment', payment_id=payment.id) }}">Deactivate</a>
+                        <a href="{{ url_for('admin.activate_feature_payment', payment_id=payment.id) }}" class="btn btn-success btn-sm">Activate</a> |
+                        <a href="{{ url_for('admin.deactivate_feature_payment', payment_id=payment.id) }}" class="btn btn-danger btn-sm">Deactivate</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -40,8 +41,8 @@
                     <li>
                         Payment ID: {{ payment.id }} - Car ID: {{ payment.car_id }} - Buyer ID: {{ payment.buyer_id }}
                         -
-                        <a href="{{ url_for('admin.activate_buyer_payment', payment_id=payment.id) }}">Activate</a> |
-                        <a href="{{ url_for('admin.deactivate_buyer_payment', payment_id=payment.id) }}">Deactivate</a>
+                        <a href="{{ url_for('admin.activate_buyer_payment', payment_id=payment.id) }}" class="btn btn-success btn-sm">Activate</a> |
+                        <a href="{{ url_for('admin.deactivate_buyer_payment', payment_id=payment.id) }}" class="btn btn-danger btn-sm">Deactivate</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -68,10 +69,35 @@
             <p>No appointments pending approval.</p>
         {% endif %}
 
+        <h2><i class="fas fa-car"></i> Car Actions</h2>
+        {% if pending_cars %}
+            <ul>
+                {% for car in pending_cars %}
+                    <li>
+                        <b>{{ car.title }}</b> -
+                        {% if car.is_sold %}
+                            <span class="badge badge-success">Sold</span>
+                            <a href="{{ url_for('admin.mark_car_available', car_id=car.id) }}"
+                               class="btn btn-warning btn-sm">
+                                Mark Available
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('admin.mark_car_sold', car_id=car.id) }}"
+                               class="btn btn-success btn-sm">
+                                Mark Sold
+                            </a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No cars to perform action on .</p>
+        {% endif %}
+
         <h2><i class="fas fa-search"></i> Search</h2>
         <form action="{{ url_for('admin.search') }}" method="GET">
             <input type="text" name="query" placeholder="Search users or cars" value="{{ search_query or '' }}">
-            <button type="submit">Search</button>
+            <button type="submit" class="btn btn-primary">Search</button>
         </form>
 
         {% if results %}
