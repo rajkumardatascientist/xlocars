@@ -157,7 +157,7 @@ def listings():
     if max_year:
         try:
             max_year = int(max_year)
-            cars_query = cars_query.filter(Car.year <= max_year)
+            cars_query = cars_query.filter(Car.year >= max_year)
         except ValueError:
             flash("Invalid Max Year", "error")
 
@@ -314,6 +314,12 @@ def save_picture(form_image):
 def car(car_id):
     """Displays a specific car's details."""
     car = Car.query.options(joinedload(Car.seller), joinedload(Car.images)).get_or_404(car_id)
+
+    #Only display to public when these are meet!
+    if car.is_sold or not car.is_active or not car.is_approved:
+        flash("This car listing is no longer available.", "info")
+        return redirect(url_for('cars.home'))
+
     report_form = ReportForm()
     buyer_can_view_contact = False
     wishlist_status = False
@@ -344,6 +350,11 @@ def car(car_id):
 def interested(car_id):
     """Handles buyer interest in a car."""
     car = Car.query.get_or_404(car_id)
+
+    if car.is_sold or not car.is_active or not car.is_approved:
+        flash("This car listing is no longer available.", "info")
+        return redirect(url_for('cars.home'))
+
     form = InterestedForm(request.form)
 
     if form.validate_on_submit():
@@ -383,6 +394,10 @@ def add_to_wishlist(car_id):
     """Adds a car to the user's wishlist."""
     car = Car.query.get_or_404(car_id)
 
+    if car.is_sold or not car.is_active or not car.is_approved:
+        flash("This car listing is no longer available.", "info")
+        return redirect(url_for('cars.home'))
+
     if is_car_in_wishlist(current_user.id, car_id):
         flash('Car is already in your wishlist.', 'info')
     else:
@@ -404,6 +419,11 @@ def add_to_wishlist(car_id):
 def remove_from_wishlist(car_id):
     """Removes a car from the user's wishlist."""
     car = Car.query.get_or_404(car_id)
+
+    if car.is_sold or not car.is_active or not car.is_approved:
+        flash("This car listing is no longer available.", "info")
+        return redirect(url_for('cars.home'))
+
     with app.app_context():
         wishlist_item = Wishlist.query.filter_by(user_id=current_user.id,
                                                    car_id=car_id).first()
@@ -443,6 +463,11 @@ def about():
 def request_appointment(car_id):
     """Handles appointment requests for a car."""
     car = Car.query.get_or_404(car_id)
+
+    if car.is_sold or not car.is_active or not car.is_approved:
+        flash("This car listing is no longer available.", "info")
+        return redirect(url_for('cars.home'))
+
     form = AppointmentForm()
 
     if form.validate_on_submit():
@@ -475,6 +500,11 @@ def request_appointment(car_id):
 def report_ad(car_id):
     """Handles reporting of car ads."""
     car = Car.query.get_or_404(car_id)
+
+    if car.is_sold or not car.is_active or not car.is_approved:
+        flash("This car listing is no longer available.", "info")
+        return redirect(url_for('cars.home'))
+
     form = ReportForm()
 
     if form.validate_on_submit():
@@ -492,6 +522,8 @@ def report_ad(car_id):
             db.session.rollback()
             flash(f"Error Reporting Ad:{e}", "error")
             return render_template("error.html", error=str(e))
+
+    return render_template('report_ad.html', form=form, car=car)
 
 
 @cars_bp.route("/delete_car/<int:car_id>", methods=['POST'])
@@ -595,7 +627,6 @@ def update_car(car_id):
         car.body_type = form.body_type.data
         car.fuel_type = form.fuel_type.data
         car.engine_type = form.engine_type.data
-        car.engine_capacity = form.engine_capacity.data
         car.seller_phone = form.seller_phone.data
 
         # Image Handling
