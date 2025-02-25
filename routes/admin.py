@@ -1,5 +1,4 @@
 # routes/admin.py
-
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from models import Car, FeaturedPayments, BuyerPayments, User, Appointment, ReportedAds  # Add ReportedAds import
 from app import db
@@ -8,6 +7,8 @@ from sqlalchemy import or_  # Import the or_ function
 # Import the ReportForm
 from forms import ReportForm  # Make sure this form is correctly defined
 from models.payment import PaymentStatus  # Import PaymentStatus ENUM
+# Import the edit user form for admin edit action
+from forms.user_forms import EditUserForm  # Make sure this form is correctly defined
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -20,25 +21,30 @@ def dashboard():
         return redirect(url_for('cars.home'))
 
     pending_cars = Car.query.filter_by(is_approved=False).all()
+    cars = Car.query.all()  # Fetch all cars
 
     #  Choose the correct filter for featured_payments based on what "unsuccessful" means
     # Option 1:  Only PAYMENT_FAILED is considered unsuccessful
     # featured_payments = FeaturedPayments.query.filter(FeaturedPayments.payment_status == PaymentStatus.PAYMENT_FAILED).all()
 
     # Option 2: PENDING_PAYMENT, PAYMENT_FAILED, and PAYMENT_REFUNDED are considered unsuccessful
-    featured_payments = FeaturedPayments.query.filter(FeaturedPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all()
+    featured_payments = FeaturedPayments.query.filter(
+        FeaturedPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED,
+                                              PaymentStatus.PAYMENT_REFUNDED])).all()
 
     #  Choose the correct filter for buyer_payments based on what "unsuccessful" means
     # Option 1:  Only PAYMENT_FAILED is considered unsuccessful
     # buyer_payments = BuyerPayments.query.filter(BuyerPayments.payment_status == PaymentStatus.PAYMENT_FAILED).all()
 
     # Option 2: PENDING_PAYMENT, PAYMENT_FAILED, and PAYMENT_REFUNDED are considered unsuccessful
-    buyer_payments = BuyerPayments.query.filter(BuyerPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all()
+    buyer_payments = BuyerPayments.query.filter(
+        BuyerPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED,
+                                              PaymentStatus.PAYMENT_REFUNDED])).all()
 
-    appointments = Appointment.query.filter(Appointment.status=="pending").all()
+    appointments = Appointment.query.filter(Appointment.status == "pending").all()
     reports = ReportedAds.query.all()  # Fetch all reports
     return render_template('admin_dashboard.html', pending_cars=pending_cars, featured_payments=featured_payments,
-                           buyer_payments=buyer_payments, appointments=appointments, reports=reports)
+                           buyer_payments=buyer_payments, appointments=appointments, reports=reports, cars=cars)
 
 
 @admin_bp.route("/approve_car/<int:car_id>")
@@ -110,7 +116,7 @@ def deactivate_feature_payment(payment_id):
         flash("You don't have permission to access this page.", "danger")
         return redirect(url_for('cars.home'))
     payment = FeaturedPayments.query.get_or_404(payment_id)
-    payment.payment_status = PaymentStatus.PAYMENT_FAILED  #  or PENDING_PAYMENT or whatever is correct  - Use ENUM
+    payment.payment_status = PaymentStatus.PAYMENT_FAILED  # or PENDING_PAYMENT or whatever is correct  - Use ENUM
     payment.is_featured = False
     car = Car.query.get_or_404(payment.car_id)
     car.is_featured = False
@@ -132,6 +138,7 @@ def deactivate_buyer_payment(payment_id):
     flash(f"Buyer Payment ID '{payment.id}' deactivated!", 'success')
     return redirect(url_for('admin.dashboard'))
 
+
 @admin_bp.route("/approve_appointment/<int:appointment_id>")
 @login_required
 def approve_appointment(appointment_id):
@@ -139,10 +146,11 @@ def approve_appointment(appointment_id):
         flash("You don't have permission to access this page.", "danger")
         return redirect(url_for('cars.home'))
     appointment = Appointment.query.get_or_404(appointment_id)
-    appointment.status = "Confirmed" #Update here enum name
+    appointment.status = "Confirmed"  # Update here enum name
     db.session.commit()
     flash(f"Appointment ID '{appointment.id}' approved!", 'success')
     return redirect(url_for('admin.dashboard'))
+
 
 @admin_bp.route("/reject_appointment/<int:appointment_id>")
 @login_required
@@ -151,10 +159,11 @@ def reject_appointment(appointment_id):
         flash("You don't have permission to access this page.", "danger")
         return redirect(url_for('cars.home'))
     appointment = Appointment.query.get_or_404(appointment_id)
-    appointment.status = "Rejected" #Update here enum name
+    appointment.status = "Rejected"  # Update here enum name
     db.session.commit()
     flash(f"Appointment ID '{appointment.id}' Rejected!", 'success')
     return redirect(url_for('admin.dashboard'))
+
 
 @admin_bp.route("/search", methods=['GET'])
 @login_required
@@ -180,11 +189,19 @@ def search():
 
     return render_template('admin_dashboard.html',
                            pending_cars=Car.query.filter_by(is_approved=False).all(),
-                           featured_payments=FeaturedPayments.query.filter(FeaturedPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all(), # Choose the right filter
-                           buyer_payments=BuyerPayments.query.filter(BuyerPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all(), # Choose the right filter
-                           appointments=Appointment.query.filter(Appointment.status=="pending").all(),
+                           featured_payments=FeaturedPayments.query.filter(
+                               FeaturedPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT,
+                                                                    PaymentStatus.PAYMENT_FAILED,
+                                                                    PaymentStatus.PAYMENT_REFUNDED])).all(),  # Choose the right filter
+                           buyer_payments=BuyerPayments.query.filter(
+                               BuyerPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT,
+                                                                    PaymentStatus.PAYMENT_FAILED,
+                                                                    PaymentStatus.PAYMENT_REFUNDED])).all(),  # Choose the right filter
+                           appointments=Appointment.query.filter(Appointment.status == "pending").all(),
                            results=results,
-                           search_query=search_query, reports=ReportedAds.query.all())
+                           search_query=search_query, reports=ReportedAds.query.all(),
+                           cars=Car.query.all())  # Pass all cars
+
 
 # User Management
 @admin_bp.route("/users")
@@ -196,6 +213,72 @@ def list_users():
 
     users = User.query.all()
     return render_template('admin/list_users.html', users=users)
+
+
+@admin_bp.route("/users/edit/<int:user_id>", methods=['GET', 'POST'])
+@login_required
+def edit_user(user_id):
+    if not current_user.is_admin:
+        flash("You don't have permission to access this page.", "danger")
+        return redirect(url_for('cars.home'))
+
+    user = User.query.get_or_404(user_id)
+    form = EditUserForm(obj=user, user=user)  # Validate in the edit user form.
+
+    if form.validate_on_submit():
+        user.username = form.username.data
+        user.email = form.email.data
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
+        user.phone_number = form.phone_number.data
+        user.role = form.role.data  # set for the new changes for the user
+        user.is_banned = form.is_banned.data  # Update banned status
+
+        try:
+            db.session.commit()
+            flash(f"User '{user.username}' updated.", 'success')
+            return redirect(url_for('admin.list_users'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error updating user: {e}", 'danger')
+
+    return render_template('admin/edit_user.html', form=form, user=user)
+
+
+@admin_bp.route("/users/ban/<int:user_id>")
+@login_required
+def ban_user(user_id):
+    if not current_user.is_admin:
+        flash("You don't have permission to access this page.", "danger")
+        return redirect(url_for('cars.home'))
+
+    user = User.query.get_or_404(user_id)
+    user.is_banned = True
+    try:
+        db.session.commit()
+        flash(f"User '{user.username}' banned.", 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error banning user: {e}", 'danger')
+    return redirect(url_for('admin.list_users'))
+
+
+@admin_bp.route("/users/unban/<int:user_id>")
+@login_required
+def unban_user(user_id):
+    if not current_user.is_admin:
+        flash("You don't have permission to access this page.", "danger")
+        return redirect(url_for('cars.home'))
+
+    user = User.query.get_or_404(user_id)
+    user.is_banned = False
+    try:
+        db.session.commit()
+        flash(f"User '{user.username}' unbanned.", 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error unbanning user: {e}", 'danger')
+    return redirect(url_for('admin.list_users'))
 
 
 @admin_bp.route("/users/deactivate/<int:user_id>")
@@ -235,6 +318,44 @@ def delete_user(user_id):
         flash(f"Error deleting user: {e}", 'danger')
     return redirect(url_for('admin.list_users'))
 
+
+# Car Actions
+@admin_bp.route("/cars/mark_sold/<int:car_id>")
+@login_required
+def mark_car_sold(car_id):
+    if not current_user.is_admin:
+        flash("You don't have permission to access this page.", "danger")
+        return redirect(url_for('cars.home'))
+
+    car = Car.query.get_or_404(car_id)
+    car.is_sold = True
+    try:
+        db.session.commit()
+        flash(f"Car '{car.title}' marked as sold.", 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error marking car as sold: {e}", 'danger')
+    return redirect(url_for('admin.dashboard'))
+
+
+@admin_bp.route("/cars/mark_available/<int:car_id>")
+@login_required
+def mark_car_available(car_id):
+    if not current_user.is_admin:
+        flash("You don't have permission to access this page.", "danger")
+        return redirect(url_for('cars.home'))
+
+    car = Car.query.get_or_404(car_id)
+    car.is_sold = False
+    try:
+        db.session.commit()
+        flash(f"Car '{car.title}' marked as available.", 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error marking car as available: {e}", 'danger')
+    return redirect(url_for('admin.dashboard'))
+
+
 # Report Management
 @admin_bp.route("/reports")
 @login_required
@@ -245,6 +366,7 @@ def list_reports():
 
     reports = ReportedAds.query.all()
     return render_template('admin/list_reports.html', reports=reports)
+
 
 @admin_bp.route("/reports/delete/<int:report_id>")
 @login_required
