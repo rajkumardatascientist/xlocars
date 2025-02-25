@@ -2,7 +2,7 @@
 from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
-from extensions import db
+from extensions import db  
 import enum
 import sqlalchemy as sa
 from sqlalchemy.types import TypeDecorator
@@ -44,8 +44,8 @@ class User(db.Model, UserMixin):
     first_name = Column(String(50))
     last_name = Column(String(50))
     phone_number = Column(String(20))
-    role = Column(UserRoleType(), default=UserRole.BUYER)
-    is_active = Column(Boolean, default=True)
+    role = Column(UserRoleType(), default=UserRole.BUYER) 
+    is_active = Column(Boolean, default=True)  
     is_banned = Column(Boolean, default=False) # Add is_banned field
 
     # Relationships
