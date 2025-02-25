@@ -179,7 +179,7 @@ def listings():
     if max_km:
         try:
             max_km = int(max_km)
-            cars_query = cars_query.filter(Car.kilometers <= max_km)
+            cars_query = cars_query.filter(Car.kilometers >= max_km)
         except ValueError:
             flash("Invalid Max KM", "error")
 
