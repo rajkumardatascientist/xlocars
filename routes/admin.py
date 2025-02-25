@@ -6,6 +6,7 @@ from sqlalchemy import or_  # Import the or_ function
 # Import the ReportForm
 from forms import ReportForm  # Make sure this form is correctly defined
 from models.payment import PaymentStatus  # Import PaymentStatus ENUM
+from models.appointment import AppointmentStatus #Import the AppointmentStatus Enum
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -33,7 +34,7 @@ def dashboard():
     # Option 2: PENDING_PAYMENT, PAYMENT_FAILED, and PAYMENT_REFUNDED are considered unsuccessful
     buyer_payments = BuyerPayments.query.filter(BuyerPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all()
 
-    appointments = Appointment.query.filter_by(status="Pending").all()
+    appointments = Appointment.query.filter_by(status=AppointmentStatus.PENDING).all()
     reports = ReportedAds.query.all()  # Fetch all reports
     return render_template('admin_dashboard.html', pending_cars=pending_cars, featured_payments=featured_payments,
                            buyer_payments=buyer_payments, appointments=appointments, reports=reports)
@@ -131,7 +132,7 @@ def approve_appointment(appointment_id):
         flash("You don't have permission to access this page.", "danger")
         return redirect(url_for('cars.home'))
     appointment = Appointment.query.get_or_404(appointment_id)
-    appointment.status = "Confirmed"
+    appointment.status = AppointmentStatus.CONFIRMED #Corrected
     db.session.commit()
     flash(f"Appointment ID '{appointment.id}' approved!", 'success')
     return redirect(url_for('admin.dashboard'))
@@ -143,7 +144,7 @@ def reject_appointment(appointment_id):
         flash("You don't have permission to access this page.", "danger")
         return redirect(url_for('cars.home'))
     appointment = Appointment.query.get_or_404(appointment_id)
-    appointment.status = "Rejected"
+    appointment.status = AppointmentStatus.REJECTED #Corrected
     db.session.commit()
     flash(f"Appointment ID '{appointment.id}' Rejected!", 'success')
     return redirect(url_for('admin.dashboard'))
@@ -174,7 +175,7 @@ def search():
                            pending_cars=Car.query.filter_by(is_approved=False).all(),
                            featured_payments=FeaturedPayments.query.filter(FeaturedPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all(), # Choose the right filter
                            buyer_payments=BuyerPayments.query.filter(BuyerPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all(), # Choose the right filter
-                           appointments=Appointment.query.filter_by(status="Pending").all(),
+                           appointments=Appointment.query.filter_by(status=AppointmentStatus.PENDING).all(),
                            results=results,
                            search_query=search_query, reports=ReportedAds.query.all())
 
