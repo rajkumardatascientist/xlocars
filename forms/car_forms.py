@@ -5,6 +5,7 @@ from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, IntegerField, FloatField, TextAreaField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, Optional
 from datetime import datetime
+from locations import indian_states_districts  # Import at the top
 
 
 class CarForm(FlaskForm):
@@ -31,14 +32,17 @@ class CarForm(FlaskForm):
     no_of_owners = IntegerField(
         "Number of Previous Owners", validators=[DataRequired(), NumberRange(min=1, max=10)]
     )
-    state = SelectField("State", choices=[], validators=[DataRequired()])
+    state = SelectField("State", choices=[(state, state) for state in indian_states_districts.keys()], validators=[DataRequired()])
     district = SelectField("District", choices=[], validators=[DataRequired()])
-    body_type = StringField("Body Type", validators=[Optional()])
+    body_type = SelectField("Body Type", choices=[
+        ('Sedan', 'Sedan'), ('SUV', 'SUV'), ('Hatchback', 'Hatchback'),
+        ('Convertible', 'Convertible'), ('Coupe', 'Coupe'), ('Van', 'Van'),
+        ('Truck', 'Truck'), ('Wagon', 'Wagon'), ('Other', 'Other')], validators=[Optional()])  # Added Body Type
     fuel_type = SelectField(
         "Fuel Type",
         choices=[("Petrol", "Petrol"), ("Diesel", "Diesel"), ("CNG", "CNG"), ("Electric", "Electric"), ("Hybrid", "Hybrid")],
         validators=[Optional()],
-    )
+    )  # Added Fuel Type
     engine_type = StringField("Engine Type", validators=[Optional()])
     engine_capacity = FloatField("Engine Capacity (CC)", validators=[Optional()])
     exterior_color = StringField("Exterior Color", validators=[Optional()])
@@ -46,7 +50,7 @@ class CarForm(FlaskForm):
     vin = StringField("VIN", validators=[Optional(), Length(max=17)])
     license_plate = StringField("License Plate", validators=[Optional()])
     registration_expiry = StringField("Registration Expiry", validators=[Optional()])
-
+    seller_phone = StringField("Seller Phone Number", validators=[Optional(), Length(max=20)])  #Added Phone Number
 
     submit = SubmitField("Post Ad")
 
@@ -54,8 +58,6 @@ class CarForm(FlaskForm):
         super(CarForm, self).__init__(*args, **kwargs)
         # Populate state choices.  This needs to happen *after* the form is instantiated
         try:
-            from locations import indian_states_districts
-
             self.state.choices = [(state, state) for state in indian_states_districts.keys()]  # State selection
             self.district.choices = []
         except ImportError:
