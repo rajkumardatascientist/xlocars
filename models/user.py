@@ -1,3 +1,4 @@
+# models/user.py
 from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, Boolean, Enum
 from sqlalchemy.orm import relationship
@@ -44,6 +45,7 @@ class User(db.Model, UserMixin):
     last_name = Column(String(50))
     phone_number = Column(String(20))
     role = Column(UserRoleType(), default=UserRole.BUYER)  # Use UserRoleType
+    is_active = Column(Boolean, default=True)  #ADD THIS LINE
     # Relationships
     cars = relationship('Car', backref='seller', lazy=True)
     interested_buyers = relationship('InterestedBuyers', backref='buyer', lazy=True)
