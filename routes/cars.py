@@ -1,4 +1,4 @@
-# cars.py (Updated)
+# cars.py (Modified)
 
 import os
 from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, session
@@ -20,6 +20,7 @@ from sqlalchemy import or_
 from forms.appointment_forms import AppointmentForm
 from models.payment import PaymentStatus, BuyerPayments
 import requests  # For Imgur upload
+
 
 try:
     from locations import indian_states_districts
@@ -122,11 +123,11 @@ def listings():
 
     # 1. Location Filters:
     state = request.args.get('state')
-    district = request.args.get('district')
+    city = request.args.get('city')
     if state:
         cars_query = cars_query.filter(Car.state == state)
-    if district:
-        cars_query = cars_query.filter(Car.district == district)
+    if city:
+        cars_query = cars_query.filter(Car.district.ilike(f"%{city}%"))
 
     # 2. Price Filters:
     min_price = request.args.get('min_price')
@@ -242,6 +243,7 @@ def new_car():
             fuel_type=form.fuel_type.data,
             engine_type=form.engine_type.data,
             engine_capacity=form.engine_capacity.data,
+            seller_phone = form.seller_phone.data
         )
 
         with app.app_context():
@@ -517,7 +519,7 @@ def delete_car(car_id):
         flash(f"Error deleting listing: {e}", "error")
         return render_template("error.html", error=str(e))
 
-    return redirect(url_for('users.seller_dashboard'))  # Redirect to seller dashboard
+    return redirect(url_for('dashboard.seller'))  # Redirect to seller dashboard
 
 
 @cars_bp.route("/pause_car/<int:car_id>", methods=['POST'])
@@ -540,7 +542,7 @@ def pause_car(car_id):
         flash(f"Error pausing listing: {e}", "error")
         return render_template("error.html", error=str(e))
 
-    return redirect(url_for('users.seller_dashboard'))  # Redirect to seller dashboard
+    return redirect(url_for('dashboard.seller'))  # Redirect to seller dashboard
 
 @cars_bp.route("/unpause_car/<int:car_id>", methods=['POST'])
 @login_required
@@ -562,4 +564,79 @@ def unpause_car(car_id):
         flash(f"Error unpausing listing: {e}", "error")
         return render_template("error.html", error=str(e))
 
-    return redirect(url_for('users.seller_dashboard'))  # Redirect to seller dashboard
+    return redirect(url_for('dashboard.seller'))  # Redirect to seller dashboard
+
+@cars_bp.route("/car/<int:car_id>/update", methods=['GET', 'POST'])
+@login_required
+def update_car(car_id):
+    """Updates a specific car's details."""
+    car = Car.query.get_or_404(car_id)
+
+    if car.seller_id != current_user.id:
+        flash("You are not authorized to update this listing.", "error")
+        return redirect(url_for('cars.car', car_id=car_id))
+
+    form = CarForm(obj=car)  # Populate form with car data
+
+    if request.method == 'POST':
+        state = request.form.get('state')
+        if state and state in indian_states_districts:
+            form.district.choices = [(d, d) for d in indian_states_districts[state]]
+        else:
+            form.district.choices = []
+
+    if form.validate_on_submit():
+        # Update car attributes
+        car.title = form.title.data
+        car.description = form.description.data
+        car.price = form.price.data
+        car.year = form.year.data
+        car.make = form.make.data
+        car.model = form.model.data
+        car.transmission = form.transmission.data
+        car.state = form.state.data
+        car.district = form.district.data
+        car.kilometers = form.kilometers.data
+        car.no_of_owners = form.no_of_owners.data
+        car.body_type = form.body_type.data
+        car.fuel_type = form.fuel_type.data
+        car.engine_type = form.engine_type.data
+        car.engine_capacity = form.engine_capacity.data
+        car.seller_phone = form.seller_phone.data
+
+        # Image Handling
+        for image in request.files.getlist(form.images.name):
+            if image and allowed_file(image.filename):
+                try:
+                    image_url = upload_to_imgur(image)  # Or save_picture
+                    if image_url:
+                        image_db = Image(url=image_url, car_id=car.id)
+                        db.session.add(image_db)
+                    else:
+                        flash("Imgur upload failed for one of the images.", "error")
+                        return render_template("error.html", error="Imgur upload failed.")
+                except Exception as image_err:
+                    db.session.rollback()
+                    logging.error(f"Error saving image: {image_err}")
+                    flash(f"Error saving image: {image_err}", "error")
+                    return render_template("error.html", error=str(image_err))
+
+        try:
+            db.session.commit()
+            flash('Your car ad has been updated!', 'success')
+            return redirect(url_for('cars.car', car_id=car.id))
+        except Exception as e:
+            db.session.rollback()
+            logging.exception("Error updating car ad: %s", e)
+            flash(f'Error updating car ad: {e}', 'error')
+            return render_template("error.html", error=str(e))
+
+    # Pre-populate state and district choices for GET requests
+    form.state.choices = [(state, state) for state in indian_states_districts.keys()]
+    if car.state in indian_states_districts:
+        form.district.choices = [(d, d) for d in indian_states_districts[car.state]]
+
+    return render_template('create_car.html',
+                           title='Update Car',
+                           form=form,
+                           legend='Update Car Ad', car=car)
