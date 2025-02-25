@@ -71,27 +71,33 @@
 
         <h2><i class="fas fa-car"></i> Car Actions</h2>
         {% if pending_cars %}
-            <ul>
+            <ul class="car-actions-list">
                 {% for car in pending_cars %}
-                    <li>
-                        <b>{{ car.title }}</b> -
-                        {% if car.is_sold %}
-                            <span class="badge badge-success">Sold</span>
-                            <a href="{{ url_for('admin.mark_car_available', car_id=car.id) }}"
-                               class="btn btn-warning btn-sm">
-                                Mark Available
-                            </a>
-                        {% else %}
-                            <a href="{{ url_for('admin.mark_car_sold', car_id=car.id) }}"
-                               class="btn btn-success btn-sm">
-                                Mark Sold
-                            </a>
-                        {% endif %}
-                    </li>
+                <li class="car-actions-item">
+                     <div class="car-image-wrapper">
+                      {% if car.is_sold %}
+                         <span class="sold-overlay">Sold</span>
+                         {% endif %}
+                        <img src="{% if car.images and car.images[0] %}{{ car.images[0].url }}{% else %}https://via.placeholder.com/150{% endif %}" alt="{{ car.title }}" class="car-image">
+                     </div>
+                    <b>{{ car.title }}</b> -
+                    {% if car.is_sold %}
+                        <span class="badge badge-success">Sold</span>
+                        <a href="{{ url_for('admin.mark_car_available', car_id=car.id) }}"
+                           class="btn btn-warning btn-sm">
+                            Mark Available
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('admin.mark_car_sold', car_id=car.id) }}"
+                           class="btn btn-success btn-sm">
+                            Mark Sold
+                        </a>
+                    {% endif %}
+                </li>
                 {% endfor %}
             </ul>
         {% else %}
-            <p>No cars to perform action on .</p>
+            <p>No cars to perform action on.</p>
         {% endif %}
 
         <h2><i class="fas fa-search"></i> Search</h2>
