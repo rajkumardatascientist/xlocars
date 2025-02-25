@@ -19,7 +19,7 @@ def dashboard():
         return redirect(url_for('cars.home'))
 
     pending_cars = Car.query.filter_by(is_approved=False).all()
-    cars = Car.query.all()
+    cars = Car.query.filter_by(is_active=True, is_sold = False).all()
 
     featured_payments = FeaturedPayments.query.filter(FeaturedPayments.payment_status.in_(
         [PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all()
@@ -175,7 +175,7 @@ def search():
 
     return render_template('admin_dashboard.html',
                            pending_cars=Car.query.filter_by(is_approved=False).all(),
-                           cars=Car.query.all(),
+                           cars=Car.query.filter_by(is_active=True, is_sold=False).all(),
                            featured_payments=FeaturedPayments.query.filter(FeaturedPayments.payment_status.in_(
                                [PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED,
                                 PaymentStatus.PAYMENT_REFUNDED])).all(),
