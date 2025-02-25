@@ -1,4 +1,4 @@
-# cars.py (Modified)
+# cars.py (Updated)
 
 import os
 from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, session
@@ -20,7 +20,6 @@ from sqlalchemy import or_
 from forms.appointment_forms import AppointmentForm
 from models.payment import PaymentStatus, BuyerPayments
 import requests  # For Imgur upload
-
 
 try:
     from locations import indian_states_districts
@@ -95,7 +94,7 @@ def home():
             if state:
                 cars_query = cars_query.filter_by(state=state)
             if district:
-                cars_query = cars_query.filter_by(city=district)
+                cars_query = cars_query.filter_by(district=district)
 
             cars = cars_query.all()
             featured_cars = Car.query.filter_by(is_featured=True).options(joinedload(Car.images)).limit(4).all()
@@ -123,11 +122,11 @@ def listings():
 
     # 1. Location Filters:
     state = request.args.get('state')
-    city = request.args.get('city')
+    district = request.args.get('district')
     if state:
         cars_query = cars_query.filter(Car.state == state)
-    if city:
-        cars_query = cars_query.filter(Car.city.ilike(f"%{city}%"))
+    if district:
+        cars_query = cars_query.filter(Car.district == district)
 
     # 2. Price Filters:
     min_price = request.args.get('min_price')
@@ -232,7 +231,7 @@ def new_car():
             model=form.model.data,
             transmission=form.transmission.data,
             state=form.state.data,
-            city=form.district.data,
+            district=form.district.data,
             seller=current_user,
             is_approved=False,
             kilometers=form.kilometers.data,
