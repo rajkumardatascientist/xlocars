@@ -40,7 +40,7 @@ class Car(db.Model):
     wishlist_entries = relationship('Wishlist', backref='car', lazy=True, cascade="all, delete-orphan")
     appointments = relationship('Appointment', lazy=True, cascade="all, delete-orphan")
     images = relationship("Image", backref="car", cascade="all, delete-orphan")  # Add the 'images' relationship
-    seller = relationship('User', backref='cars') #ADDED THIS LINE
+    seller = relationship('User')  #Removed backref
 
     def __repr__(self):
         return f'<Car {self.make} {self.model}>'
