@@ -11,7 +11,7 @@
 
                         <div class="form-group">
                             {{ form.title.label(class="form-control-label") }}
-                            {{ form.title(class="form-control form-control-lg", value=request.form.title if request.form.title else '') }}
+                            {{ form.title(class="form-control form-control-lg", value=form.title.data if form.title.data else car.title if car else '') }}
                             {% if form.title.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.title.errors %}
@@ -25,7 +25,7 @@
 
                         <div class="form-group">
                             {{ form.description.label(class="form-control-label") }}
-                            {{ form.description(class="form-control form-control-lg", rows="4") }}
+                            {{ form.description(class="form-control form-control-lg", rows="4", value=form.description.data if form.description.data else car.description if car else '') }}
                             {% if form.description.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.description.errors %}
@@ -39,7 +39,7 @@
 
                         <div class="form-group">
                             {{ form.price.label(class="form-control-label") }}
-                            {{ form.price(class="form-control form-control-lg") }}
+                            {{ form.price(class="form-control form-control-lg", value=form.price.data if form.price.data else car.price if car else '') }}
                             {% if form.price.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.price.errors %}
@@ -54,7 +54,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 {{ form.year.label(class="form-control-label") }}
-                                {{ form.year(class="form-control form-control-lg") }}
+                                {{ form.year(class="form-control form-control-lg", value=form.year.data if form.year.data else car.year if car else '') }}
                                 {% if form.year.errors %}
                                     <div class="invalid-feedback">
                                         {% for error in form.year.errors %}
@@ -68,7 +68,7 @@
 
                             <div class="form-group col-md-6">
                                 {{ form.make.label(class="form-control-label") }}
-                                {{ form.make(class="form-control form-control-lg") }}
+                                {{ form.make(class="form-control form-control-lg", value=form.make.data if form.make.data else car.make if car else '') }}
                                 {% if form.make.errors %}
                                     <div class="invalid-feedback">
                                         {% for error in form.make.errors %}
@@ -83,7 +83,7 @@
 
                         <div class="form-group">
                             {{ form.model.label(class="form-control-label") }}
-                            {{ form.model(class="form-control form-control-lg") }}
+                            {{ form.model(class="form-control form-control-lg", value=form.model.data if form.model.data else car.model if car else '') }}
                             {% if form.model.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.model.errors %}
@@ -97,7 +97,7 @@
 
                         <div class="form-group">
                             {{ form.transmission.label(class="form-control-label") }}
-                            {{ form.transmission(class="form-control form-control-lg") }}
+                            {{ form.transmission(class="form-control form-control-lg", value=form.transmission.data if form.transmission.data else car.transmission if car else '') }}
                             {% if form.transmission.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.transmission.errors %}
@@ -139,7 +139,7 @@
 
                           <div class="form-group">
                             {{ form.body_type.label(class="form-control-label") }}
-                            {{ form.body_type(class="form-control form-control-lg") }}
+                            {{ form.body_type(class="form-control form-control-lg", value=form.body_type.data if form.body_type.data else car.body_type if car else '') }}
                             {% if form.body_type.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.body_type.errors %}
@@ -153,7 +153,7 @@
 
                         <div class="form-group">
                             {{ form.fuel_type.label(class="form-control-label") }}
-                            {{ form.fuel_type(class="form-control form-control-lg") }}
+                            {{ form.fuel_type(class="form-control form-control-lg", value=form.fuel_type.data if form.fuel_type.data else car.fuel_type if car else '') }}
                             {% if form.fuel_type.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.fuel_type.errors %}
@@ -167,7 +167,7 @@
 
                          <div class="form-group">
                             {{ form.engine_type.label(class="form-control-label") }}
-                            {{ form.engine_type(class="form-control form-control-lg") }}
+                            {{ form.engine_type(class="form-control form-control-lg", value=form.engine_type.data if form.engine_type.data else car.engine_type if car else '') }}
                             {% if form.engine_type.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.engine_type.errors %}
@@ -181,7 +181,7 @@
 
                        <div class="form-group">
                             {{ form.engine_capacity.label(class="form-control-label") }}
-                            {{ form.engine_capacity(class="form-control form-control-lg") }}
+                            {{ form.engine_capacity(class="form-control form-control-lg", value=form.engine_capacity.data if form.engine_capacity.data else car.engine_capacity if car else '') }}
                             {% if form.engine_capacity.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.engine_capacity.errors %}
@@ -195,7 +195,7 @@
 
                          <div class="form-group">
                             {{ form.exterior_color.label(class="form-control-label") }}
-                            {{ form.exterior_color(class="form-control form-control-lg") }}
+                            {{ form.exterior_color(class="form-control form-control-lg", value=form.exterior_color.data if form.exterior_color.data else car.exterior_color if car else '') }}
                             {% if form.exterior_color.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.exterior_color.errors %}
@@ -209,7 +209,7 @@
 
                         <div class="form-group">
                             {{ form.interior_color.label(class="form-control-label") }}
-                            {{ form.interior_color(class="form-control form-control-lg") }}
+                            {{ form.interior_color(class="form-control form-control-lg", value=form.interior_color.data if form.interior_color.data else car.interior_color if car else '') }}
                             {% if form.interior_color.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.interior_color.errors %}
@@ -223,7 +223,7 @@
 
                         <div class="form-group">
                             {{ form.kilometers.label(class="form-control-label") }}
-                            {{ form.kilometers(class="form-control form-control-lg") }}
+                            {{ form.kilometers(class="form-control form-control-lg", value=form.kilometers.data if form.kilometers.data else car.kilometers if car else '') }}
                             {% if form.kilometers.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.kilometers.errors %}
@@ -237,7 +237,7 @@
 
                         <div class="form-group">
                             {{ form.no_of_owners.label(class="form-control-label") }}
-                            {{ form.no_of_owners(class="form-control form-control-lg") }}
+                            {{ form.no_of_owners(class="form-control form-control-lg", value=form.no_of_owners.data if form.no_of_owners.data else car.no_of_owners if car else '') }}
                             {% if form.no_of_owners.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.no_of_owners.errors %}
@@ -246,6 +246,20 @@
                                 </div>
                             {% else %}
                                  <span>Enter the number of previous owners the car has had.</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.seller_phone.label(class="form-control-label") }}
+                            {{ form.seller_phone(class="form-control form-control-lg", value=form.seller_phone.data if form.seller_phone.data else car.seller_phone if car else '') }}
+                            {% if form.seller_phone.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.seller_phone.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                 <span>Enter the seller's phone number.</span>
                             {% endif %}
                         </div>
 
