@@ -2,51 +2,87 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="container dashboard-container">
     <h1>Seller Dashboard</h1>
 
-    <h2>My Listings</h2>
-    {% if cars %}
-        <ul>
-            {% for car in cars %}
-                <li>
-                    <a href="{{ url_for('cars.car', car_id=car.id) }}">{{ car.title }}</a> - Price: ${{ car.price }}
+    <section class="dashboard-section">
+        <h2>My Listings</h2>
+        {% if cars %}
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for car in cars %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('cars.car', car_id=car.id) }}">{{ car.title }}</a>
+                    </td>
+                    <td>${{ car.price }}</td>
+                    <td>
+                        {% if car.is_active %}
+                        Active
+                        {% else %}
+                        Paused
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('cars.update_car', car_id=car.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{{ url_for('cars.delete_car', car_id=car.id) }}" method="POST" style="display: inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this listing?')">Delete</button>
+                        </form>
 
-                    <form action="{{ url_for('cars.delete_car', car_id=car.id) }}" method="POST" style="display: inline;">
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this listing?')">Delete</button>
-                    </form>
-
-                    {% if car.is_active %}
+                        {% if car.is_active %}
                         <form action="{{ url_for('cars.pause_car', car_id=car.id) }}" method="POST" style="display: inline;">
                             <button type="submit" class="btn btn-warning btn-sm">Pause</button>
                         </form>
-                    {% else %}
+                        {% else %}
                         <form action="{{ url_for('cars.unpause_car', car_id=car.id) }}" method="POST" style="display: inline;">
                             <button type="submit" class="btn btn-success btn-sm">Unpause</button>
                         </form>
-                    {% endif %}
-
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
         <p>You have no active listings.</p>
-    {% endif %}
+        {% endif %}
+        <a href="{{ url_for('cars.new_car') }}" class="btn btn-primary">Add New Listing</a>
+    </section>
 
-    <h2>My Appointments</h2>
-    {% if selling_appointments %}
-        <ul>
-            {% for appointment in selling_appointments %}
-                <li>
-                    Buyer: {{ appointment.buyer.username }},
-                    Car: <a href="{{ url_for('cars.car', car_id=appointment.car_id) }}">{{ appointment.car.title }}</a>,
-                    Time: {{ appointment.appointment_time }},
-                    Status: {{ appointment.status }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
+    <section class="dashboard-section">
+        <h2>My Appointments</h2>
+        {% if selling_appointments %}
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Buyer</th>
+                    <th>Car</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in selling_appointments %}
+                <tr>
+                    <td>{{ appointment.buyer.username }}</td>
+                    <td><a href="{{ url_for('cars.car', car_id=appointment.car_id) }}">{{ appointment.car.title }}</a></td>
+                    <td>{{ appointment.appointment_time }}</td>
+                    <td>{{ appointment.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
         <p>You have no scheduled appointments.</p>
-    {% endif %}
-
-    <a href="{{ url_for('cars.new_car') }}" class="btn btn-primary">Add New Listing</a>
+        {% endif %}
+    </section>
+</div>
 {% endblock %}
