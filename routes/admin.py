@@ -1,3 +1,5 @@
+# routes/admin.py
+
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from models import Car, FeaturedPayments, BuyerPayments, User, Appointment, ReportedAds  # Add ReportedAds import
 from app import db
@@ -6,7 +8,6 @@ from sqlalchemy import or_  # Import the or_ function
 # Import the ReportForm
 from forms import ReportForm  # Make sure this form is correctly defined
 from models.payment import PaymentStatus  # Import PaymentStatus ENUM
-from models.appointment import AppointmentStatus #Import the AppointmentStatus Enum
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -34,7 +35,7 @@ def dashboard():
     # Option 2: PENDING_PAYMENT, PAYMENT_FAILED, and PAYMENT_REFUNDED are considered unsuccessful
     buyer_payments = BuyerPayments.query.filter(BuyerPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all()
 
-    appointments = Appointment.query.filter_by(status=AppointmentStatus.PENDING).all()
+    appointments = Appointment.query.filter(Appointment.status=="pending").all()
     reports = ReportedAds.query.all()  # Fetch all reports
     return render_template('admin_dashboard.html', pending_cars=pending_cars, featured_payments=featured_payments,
                            buyer_payments=buyer_payments, appointments=appointments, reports=reports)
@@ -61,8 +62,14 @@ def reject_car(car_id):
         return redirect(url_for('cars.home'))
     car = Car.query.get_or_404(car_id)
     db.session.delete(car)
-    db.session.commit()
-    flash(f"Car '{car.title}' rejected and deleted.", 'success')
+    try:
+        db.session.commit()
+        flash(f"Car '{car.title}' rejected and deleted.", 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error deleting car: {e}", "danger")
+        return redirect(url_for('admin.dashboard'))
+
     return redirect(url_for('admin.dashboard'))
 
 
@@ -132,7 +139,7 @@ def approve_appointment(appointment_id):
         flash("You don't have permission to access this page.", "danger")
         return redirect(url_for('cars.home'))
     appointment = Appointment.query.get_or_404(appointment_id)
-    appointment.status = AppointmentStatus.CONFIRMED #Corrected
+    appointment.status = "Confirmed" #Update here enum name
     db.session.commit()
     flash(f"Appointment ID '{appointment.id}' approved!", 'success')
     return redirect(url_for('admin.dashboard'))
@@ -144,7 +151,7 @@ def reject_appointment(appointment_id):
         flash("You don't have permission to access this page.", "danger")
         return redirect(url_for('cars.home'))
     appointment = Appointment.query.get_or_404(appointment_id)
-    appointment.status = AppointmentStatus.REJECTED #Corrected
+    appointment.status = "Rejected" #Update here enum name
     db.session.commit()
     flash(f"Appointment ID '{appointment.id}' Rejected!", 'success')
     return redirect(url_for('admin.dashboard'))
@@ -175,7 +182,7 @@ def search():
                            pending_cars=Car.query.filter_by(is_approved=False).all(),
                            featured_payments=FeaturedPayments.query.filter(FeaturedPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all(), # Choose the right filter
                            buyer_payments=BuyerPayments.query.filter(BuyerPayments.payment_status.in_([PaymentStatus.PENDING_PAYMENT, PaymentStatus.PAYMENT_FAILED, PaymentStatus.PAYMENT_REFUNDED])).all(), # Choose the right filter
-                           appointments=Appointment.query.filter_by(status=AppointmentStatus.PENDING).all(),
+                           appointments=Appointment.query.filter(Appointment.status=="pending").all(),
                            results=results,
                            search_query=search_query, reports=ReportedAds.query.all())
 
