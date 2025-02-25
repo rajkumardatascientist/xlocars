@@ -156,7 +156,7 @@
                     <li><i class="far fa-calendar-alt"></i> Year: {{ car.year }}</li> <!-- Changed icon -->
                     <li><i class="fas fa-industry"></i> Make: {{ car.make }}</li> <!-- Changed icon -->
                     <li><i class="fas fa-id-card"></i> Model: {{ car.model }}</li> <!-- Changed icon -->
-                    <li><i class="fas fa-map-marked-alt"></i> Location: {{ car.city or 'N/A' }}, {{ car.state or 'N/A' }}
+                    <li><i class="fas fa-map-marked-alt"></i> Location: {{ car.district or 'N/A' }}, {{ car.state or 'N/A' }}
                         <!-- Changed icon -->
                     </li>
                     <li><i class="fas fa-cogs"></i> Transmission: {{ car.transmission or 'N/A' }}</li>
@@ -189,6 +189,7 @@
                         {% if car.is_featured %}
                             <p><i class="fas fa-badge-check"></i> Your contact details are visible to buyers.</p>
                             <p><i class="fas fa-envelope-open-text"></i> Contact: {{ car.seller.email }}</p>
+                            <p><i class="fas fa-phone"></i> Phone Number: {% if car.seller.phone_number %}{{car.seller.phone_number}}{% else %}N/A{% endif %}</p>
                         {% else %}
                             <a href="{{ url_for('payments.request_feature_payment', car_id=car.id) }}"
                                class="btn btn-info"><i class="fas fa-gem"></i> Make Payment to Feature Car</a>
@@ -211,6 +212,7 @@
 
                         {% if buyer_can_view_contact %}
                             <p><i class="fas fa-user-headset"></i> Seller Contact: {{ car.seller.email }}</p>
+                            <p><i class="fas fa-phone"></i> Seller Phone Number: {% if car.seller.phone_number %}{{ car.seller.phone_number }}{% else %} N/A {% endif %}</p>  {# Display here #}
                         {% else %}
                             <a href="{{ url_for('payments.unlock_contact_request', car_id=car.id) }}"
                                class="btn btn-info"><i class="fas fa-key"></i> Unlock Contact Info</a>
