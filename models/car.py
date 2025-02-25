@@ -29,6 +29,7 @@ class Car(db.Model):
     engine_capacity = db.Column(db.Float)  # e.g., 2.0 for 2.0L engine
     no_of_owners = db.Column(db.Integer)  # Added no_of_owners
     seller_id = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
+    seller_phone = db.Column(db.String(20))  #  Seller's phone
     is_approved = db.Column(db.Boolean, default=False)
     is_featured = db.Column(db.Boolean, default=False)  # Add the is_featured column
     date_posted = db.Column(db.DateTime(timezone=True), default=datetime.now(timezone.utc)) #Corrected
@@ -39,6 +40,7 @@ class Car(db.Model):
     wishlist_entries = relationship('Wishlist', backref='car', lazy=True, cascade="all, delete-orphan")
     appointments = relationship('Appointment', lazy=True, cascade="all, delete-orphan")
     images = relationship("Image", backref="car", cascade="all, delete-orphan")  # Add the 'images' relationship
+    seller = relationship('User', backref='cars') #ADDED THIS LINE
 
     def __repr__(self):
         return f'<Car {self.make} {self.model}>'
