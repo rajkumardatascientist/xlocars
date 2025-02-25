@@ -1,0 +1,66 @@
+{# templates/admin/edit_user.html #}
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container admin-dashboard">
+        <h1>Edit User: {{ user.username }}</h1>
+
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.username.label(class="form-control-label") }}
+                {{ form.username(class="form-control form-control-lg") }}
+                {% if form.username.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.username.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.email.label(class="form-control-label") }}
+                {{ form.email(class="form-control form-control-lg") }}
+                {% if form.email.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.first_name.label(class="form-control-label") }}
+                {{ form.first_name(class="form-control form-control-lg") }}
+
+            </div>
+
+             <div class="form-group">
+                {{ form.last_name.label(class="form-control-label") }}
+                {{ form.last_name(class="form-control form-control-lg") }}
+
+            </div>
+
+            <div class="form-group">
+                {{ form.phone_number.label(class="form-control-label") }}
+                {{ form.phone_number(class="form-control form-control-lg") }}
+
+            </div>
+
+           <div class="form-group">
+                {{ form.role.label(class="form-control-label") }}
+                {{ form.role(class="form-control form-control-lg") }}
+            </div>
+
+            <div class="form-group form-check">
+                {{ form.is_banned.label(class="form-check-label") }}
+                {{ form.is_banned(class="form-check-input") }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update User</button>
+            <a href="{{ url_for('admin.list_users') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+{% endblock %}
