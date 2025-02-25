@@ -1,9 +1,8 @@
 # models/user.py
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, Boolean, Enum
+from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
-from extensions import db  #  Import ONLY db
-from flask import current_app
+from extensions import db  
 import enum
 import sqlalchemy as sa
 from sqlalchemy.types import TypeDecorator
@@ -35,6 +34,7 @@ class UserRoleType(TypeDecorator):
         except ValueError:
             return None
 
+
 class User(db.Model, UserMixin):
     id = Column(Integer, primary_key=True)
     username = Column(String(80), unique=True, nullable=False)
@@ -44,10 +44,11 @@ class User(db.Model, UserMixin):
     first_name = Column(String(50))
     last_name = Column(String(50))
     phone_number = Column(String(20))
-    role = Column(UserRoleType(), default=UserRole.BUYER)  # Use UserRoleType
-    is_active = Column(Boolean, default=True)  #ADD THIS LINE
+    role = Column(UserRoleType(), default=UserRole.BUYER) 
+    is_active = Column(Boolean, default=True)  
+
     # Relationships
-    cars = relationship('Car', backref='seller', lazy=True)
+    cars = relationship('Car', back_populates='seller', lazy=True)  # FIXED: Using back_populates
     interested_buyers = relationship('InterestedBuyers', backref='buyer', lazy=True)
     wishlist_items = relationship('Wishlist', backref='user', lazy=True)
 
