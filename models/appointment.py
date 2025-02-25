@@ -1,9 +1,15 @@
 # models/appointment.py
 from extensions import db
-from sqlalchemy import Column, Integer, DateTime, ForeignKey, String, Text
+from sqlalchemy import Column, Integer, DateTime, ForeignKey, String, Text, Enum
 from sqlalchemy.orm import relationship
 from datetime import datetime
+import enum
 
+class AppointmentStatus(enum.Enum):
+    PENDING = 'pending'
+    CONFIRMED = 'confirmed'
+    REJECTED = 'rejected'
+    CANCELLED = 'cancelled'  # Optional
 
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -14,8 +20,7 @@ class Appointment(db.Model):
     notes = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     # Add the status column here:
-    status = db.Column(db.String(50),
-                       default='pending')  # Or another appropriate default
+    status = db.Column(Enum(AppointmentStatus), default=AppointmentStatus.PENDING)
 
     # Relationships
     # Explicitly defined relationships from appointment to user through user_id keys
@@ -29,4 +34,4 @@ class Appointment(db.Model):
 
     def __repr__(self):
         return (f"Appointment(Buyer: {self.buyer_id}, Seller: {self.seller_id},"
-                f" Car: {self.car_id}, Time: {self.appointment_time})")
+                f" Car: {self.car_id}, Time: {self.appointment_time}, Status: {self.status.value})") #To show .value
