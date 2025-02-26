@@ -278,7 +278,7 @@ footer a:hover {
 
 .car-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjusted minmax */
     gap: 20px;
     padding: 20px;
     width: 100%;
@@ -296,6 +296,7 @@ footer a:hover {
     flex-direction: column;
     justify-content: space-between;
     min-height: 300px;
+     width: 100%; /*  ADDED: Ensure it takes full width of the grid cell */
 }
 
 .car-card:hover {
@@ -838,8 +839,311 @@ label {
 }
 
 /* Responsive: 3 Columns on Mobile */
-@media (max-width: 768px) {  
+@media (max-width: 768px) {
     .grid-container {
         grid-template-columns: repeat(3, 1fr); /* 3 items per row */
     }
 }
+/* static/css/styles.css */
+
+/* ==========================================================================
+   General Styles (Reset and Base)
+   ========================================================================== */
+
+html {
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+    margin: 0;
+    padding: 0;
+}
+
+ul[role="list"],
+ol[role="list"] {
+    list-style: none;
+}
+
+html:focus-within {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    text-rendering: optimizeSpeed;
+    line-height: 1.5;
+    font-family: "Nunito", sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Layout and Components
+   ========================================================================== */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.15);
+    padding: 0.75rem 1.5rem;
+}
+
+.navbar-brand {
+    font-family: "Nunito", sans-serif;
+    font-weight: normal;
+    font-size: 1.75rem;
+    color: white !important;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: white;
+    transition: color 0.2s ease-in-out;
+    font-weight: normal;
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+    color: #f0f0f0;
+}
+
+/* Added style for the Location Selector */
+#location-selector {
+    color: white !important;
+    transition: color 0.2s ease-in-out;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+}
+
+#location-selector:hover {
+    color: #f0f0f0 !important;
+    text-decoration: none;
+}
+
+/* Buttons */
+.btn {
+    font-family: "Nunito", sans-serif;
+    font-weight: normal;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.3rem;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+/* Hero Section Styles */
+.hero-section {
+    background-color: #f0f8ff;
+    padding: 4rem 0;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.hero-section .lead {
+    font-size: 1.3rem;
+    color: #555;
+    margin-bottom: 2rem;
+}
+
+.hero-section .btn {
+    margin: 0.75rem;
+    font-size: 1.1rem;
+    padding: 1rem 2rem;
+}
+
+/* ==========================================================================
+   Footer Styles
+   ========================================================================== */
+
+footer {
+    background: linear-gradient(to right, #2c3e50, #34495e);
+    color: #fff;
+    padding: 1.5rem 0;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+footer a {
+    color: #fff;
+}
+
+footer a:hover {
+    color: #f8f9fa;
+}
+
+/* Custom Styles for Two-Tiered Nav */
+
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #34495e;
+    --hover-color: #1a242f;
+}
+
+.top-tier {
+    background: linear-gradient(to right, #243B55, #14284A);
+    color: white;
+    padding: 0.3rem 0;
+    font-size: 0.9rem;
+}
+
+.bottom-tier {
+    background: linear-gradient(to right, #37474F, #37474F);
+    color: white;
+    padding: 0.2rem 0;
+    font-size: 0.85rem;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+    color: white !important;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+}
+
+/* Dropdown Menu Styles */
+.dropdown-menu {
+    background-color: rgba(44, 62, 80, 0.95);
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    padding: 0;
+}
+
+.dropdown-item {
+    color: white;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--hover-color);
+    color: white;
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu > .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    border-radius: 0;
+}
+
+.dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+}
+
+/* ==========================================================================
+   Car Grid Styles
+   ========================================================================== */
+
+/* Common layout adjustments */
+.container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+    min-height: 600px; /*  ADDED: Ensure enough space for content */
+}
+
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.car-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjusted minmax */
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.car-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 300px;
+     width: 100%; /*  ADDED: Ensure it takes full width of the grid cell */
+}
+
+.car-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 
