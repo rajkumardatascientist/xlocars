@@ -4,20 +4,24 @@
     <div class="container admin-dashboard">
         <h1>Admin Dashboard</h1>
 
-        <h2><i class="fas fa-car"></i> Pending Car Approvals</h2>
-        {% if pending_cars %}
-            <ul>
-                {% for car in pending_cars %}
-                    <li>
-                        {{ car.title }} -
-                        <a href="{{ url_for('admin.approve_car', car_id=car.id) }}" class="btn btn-success btn-sm">Approve</a> |
-                        <a href="{{ url_for('admin.reject_car', car_id=car.id) }}" class="btn btn-danger btn-sm">Reject</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No cars pending approval.</p>
-        {% endif %}
+        <h2><i class="fas fa-car"></i> Pending Car Approvals <span id="pending-ads-count"></span></h2>
+        <div id="pending-ads">
+            {% if pending_cars %}
+                <ul>
+                    {% for car in pending_cars %}
+                        <li id="car-item-{{ car.id }}">
+                            {{ car.title }} -
+                            <button onclick="approveCar({{ car.id }})" class="btn btn-success btn-sm">Approve</button> |
+                            <a href="{{ url_for('admin.reject_car', car_id=car.id) }}" class="btn btn-danger btn-sm">Reject</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No cars pending approval.</p>
+            {% endif %}
+        </div>
+
+        <audio id="notification-sound" src="{{ url_for('static', filename='notification.mp3') }}" preload="auto"></audio>
 
         <h2><i class="fas fa-money-bill-wave"></i> Pending Featured Payments</h2>
         {% if featured_payments %}
@@ -134,5 +138,70 @@
                 <p>No cars found.</p>
             {% endif %}
         {% endif %}
+
+
+    <script>
+        function checkNewAds() {
+            fetch('/admin/check-new-ads')
+                .then(response => response.json())
+                .then(data => {
+                    const pendingAdsCount = data.count;
+                    document.getElementById('pending-ads-count').textContent = `(${pendingAdsCount})`;
+
+                    if (data.new_ads) {
+                        document.getElementById('notification-sound').play();
+                         // Reload the pending ads section
+                        loadPendingAds();
+                    }
+                })
+                .catch(error => console.error('Error checking for new ads:', error));
+        }
+
+
+        function approveCar(carId) {
+             fetch(`/admin/activate-ad/${carId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === "Ad activated successfully!") {
+                        // Remove the car from the list
+                        const carItem = document.getElementById(`car-item-${carId}`);
+                        if (carItem) {
+                            carItem.remove();
+                        }
+                         // Optionally, reload the entire pending ads section
+                         loadPendingAds();
+
+                    } else {
+                         alert("Error activating ad.  Check the console.")
+                        console.error("Error activating car:", data);
+                    }
+                })
+                .catch(error => console.error('Error activating car:', error));
+        }
+
+
+        function loadPendingAds() {
+            fetch('/admin/pending-ads-list')  // Create this route in your admin blueprint
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('pending-ads').innerHTML = data;
+                })
+                .catch(error => console.error('Error loading pending ads:', error));
+        }
+
+        // Check for new ads every 30 seconds (adjust as needed)
+        setInterval(checkNewAds, 30000);
+
+        // Initial check and load
+        checkNewAds();
+        loadPendingAds();
+
+
+    </script>
     </div>
 {% endblock %}
