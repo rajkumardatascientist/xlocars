@@ -3,7 +3,14 @@ from extensions import db
 from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
+import enum  # Import the enum module
 
+
+class CarStatus(enum.Enum):
+    PENDING = 'pending'
+    ACTIVE = 'active'
+    REJECTED = 'rejected'
+    SOLD = 'sold' #Added the sold enum, since you have is_sold already
 
 class Car(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,11 +37,14 @@ class Car(db.Model):
     no_of_owners = db.Column(db.Integer)
     seller_id = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
     seller_phone = db.Column(db.String(20))
-    is_approved = db.Column(db.Boolean, default=False)
+    is_approved = db.Column(db.Boolean, default=False) #Consider deprecating this, and using status = ACTIVE
     is_featured = db.Column(db.Boolean, default=False)
     date_posted = db.Column(db.DateTime(timezone=True), default=datetime.now(timezone.utc))
     is_active = db.Column(db.Boolean, default=True)
     is_sold = db.Column(db.Boolean, default=False)  # Add is_sold field
+
+    # New: Car status
+    status = db.Column(db.Enum(CarStatus), default=CarStatus.PENDING)
 
     # Relationships
     interested_buyers = relationship('InterestedBuyers', backref='car', lazy=True, cascade="all, delete-orphan")
@@ -46,4 +56,4 @@ class Car(db.Model):
     seller = relationship('User', back_populates='cars')
 
     def __repr__(self):
-        return f'<Car {self.make} {self.model}>'
+        return f'<Car {self.make} {self.model} (Status: {self.status.value})>' #added the status to representation
