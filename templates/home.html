@@ -246,9 +246,11 @@
     <section class="featured-listings">
         <div class="container">
             <h2>Featured Cars</h2>
-            {% with cars=featured_cars, makes=makes, models=models, datetime=datetime, timezone=timezone, indian_states_districts=indian_states_districts, selected_state=selected_state, selected_district=selected_district %}
-                {% include 'car_grid.html' %}
-            {% endwith %}
+            <div class="grid-container">  <!-- ADDED GRID CONTAINER -->
+                {% with cars=featured_cars, makes=makes, models=models, datetime=datetime, timezone=timezone, indian_states_districts=indian_states_districts, selected_state=selected_district %}
+                    {% include 'car_grid.html' %}
+                {% endwith %}
+            </div> <!-- END GRID CONTAINER -->
         </div>
     </section>
 
@@ -256,9 +258,11 @@
     <section class="all-listings">
         <div class="container">
             <h2>Latest Listings</h2>
-            {% with cars=cars, makes=makes, models=models, datetime=datetime, timezone=timezone, indian_states_districts=indian_states_districts, selected_state=selected_state, selected_district=selected_district %}
-                {% include 'car_grid.html' %}
-            {% endwith %}
+            <div class="grid-container">  <!-- ADDED GRID CONTAINER -->
+                {% with cars=cars, makes=makes, models=models, datetime=datetime, timezone=timezone, indian_states_districts=indian_states_districts, selected_state=selected_district %}
+                    {% include 'car_grid.html' %}
+                {% endwith %}
+            </div> <!-- END GRID CONTAINER -->
         </div>
     </section>
 
