@@ -820,3 +820,26 @@ label {
         padding: 6px 10px;
     }
 }
+/* Grid Container */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive Grid */
+    gap: 10px; /* Adjusts spacing between items */
+    padding: 10px;
+}
+
+/* Grid Item */
+.grid-item {
+    background: #fff; /* White background */
+    padding: 15px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    text-align: center;
+}
+
+/* Responsive: 3 Columns on Mobile */
+@media (max-width: 768px) {  
+    .grid-container {
+        grid-template-columns: repeat(3, 1fr); /* 3 items per row */
+    }
+}
