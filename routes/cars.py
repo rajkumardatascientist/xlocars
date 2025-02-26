@@ -220,6 +220,7 @@ def new_car():
     if form.validate_on_submit():
         logging.info("Form is valid. Processing car data...")
 
+        #Setting is_approved = false for pending status
         car = Car(
             title=form.title.data,
             description=form.description.data,
@@ -231,7 +232,7 @@ def new_car():
             state=form.state.data,
             district=form.district.data,
             seller=current_user,
-            is_approved=False,
+            is_approved=False, #Set to pending
             kilometers=form.kilometers.data,
             no_of_owners=form.no_of_owners.data,
             registration_expiry=datetime.now().date(),
@@ -310,7 +311,7 @@ def save_picture(form_image):
         raise  # Re-raise the exception after logging
 
 
-@cars_bp.route("/car/<int:car_id>")
+@cars_bp.route("/car/<int:car_id}")
 def car(car_id):
     """Displays a specific car's details."""
     car = Car.query.options(joinedload(Car.seller), joinedload(Car.images)).get_or_404(car_id)
