@@ -19,7 +19,7 @@ from sqlalchemy import or_
 from forms.appointment_forms import AppointmentForm
 from models.payment import PaymentStatus, BuyerPayments
 import requests  # For Imgur upload
-
+from models.car import CarStatus  # Import the CarStatus Enum
 
 try:
     from locations import indian_states_districts
@@ -89,7 +89,8 @@ def home():
     try:
         with app.app_context():
             makes, models = populate_filters()
-            cars_query = Car.query.filter_by(is_approved=True, is_active=True, is_sold=False).options(joinedload(Car.images))
+            #cars_query = Car.query.filter_by(is_approved=True, is_active=True, is_sold=False).options(joinedload(Car.images))
+            cars_query = Car.query.filter_by(status=CarStatus.ACTIVE).options(joinedload(Car.images))
 
             if state:
                 cars_query = cars_query.filter_by(state=state)
@@ -97,7 +98,8 @@ def home():
                 cars_query = cars_query.filter_by(district=district)
 
             cars = cars_query.all()
-            featured_cars = Car.query.filter_by(is_featured=True, is_active=True, is_sold=False).options(joinedload(Car.images)).limit(4).all()
+            #featured_cars = Car.query.filter_by(is_featured=True, is_active=True, is_sold=False).options(joinedload(Car.images)).limit(4).all()
+            featured_cars = Car.query.filter_by(is_featured=True, status=CarStatus.ACTIVE).options(joinedload(Car.images)).limit(4).all()
 
             return render_template('home.html', cars=cars,
                                    featured_cars=featured_cars, makes=makes, models=models,
@@ -117,7 +119,8 @@ def listings():
 
     makes = db.session.query(Car.make).distinct().order_by(Car.make).all()
     models = db.session.query(Car.model).distinct().order_by(Car.model).all()
-    cars_query = Car.query.filter_by(is_approved=True, is_active=True, is_sold=False).options(joinedload(Car.images))
+    #cars_query = Car.query.filter_by(is_approved=True, is_active=True, is_sold=False).options(joinedload(Car.images))
+    cars_query = Car.query.filter_by(status=CarStatus.ACTIVE).options(joinedload(Car.images))
 
     # 1. Location Filters:
     state = request.args.get('state')
@@ -220,7 +223,6 @@ def new_car():
     if form.validate_on_submit():
         logging.info("Form is valid. Processing car data...")
 
-        #Setting is_approved = false for pending status
         car = Car(
             title=form.title.data,
             description=form.description.data,
@@ -232,7 +234,6 @@ def new_car():
             state=form.state.data,
             district=form.district.data,
             seller=current_user,
-            is_approved=False, #Set to pending
             kilometers=form.kilometers.data,
             no_of_owners=form.no_of_owners.data,
             registration_expiry=datetime.now().date(),
@@ -243,6 +244,7 @@ def new_car():
             engine_capacity=form.engine_capacity.data,
             seller_phone = form.seller_phone.data
         )
+        #  car.status will default to PENDING
 
         with app.app_context():
             db.session.add(car)
@@ -311,13 +313,14 @@ def save_picture(form_image):
         raise  # Re-raise the exception after logging
 
 
-@cars_bp.route("/car/<int:car_id}")
+@cars_bp.route("/car/<int:car_id>")
 def car(car_id):
     """Displays a specific car's details."""
     car = Car.query.options(joinedload(Car.seller), joinedload(Car.images)).get_or_404(car_id)
 
     #Only display to public when these are meet!
-    if car.is_sold or not car.is_active or not car.is_approved:
+    #if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -352,7 +355,8 @@ def interested(car_id):
     """Handles buyer interest in a car."""
     car = Car.query.get_or_404(car_id)
 
-    if car.is_sold or not car.is_active or not car.is_approved:
+    #if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -395,7 +399,8 @@ def add_to_wishlist(car_id):
     """Adds a car to the user's wishlist."""
     car = Car.query.get_or_404(car_id)
 
-    if car.is_sold or not car.is_active or not car.is_approved:
+    #if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -421,7 +426,8 @@ def remove_from_wishlist(car_id):
     """Removes a car from the user's wishlist."""
     car = Car.query.get_or_404(car_id)
 
-    if car.is_sold or not car.is_active or not car.is_approved:
+    #if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -465,7 +471,8 @@ def request_appointment(car_id):
     """Handles appointment requests for a car."""
     car = Car.query.get_or_404(car_id)
 
-    if car.is_sold or not car.is_active or not car.is_approved:
+    #if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -502,7 +509,8 @@ def report_ad(car_id):
     """Handles reporting of car ads."""
     car = Car.query.get_or_404(car_id)
 
-    if car.is_sold or not car.is_active or not car.is_approved:
+    #if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -560,7 +568,8 @@ def pause_car(car_id):
         flash("You are not authorized to pause this listing.", "error")
         return redirect(url_for('cars.home'))  # Or appropriate error page
 
-    car.is_active = False #Set Car model to active or inactive
+    #car.is_active = False #Set Car model to active or inactive
+    car.status = CarStatus.PENDING
     try:
         db.session.commit()
         flash("Listing paused successfully.", "success")
@@ -582,7 +591,8 @@ def unpause_car(car_id):
         flash("You are not authorized to unpause this listing.", "error")
         return redirect(url_for('cars.home'))  # Or appropriate error page
 
-    car.is_active = True
+    #car.is_active = True
+    car.status = CarStatus.ACTIVE
     try:
         db.session.commit()
         flash("Listing unpaused successfully.", "success")
