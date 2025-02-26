@@ -1,0 +1,14 @@
+{# templates/admin/_pending_ads_list.html #}
+{% if pending_cars %}
+    <ul>
+        {% for car in pending_cars %}
+            <li id="car-item-{{ car.id }}">
+                {{ car.title }} -
+                <button onclick="approveCar({{ car.id }})" class="btn btn-success btn-sm">Approve</button> |
+                <a href="{{ url_for('admin.reject_car', car_id=car.id) }}" class="btn btn-danger btn-sm">Reject</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No cars pending approval.</p>
+{% endif %}
