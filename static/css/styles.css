@@ -84,10 +84,11 @@ a:hover {
    Layout and Components
    ========================================================================== */
 
+/* Updated Container Styles */
 .container {
-    max-width: 1200px;
+    max-width: 1140px;  /* A modern, balanced container width */
     margin: 0 auto;
-    padding: 1.5rem;
+    padding: 20px;
 }
 
 /* Navbar */
@@ -264,16 +265,14 @@ footer a:hover {
    Car Grid Styles
    ========================================================================== */
 
-/* Car Grid and Card Updates */
-
-/* For all screen sizes */
+/* Updated Car Grid Styles */
 .car-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));  /* Minimum width for graceful responsiveness */
+    gap: 30px;  /* Increased gap for ample white space */
     padding: 20px;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1140px;
     margin: 0 auto;
 }
 
