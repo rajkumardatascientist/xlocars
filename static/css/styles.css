@@ -265,6 +265,7 @@ footer a:hover {
    Car Grid Styles (Home Page)
    ========================================================================== */
 
+/* Home page grid and card styling */
 .car-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -277,7 +278,7 @@ footer a:hover {
 
 .car-card {
     border: 1px solid #ddd;
-    border-radius: 12px;
+    border-radius: 12px; /* Increased roundness */
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
@@ -294,20 +295,19 @@ footer a:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Mobile Specific Adjustments for Car Grid */
+/* Mobile Specific Adjustments for Home Page Grid */
 @media (max-width: 768px) {
     .car-grid {
         grid-template-columns: 1fr;
         gap: 10px;
         padding: 10px;
     }
-
     .car-card {
         border-radius: 12px;
     }
 }
 
-/* Image Slider for Car Cards */
+/* Style for Image Slider within Car Cards */
 .image-slider {
     width: 100%;
     height: 250px;
@@ -324,7 +324,7 @@ footer a:hover {
     transition: opacity 0.3s ease;
 }
 
-/* Car Tag styling and position tags in top right */
+/* Car Tag styling and positioning (top right of image) */
 .car-tags {
     position: absolute;
     top: 10px;
@@ -409,20 +409,6 @@ footer a:hover {
 
 .view-details:hover {
     background-color: #0056b3;
-}
-
-/* ==========================================================================
-   Listing Page Grid Styles (Same as Home Page Grid)
-   ========================================================================== */
-
-.listing-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    padding: 20px;
-    width: 100%;
-    max-width: 1140px;
-    margin: 0 auto;
 }
 
 /* ==========================================================================
@@ -572,7 +558,7 @@ label {
 }
 
 .admin-dashboard a {
-    color: #007bff;
+    color: #3498db;
     text-decoration: none;
     transition: color 0.2s ease-in-out;
 }
@@ -672,7 +658,6 @@ label {
         flex-direction: column;
         align-items: flex-start;
     }
-
     .car-image-wrapper {
         width: 100%;
         height: 150px;
@@ -680,7 +665,7 @@ label {
     }
 }
 
-/* Image Slider (Duplicate definition preserved for specificity) */
+/* Duplicate definitions preserved for specificity */
 .image-slider {
     width: 100%;
     height: 250px;
@@ -696,7 +681,6 @@ label {
     margin: auto;
 }
 
-/* Car Tag styling (Duplicate definition preserved) */
 .car-tags {
     position: absolute;
     top: 10px;
@@ -790,7 +774,6 @@ label {
     text-decoration: underline;
 }
 
-/* Dashboard Table */
 .dashboard-table {
     width: 100%;
     border-collapse: collapse;
@@ -814,17 +797,57 @@ label {
         margin-top: 10px;
         padding: 10px;
     }
-
     .dashboard-container h1 {
         font-size: 1.5rem;
     }
-
     .dashboard-section h2 {
         font-size: 1.2rem;
     }
-
     .dashboard-section li {
         font-size: 0.9rem;
         padding: 6px 10px;
+    }
+}
+
+/* ==========================================================================
+   Listing Page Grid Styles (Same as Home Page Grid)
+   ========================================================================== */
+
+/* Use these classes in your listing page markup to get the same grid layout as the home page */
+.listing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+.listing-card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 300px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.listing-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Mobile adjustments for Listing Page Grid */
+@media (max-width: 768px) {
+    .listing-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 10px;
     }
 }
