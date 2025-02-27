@@ -828,49 +828,64 @@ label {
 /* Car Grid - Mobile */
 @media (max-width: 768px) {
     .car-grid {
-        grid-template-columns: repeat(2, 1fr); /* Ensure two-column grid */
-        gap: 10px; /* Reduce space between cards */
+        grid-template-columns: repeat(2, 1fr); /* Two-column grid */
+        gap: 8px; /* Reduce gap for better alignment */
         padding: 10px;
     }
 
     .car-card {
-        min-height: 250px; /* Ensure card is not too compact */
-        padding: 10px;
+        min-height: 220px; /* Compact card height */
+        padding: 8px;
+        border-radius: 6px; /* Softer edges */
     }
 
     .image-slider {
-        height: 130px; /* Reduce image height for better space usage */
+        height: 110px; /* Reduce image height */
+        border-radius: 6px 6px 0 0; /* Match card */
+    }
+
+    .image-slider img {
+        object-fit: cover; /* Ensure images fill without stretching */
+        width: 100%;
+        height: 100%;
+    }
+
+    .car-tags {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        display: flex;
+        flex-direction: column; /* Stack tags vertically */
+        gap: 2px;
+    }
+
+    .verified-tag,
+    .just-listed-tag {
+        font-size: 0.7rem; /* Reduce tag size */
+        padding: 3px 6px;
+        border-radius: 4px;
     }
 
     .car-title {
-        font-size: 1rem; /* Make titles readable */
+        font-size: 0.9rem; /* Smaller but readable */
         font-weight: bold;
     }
 
     .car-price {
-        font-size: 1rem; /* Keep price clear and visible */
+        font-size: 1rem;
         font-weight: bold;
         color: #e74c3c;
     }
 
     .car-info {
-        flex-direction: column; /* Stack text for better readability */
-    }
-
-    .car-info-item {
-        font-size: 0.85rem; /* Slightly increase text size */
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .car-tags {
-        font-size: 0.75rem; /* Make tags slightly smaller */
-        padding: 3px 6px;
+        flex-direction: column;
+        font-size: 0.8rem;
     }
 
     .view-details {
-        font-size: 0.9rem; /* Adjust button text */
-        padding: 6px 10px;
+        font-size: 0.85rem;
+        padding: 5px 8px;
+        text-align: center;
+        display: block;
     }
 }
