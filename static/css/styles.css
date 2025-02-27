@@ -824,30 +824,53 @@ label {
         padding: 6px 10px;
     }
 }
+
+/* Car Grid - Mobile */
 @media (max-width: 768px) {
     .car-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Smaller grid items */
-        gap: 10px; /* Reduce spacing */
+        grid-template-columns: repeat(2, 1fr); /* Ensure two-column grid */
+        gap: 10px; /* Reduce space between cards */
         padding: 10px;
     }
 
     .car-card {
-        min-height: 200px; /* Reduce card height */
+        min-height: 250px; /* Ensure card is not too compact */
+        padding: 10px;
     }
 
     .image-slider {
-        height: 150px; /* Reduce image slider height */
+        height: 130px; /* Reduce image height for better space usage */
     }
 
     .car-title {
-        font-size: 1rem; /* Reduce title size */
+        font-size: 1rem; /* Make titles readable */
+        font-weight: bold;
     }
 
     .car-price {
-        font-size: 0.9rem; /* Reduce price font size */
+        font-size: 1rem; /* Keep price clear and visible */
+        font-weight: bold;
+        color: #e74c3c;
+    }
+
+    .car-info {
+        flex-direction: column; /* Stack text for better readability */
     }
 
     .car-info-item {
-        font-size: 0.8rem; /* Adjust text size */
+        font-size: 0.85rem; /* Slightly increase text size */
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .car-tags {
+        font-size: 0.75rem; /* Make tags slightly smaller */
+        padding: 3px 6px;
+    }
+
+    .view-details {
+        font-size: 0.9rem; /* Adjust button text */
+        padding: 6px 10px;
     }
 }
