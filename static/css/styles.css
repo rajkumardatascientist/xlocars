@@ -827,20 +827,83 @@ label {
 
 /* Car Grid - Mobile */
 @media (max-width: 768px) {
-    .car-card {
-        min-height: 200px; /* Reduce overall card height */
+    .car-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Two equal columns */
+        gap: 8px; /* Adjust gap for cleaner layout */
         padding: 8px;
     }
 
+    .car-card {
+        border-radius: 8px; /* Rounded corners */
+        overflow: hidden;
+        min-height: auto; /* Remove unnecessary height */
+        padding: 8px;
+        background: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow */
+    }
+
     .image-slider {
-        height: 100px; /* Decrease image height */
+        height: 140px; /* Reduce image height */
+        width: 100%;
+        border-radius: 8px 8px 0 0; /* Match card */
+        overflow: hidden;
+    }
+
+    .image-slider img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Ensure image fits properly */
+    }
+
+    .car-tags {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        display: flex;
+        flex-direction: row; /* Align tags in a row */
+        gap: 4px;
+    }
+
+    .verified-tag,
+    .just-listed-tag {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+        border-radius: 4px;
+    }
+
+    .car-title {
+        font-size: 1rem;
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; /* Prevent title overflow */
+    }
+
+    .car-price {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #e74c3c;
     }
 
     .car-info {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .car-info-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
     }
 
     .view-details {
+        font-size: 0.85rem;
         padding: 6px;
+        width: 100%;
+        text-align: center;
+        border-radius: 6px;
     }
 }
