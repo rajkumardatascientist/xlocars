@@ -296,6 +296,8 @@ footer a:hover {
     flex-direction: column;
     justify-content: space-between;
     min-height: 300px;
+    background-color: #fff; /* ADDED: Background color for better visibility */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* ADDED: Subtle shadow */
 }
 
 .car-card:hover {
@@ -317,6 +319,7 @@ footer a:hover {
     object-fit: cover;
     display: block;
     margin: auto;
+    transition: opacity 0.3s ease; /* ADDED: Smooth image transition */
 }
 
 /* CarTag styling and position tags in top right  */
@@ -369,6 +372,7 @@ footer a:hover {
     font-size: 1.2rem;
     margin-bottom: 5px;
     color: #333;
+    font-weight: 600;  /* ADDED: Make title slightly bolder */
 }
 
 /* Style for .car-price */
@@ -818,5 +822,32 @@ label {
     .dashboard-section li {
         font-size: 0.9rem;
         padding: 6px 10px;
+    }
+}
+@media (max-width: 768px) {
+    .car-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Smaller grid items */
+        gap: 10px; /* Reduce spacing */
+        padding: 10px;
+    }
+
+    .car-card {
+        min-height: 200px; /* Reduce card height */
+    }
+
+    .image-slider {
+        height: 150px; /* Reduce image slider height */
+    }
+
+    .car-title {
+        font-size: 1rem; /* Reduce title size */
+    }
+
+    .car-price {
+        font-size: 0.9rem; /* Reduce price font size */
+    }
+
+    .car-info-item {
+        font-size: 0.8rem; /* Adjust text size */
     }
 }
