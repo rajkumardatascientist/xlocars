@@ -86,7 +86,7 @@ a:hover {
 
 /* Updated Container Styles */
 .container {
-    max-width: 1140px;  /* A modern, balanced container width */
+    max-width: 1140px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -265,11 +265,11 @@ footer a:hover {
    Car Grid Styles
    ========================================================================== */
 
-/* Updated Car Grid Styles */
+/* Updated Car Grid and Card Styles for a modern, responsive layout */
 .car-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));  /* Minimum width for graceful responsiveness */
-    gap: 30px;  /* Increased gap for ample white space */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
     padding: 20px;
     width: 100%;
     max-width: 1140px;
@@ -278,7 +278,7 @@ footer a:hover {
 
 .car-card {
     border: 1px solid #ddd;
-    border-radius: 12px; /* Increased roundness */
+    border-radius: 12px;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
@@ -295,21 +295,20 @@ footer a:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Mobile Specific Adjustments */
+/* Mobile Specific Adjustments for Car Grid */
 @media (max-width: 768px) {
     .car-grid {
-        grid-template-columns: 1fr; /* Only one grid per row */
+        grid-template-columns: 1fr;
         gap: 10px;
         padding: 10px;
     }
 
-    /* Ensure car cards retain their round corners on mobile */
     .car-card {
         border-radius: 12px;
     }
 }
 
-/* Style for .image-slider */
+/* Image Slider for Car Cards */
 .image-slider {
     width: 100%;
     height: 250px;
@@ -323,10 +322,10 @@ footer a:hover {
     object-fit: cover;
     display: block;
     margin: auto;
-    transition: opacity 0.3s ease; /* ADDED: Smooth image transition */
+    transition: opacity 0.3s ease;
 }
 
-/* CarTag styling and position tags in top right  */
+/* Car Tag styling and position tags in top right */
 .car-tags {
     position: absolute;
     top: 10px;
@@ -339,7 +338,6 @@ footer a:hover {
     z-index: 2;
 }
 
-/*verified and just listing tags badges look  */
 .new-listing-badge,
 .verified-tag {
     background-color: #5cb85c;
@@ -348,10 +346,9 @@ footer a:hover {
     border-radius: 4px;
     font-size: 0.8rem;
     z-index: 10;
-    margin-right: auto; /* push to left  */
+    margin-right: auto;
 }
 
-/* just listed tag is correct color format look  */
 .just-listed-tag {
     background-color: #f0ad4e;
     color: white;
@@ -359,27 +356,24 @@ footer a:hover {
     border-radius: 4px;
     font-size: 0.8rem;
     z-index: 10;
-    margin-left: auto; /* push to right */
+    margin-left: auto;
 }
 
 /* ==========================================================================
    Car Card Content Styles
    ========================================================================== */
 
-/* Style for .car-details */
 .car-details {
     padding: 15px;
 }
 
-/* Style for .car-title */
 .car-title {
     font-size: 1.2rem;
     margin-bottom: 5px;
     color: #333;
-    font-weight: 600;  /* ADDED: Make title slightly bolder */
+    font-weight: 600;
 }
 
-/* Style for .car-price */
 .car-price {
     font-size: 1.1rem;
     font-weight: bold;
@@ -387,26 +381,22 @@ footer a:hover {
     color: #e74c3c;
 }
 
-/* Style for .car-info */
 .car-info {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
 }
 
-/* Style for .car-info-item */
 .car-info-item {
     font-size: 0.9rem;
     color: #777;
 }
 
-/* Style for .car-specs */
 .car-specs {
     font-size: 0.9rem;
     color: #777;
 }
 
-/* Style for .view-details link */
 .view-details {
     display: block;
     text-align: center;
@@ -487,7 +477,6 @@ label {
     font-weight: 500;
 }
 
-/* Style the filter sidebar forms */
 .filter-sidebar form .form-group {
     margin-bottom: 10px;
 }
@@ -507,7 +496,6 @@ label {
     box-sizing: border-box;
 }
 
-/* Style the buttons within the filter sidebar */
 .filter-sidebar form .btn-primary {
     width: 100%;
     padding: 10px;
@@ -581,13 +569,11 @@ label {
     text-decoration: underline;
 }
 
-/* Button Styling (Consistent with other buttons) */
 .admin-dashboard .btn {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
 }
 
-/* Search Form */
 .admin-dashboard form[action="{{ url_for('admin.search') }}"] {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -616,8 +602,9 @@ label {
     background-color: #2980b9;
 }
 
-/* Car Actions Styling and Image Overlay
--------------------------------------------------- */
+/* ==========================================================================
+   Car Actions Styling and Image Overlay
+   ========================================================================== */
 
 .car-actions-list {
     list-style: none;
@@ -625,7 +612,7 @@ label {
 }
 
 .car-actions-item {
-    position: relative; /* Position context for overlay */
+    position: relative;
     margin-bottom: 15px;
     padding: 10px;
     border: 1px solid #ddd;
@@ -638,8 +625,8 @@ label {
 
 .car-image-wrapper {
     position: relative;
-    width: 150px;  /* Adjust size as needed */
-    height: 100px; /* Adjust size as needed */
+    width: 150px;
+    height: 100px;
     overflow: hidden;
     border-radius: 6px;
 }
@@ -647,7 +634,7 @@ label {
 .car-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;  /* Ensure image fills the space */
+    object-fit: cover;
 }
 
 .sold-overlay {
@@ -656,7 +643,7 @@ label {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    background-color: rgba(0, 0, 0, 0.5);
     color: white;
     font-size: 1.5em;
     display: flex;
@@ -666,22 +653,21 @@ label {
     border-radius: 6px;
 }
 
-/* Responsive Car Actions
--------------------------------------------------- */
+/* Responsive Car Actions */
 @media (max-width: 768px) {
     .car-actions-item {
-        flex-direction: column; /* Stack on small screens */
+        flex-direction: column;
         align-items: flex-start;
     }
 
     .car-image-wrapper {
-        width: 100%; /* Full width on small screens */
-        height: 150px; /* Adjusted for better viewing */
+        width: 100%;
+        height: 150px;
         margin-bottom: 10px;
     }
 }
 
-/* Image Tag */
+/* Image Slider (Duplicate definition preserved for specificity) */
 .image-slider {
     width: 100%;
     height: 250px;
@@ -697,7 +683,7 @@ label {
     margin: auto;
 }
 
-/* CarTag styling and position tags in top right  */
+/* Car Tag styling (Duplicate definition preserved) */
 .car-tags {
     position: absolute;
     top: 10px;
@@ -710,7 +696,6 @@ label {
     z-index: 2;
 }
 
-/*verified and just listing tags badges look  */
 .new-listing-badge,
 .verified-tag {
     background-color: #5cb85c;
@@ -719,10 +704,9 @@ label {
     border-radius: 4px;
     font-size: 0.8rem;
     z-index: 10;
-    margin-right: auto; /* push to left  */
+    margin-right: auto;
 }
 
-/* just listed tag is correct color format look  */
 .just-listed-tag {
     background-color: #f0ad4e;
     color: white;
@@ -730,10 +714,13 @@ label {
     border-radius: 4px;
     font-size: 0.8rem;
     z-index: 10;
-    margin-left: auto; /* push to right */
+    margin-left: auto;
 }
 
-/* Dashboard Specific CSS*/
+/* ==========================================================================
+   Dashboard Specific CSS
+   ========================================================================== */
+
 .dashboard-container {
     margin-top: 20px;
     padding: 20px;
