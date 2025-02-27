@@ -262,10 +262,9 @@ footer a:hover {
 }
 
 /* ==========================================================================
-   Car Grid Styles
+   Car Grid Styles (Home Page)
    ========================================================================== */
 
-/* Updated Car Grid and Card Styles for a modern, responsive layout */
 .car-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -410,6 +409,20 @@ footer a:hover {
 
 .view-details:hover {
     background-color: #0056b3;
+}
+
+/* ==========================================================================
+   Listing Page Grid Styles (Same as Home Page Grid)
+   ========================================================================== */
+
+.listing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1140px;
+    margin: 0 auto;
 }
 
 /* ==========================================================================
@@ -559,7 +572,7 @@ label {
 }
 
 .admin-dashboard a {
-    color: #3498db;
+    color: #007bff;
     text-decoration: none;
     transition: color 0.2s ease-in-out;
 }
