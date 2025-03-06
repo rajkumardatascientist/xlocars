@@ -298,7 +298,7 @@ footer a:hover {
 /* Mobile Specific Adjustments for Home Page Grid */
 @media (max-width: 768px) {
     .car-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); /* 2 items per coloum */
         gap: 10px;
         padding: 10px;
     }
@@ -412,40 +412,43 @@ footer a:hover {
 }
 
 /* ==========================================================================
-   Filter Sidebar Styles
+   Filter Section Styles
    ========================================================================== */
 
-.filter-sidebar {
+.filter-section {
+    background-color: #f8f9fa; /* Optional: Background color */
     padding: 20px;
-    background-color: #f8f9fa;
-    border-right: 1px solid #dee2e6;
-    height: 100%;
-    box-sizing: border-box;
-    max-width: 300px;
-    word-wrap: break-word;
+    border-bottom: 1px solid #ddd;
 }
 
-.filter-group {
-    margin-bottom: 20px;
+.filter-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
 }
 
-.filter-group h4 {
-    font-size: 1.2rem;
+.filter-section form {
+    display: flex;
+    flex-wrap: wrap; /* Important for responsiveness */
+    align-items: center; /* Vertically align items */
+}
+
+.filter-section .form-group {
     margin-bottom: 10px;
+    padding-right: 15px; /* Space between form elements */
+    flex: 1 0 200px;    /* Distribute form elements */
 }
 
-.filter-group ul {
-    list-style: none;
-    padding: 0;
-}
+/* Media Query for Mobile Responsiveness */
+@media (max-width: 768px) {
+    .filter-section form {
+        flex-direction: column;  /* Stack form elements vertically on smaller screens */
+        align-items: stretch; /* Stretch items to fill available width */
+    }
 
-.filter-group li {
-    margin-bottom: 5px;
-}
-
-.filter-group li a.active {
-    font-weight: bold;
-    color: #007bff;
+    .filter-section .form-group {
+        padding-right: 0; /* Remove padding */
+        width: 100%;  /* Occupy full width */
+    }
 }
 
 /* ==========================================================================
@@ -474,6 +477,15 @@ label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
+}
+
+/* Add this style to limit the width of the district SelectField inside of your filter form */
+#district {
+    max-width: 200px; /* adjust the width */
+}
+
+#state {
+    max-width: 200px; /* adjust the width */
 }
 
 .filter-sidebar form .form-group {
@@ -846,7 +858,7 @@ label {
 /* Mobile adjustments for Listing Page Grid */
 @media (max-width: 768px) {
     .listing-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); /* 2 items per coloum */
         gap: 10px;
         padding: 10px;
     }
