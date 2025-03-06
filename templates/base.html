@@ -472,6 +472,32 @@
         });
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const stateSelect = document.getElementById('state'); // Get the state select element
+            if (stateSelect) { // Check if the select exists (important for pages where state is not present)
+                stateSelect.addEventListener('change', function() {
+                    var state = this.value;
+                    var districtSelect = document.getElementById('district');
+                    if (districtSelect) {
+                        districtSelect.innerHTML = '<option value="">All Districts</option>';  // Clear existing options
+
+                        {% for state, districts in indian_states_districts.items() %}
+                            if (state === '{{ state }}') {
+                                {% for district in districts %}
+                                    var option = document.createElement('option');
+                                    option.value = '{{ district }}';
+                                    option.text = '{{ district }}';
+                                    districtSelect.add(option);
+                                {% endfor %}
+                            }
+                        {% endfor %}
+                    }
+                });
+            }
+        });
+    </script>
+
     {% block scripts %}
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
         <script>
