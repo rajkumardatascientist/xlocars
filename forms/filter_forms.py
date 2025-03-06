@@ -1,8 +1,9 @@
 # forms/filter_forms.py
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SubmitField
+from wtforms import StringField, SelectField, SubmitField, FieldList, BooleanField
 from wtforms.validators import Optional
-from locations import indian_states_districts
+from locations import indian_states_districts  # Import at the top
+
 
 class CarFilterForm(FlaskForm):
     make = SelectField('Make', choices=[('', 'All Makes')], validators=[Optional()])
