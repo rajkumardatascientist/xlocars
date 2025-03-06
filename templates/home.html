@@ -241,15 +241,67 @@
         </div>
     </section>
 
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="container">
+            <h2>Filter Cars</h2>
+            <form method="POST" action="{{ url_for('cars.home') }}" class="row">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group col-md-4">
+                  {{ form.make.label(class="form-control-label") }}
+                  {{ form.make(class="form-control form-control-lg") }}
+                </div>
+
+                <div class="form-group col-md-4">
+                  {{ form.model.label(class="form-control-label") }}
+                  {{ form.model(class="form-control form-control-lg") }}
+                </div>
+
+                 <div class="form-group col-md-4">
+                    {{ form.state.label(class="form-control-label") }}
+                    {{ form.state(class="form-control form-control-lg", id="state") }}
+                </div>
+
+               <div class="form-group col-md-4">
+                    {{ form.district.label(class="form-control-label") }}
+                    {{ form.district(class="form-control form-control-lg", id="district") }}
+                </div>
+
+                 <div class="form-group col-md-2">
+                  {{ form.year_min.label(class="form-control-label") }}
+                  {{ form.year_min(class="form-control form-control-lg", placeholder="Min") }}
+                </div>
+                <div class="form-group col-md-2">
+                  {{ form.year_max.label(class="form-control-label") }}
+                  {{ form.year_max(class="form-control form-control-lg", placeholder="Max") }}
+                </div>
+
+                <div class="form-group col-md-2">
+                  {{ form.price_min.label(class="form-control-label") }}
+                  {{ form.price_min(class="form-control form-control-lg", placeholder="Min") }}
+                </div>
+                <div class="form-group col-md-2">
+                  {{ form.price_max.label(class="form-control-label") }}
+                  {{ form.price_max(class="form-control form-control-lg", placeholder="Max") }}
+                </div>
+
+                <div class="form-group col-md-4">
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </section>
+
     <!-- Featured Listings -->
     <section class="featured-listings">
         <div class="container">
             <h2>Featured Cars</h2>
-            <div class="grid-container">  <!-- ADDED GRID CONTAINER -->
+            <div class="grid-container">
                 {% with cars=featured_cars, makes=makes, models=models, datetime=datetime, timezone=timezone, indian_states_districts=indian_states_districts, selected_state=selected_district %}
                     {% include 'car_grid.html' %}
                 {% endwith %}
-            </div> <!-- END GRID CONTAINER -->
+            </div>
         </div>
     </section>
 
@@ -257,11 +309,11 @@
     <section class="all-listings">
         <div class="container">
             <h2>Latest Listings</h2>
-            <div class="grid-container">  <!-- ADDED GRID CONTAINER -->
+            <div class="grid-container">
                 {% with cars=cars, makes=makes, models=models, datetime=datetime, timezone=timezone, indian_states_districts=indian_states_districts, selected_state=selected_district %}
                     {% include 'car_grid.html' %}
                 {% endwith %}
-            </div> <!-- END GRID CONTAINER -->
+            </div>
         </div>
     </section>
 
@@ -351,6 +403,24 @@
                     spaceBetween: 30,
                 });
             });
+        });
+    </script>
+    <script>
+        document.getElementById('state').addEventListener('change', function() {
+            var state = this.value;
+            var districtSelect = document.getElementById('district');
+            districtSelect.innerHTML = '<option value="">All Districts</option>';  // Clear existing options
+
+            {% for state, districts in indian_states_districts.items() %}
+                if (state === '{{ state }}') {
+                    {% for district in districts %}
+                        var option = document.createElement('option');
+                        option.value = '{{ district }}';
+                        option.text = '{{ district }}';
+                        districtSelect.add(option);
+                    {% endfor %}
+                }
+            {% endfor %}
         });
     </script>
 </body>
