@@ -2,7 +2,6 @@
 import os
 from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, session
 from forms.car_forms import CarForm
-from forms.filter_forms import CarFilterForm
 from forms.interested_forms import InterestedForm
 from models import Car, InterestedBuyers, Wishlist, Appointment, Image, ReportedAds
 from app import db, app
@@ -76,17 +75,8 @@ def upload_to_imgur(image):
 @cars_bp.route("/", methods=['GET', 'POST'])
 def home():
     """Displays the homepage with car listings."""
-    form = CarFilterForm(request.form)  # Instantiate the filter form
     state = request.args.get('state')
     district = request.args.get('district')
-
-    if request.method == 'POST':
-        # Handle district choices based on state selection
-        state = request.form.get('state')
-        if state and state in indian_states_districts:
-            form.district.choices = [('', 'All Districts')] + [(d, d) for d in indian_states_districts[state]]
-        else:
-            form.district.choices = [('', 'All Districts')]
 
     if state:
         session['selected_state'] = state
@@ -98,30 +88,10 @@ def home():
 
     try:
         with app.app_context():
-            # Populate filter form choices (for display)
             makes, models = populate_filters()
-            form.make.choices = [('', 'All Makes')] + [(m.make, m.make) for m in makes]  # Populate 'make' choices
-            form.model.choices = [('', 'All Models')] + [(m.model, m.model) for m in models]  # Populate 'model' choices
-
             cars_query = Car.query.filter_by(status=CarStatus.ACTIVE).options(joinedload(Car.images))
 
-            if form.validate_on_submit(): #Apply filters if the forms is submitted
-              if form.state.data:
-                 cars_query = cars_query.filter_by(state=form.state.data)
-              if form.district.data:
-                 cars_query = cars_query.filter_by(district=form.district.data)
-              if form.make.data:
-                 cars_query = cars_query.filter_by(make=form.make.data)
-              if form.model.data:
-                 cars_query = cars_query.filter_by(model=form.model.data)
-
-              # New filters
-              if form.owner_type.data == 'first':
-                    cars_query = cars_query.filter(Car.no_of_owners == 1)  # Filter for first owner
-              elif form.owner_type.data == 'second':
-                  cars_query = cars_query.filter(Car.no_of_owners == 2)  # Adjust based on how owner numbers are modeled
-
-            elif state:
+            if state:
                 cars_query = cars_query.filter_by(state=state)
             if district:
                 cars_query = cars_query.filter_by(district=district)
@@ -135,7 +105,6 @@ def home():
                                    indian_states_districts=indian_states_districts,
                                    selected_state=state,
                                    selected_district=district,
-                                   form=form #Pass the forms as argument
                                    )
     except Exception as e:
         logging.exception("Error in home route: %s", e)
@@ -469,7 +438,7 @@ def report_ad(car_id):
     return render_template('report_ad.html', form=form, car=car)
 
 
-@cars_bp.route("/delete_car/<int:car_id}", methods=['POST'])
+@cars_bp.route("/delete_car/<int:car_id>", methods=['POST'])
 @login_required
 def delete_car(car_id):
     """Deletes a car listing."""
@@ -492,7 +461,7 @@ def delete_car(car_id):
     return redirect(url_for('dashboard.seller'))  # Redirect to seller dashboard
 
 
-@cars_bp.route("/pause_car/<int:car_id}", methods=['POST'])
+@cars_bp.route("/pause_car/<int:car_id>", methods=['POST'])
 @login_required
 def pause_car(car_id):
     """Pauses a car listing (sets is_active to False)."""
@@ -515,7 +484,7 @@ def pause_car(car_id):
 
     return redirect(url_for('dashboard.seller'))  # Redirect to seller dashboard
 
-@cars_bp.route("/unpause_car/<int:car_id}", methods=['POST'])
+@cars_bp.route("/unpause_car/<int:car_id>", methods=['POST'])
 @login_required
 def unpause_car(car_id):
     """Unpauses a car listing (sets is_active to True)."""
