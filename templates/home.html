@@ -258,32 +258,19 @@
                   {{ form.model(class="form-control form-control-lg") }}
                 </div>
 
-                 <div class="form-group col-md-4">
+                <div class="form-group col-md-4">
                     {{ form.state.label(class="form-control-label") }}
-                    {{ form.state(class="form-control form-control-lg", id="state") }}
+                    {{ form.state(class="form-control form-control-lg") }}
                 </div>
 
-               <div class="form-group col-md-4">
+                <div class="form-group col-md-4">
                     {{ form.district.label(class="form-control-label") }}
-                    {{ form.district(class="form-control form-control-lg", id="district") }}
+                    {{ form.district(class="form-control form-control-lg") }}
                 </div>
 
-                 <div class="form-group col-md-2">
-                  {{ form.year_min.label(class="form-control-label") }}
-                  {{ form.year_min(class="form-control form-control-lg", placeholder="Min") }}
-                </div>
-                <div class="form-group col-md-2">
-                  {{ form.year_max.label(class="form-control-label") }}
-                  {{ form.year_max(class="form-control form-control-lg", placeholder="Max") }}
-                </div>
-
-                <div class="form-group col-md-2">
-                  {{ form.price_min.label(class="form-control-label") }}
-                  {{ form.price_min(class="form-control form-control-lg", placeholder="Min") }}
-                </div>
-                <div class="form-group col-md-2">
-                  {{ form.price_max.label(class="form-control-label") }}
-                  {{ form.price_max(class="form-control form-control-lg", placeholder="Max") }}
+                <div class="form-group col-md-4">
+                    {{ form.owner_type.label(class="form-control-label") }}
+                    {{ form.owner_type(class="form-control form-control-lg") }}
                 </div>
 
                 <div class="form-group col-md-4">
@@ -403,24 +390,6 @@
                     spaceBetween: 30,
                 });
             });
-        });
-    </script>
-    <script>
-        document.getElementById('state').addEventListener('change', function() {
-            var state = this.value;
-            var districtSelect = document.getElementById('district');
-            districtSelect.innerHTML = '<option value="">All Districts</option>';  // Clear existing options
-
-            {% for state, districts in indian_states_districts.items() %}
-                if (state === '{{ state }}') {
-                    {% for district in districts %}
-                        var option = document.createElement('option');
-                        option.value = '{{ district }}';
-                        option.text = '{{ district }}';
-                        districtSelect.add(option);
-                    {% endfor %}
-                }
-            {% endfor %}
         });
     </script>
 </body>
