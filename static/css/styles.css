@@ -298,7 +298,7 @@ footer a:hover {
 /* Mobile Specific Adjustments for Home Page Grid */
 @media (max-width: 768px) {
     .car-grid {
-        grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); /* 2 items per coloum */
+        grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); /* Min width is still 45% */
         gap: 10px;
         padding: 10px;
     }
@@ -416,14 +416,14 @@ footer a:hover {
    ========================================================================== */
 
 .filter-section {
-    background-color: #f8f9fa; /* Optional: Background color */
-    padding: 20px;
+    background-color: #f8f9fa;
+    padding: 15px; /* Reduce padding */
     border-bottom: 1px solid #ddd;
 }
 
 .filter-section h2 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
+    font-size: 1.2rem; /* Reduce heading size */
+    margin-bottom: 10px; /* Reduce margin */
 }
 
 .filter-section form {
@@ -433,21 +433,47 @@ footer a:hover {
 }
 
 .filter-section .form-group {
-    margin-bottom: 10px;
-    padding-right: 15px; /* Space between form elements */
-    flex: 1 0 200px;    /* Distribute form elements */
+    margin-bottom: 8px; /* Reduce margin */
+    padding-right: 10px; /* Reduce padding */
+    flex: 1 0 150px;    /* Distribute form elements */
+}
+
+.filter-section label {
+    font-size: 0.9rem; /* Reduce label size */
+    margin-bottom: 3px; /* Reduce margin */
+}
+
+.filter-section .form-control {
+    padding: 0.5rem; /* Reduce padding on form controls */
+    font-size: 0.9rem; /* Reduce font size on form controls */
 }
 
 /* Media Query for Mobile Responsiveness */
 @media (max-width: 768px) {
+    .filter-section {
+        padding: 10px; /* Further reduce padding */
+    }
+
+    .filter-section h2 {
+        font-size: 1.1rem; /* Further reduce heading size */
+        margin-bottom: 8px; /* Further reduce margin */
+    }
+
     .filter-section form {
-        flex-direction: column;  /* Stack form elements vertically on smaller screens */
-        align-items: stretch; /* Stretch items to fill available width */
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .filter-section .form-group {
-        padding-right: 0; /* Remove padding */
-        width: 100%;  /* Occupy full width */
+        padding-right: 0;
+        width: 100%;
+        margin-bottom: 5px; /* Even smaller margin */
+    }
+
+        /* Style the Filter button in Mobile */
+    .filter-section form .btn {
+        padding: 0.5rem 0.75rem; /* Reduce button padding */
+        font-size: 0.9rem; /* Reduce button font size */
     }
 }
 
@@ -691,6 +717,7 @@ label {
     object-fit: cover;
     display: block;
     margin: auto;
+    transition: opacity 0.3s ease;
 }
 
 .car-tags {
@@ -858,7 +885,7 @@ label {
 /* Mobile adjustments for Listing Page Grid */
 @media (max-width: 768px) {
     .listing-grid {
-        grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); /* 2 items per coloum */
+       grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); /* Try out this */
         gap: 10px;
         padding: 10px;
     }
