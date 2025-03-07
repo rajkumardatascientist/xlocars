@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Metadata and CSS links -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
@@ -217,20 +218,18 @@
             </div>
         </div>
     </nav>
-
     <div class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
-
-    <!-- Hero Section -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+<!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
             <h1>XloCars: Buy & Sell Cars Directly!</h1>
@@ -246,40 +245,39 @@
         <div class="container">
             <h2>Filter Cars</h2>
             <form method="POST" action="{{ url_for('cars.home') }}" class="row">
-                {{ form.hidden_tag() }}
+                {{ filter_form.hidden_tag() }}
 
                 <div class="form-group col-md-4">
-                  {{ form.make.label(class="form-control-label") }}
-                  {{ form.make(class="form-control form-control-lg") }}
+                    {{ filter_form.make.label(class="form-control-label") }}
+                    {{ filter_form.make(class="form-control form-control-lg") }}
                 </div>
 
                 <div class="form-group col-md-4">
-                  {{ form.model.label(class="form-control-label") }}
-                  {{ form.model(class="form-control form-control-lg") }}
+                    {{ filter_form.model.label(class="form-control-label") }}
+                    {{ filter_form.model(class="form-control form-control-lg") }}
                 </div>
 
                 <div class="form-group col-md-4">
-                    {{ form.state.label(class="form-control-label") }}
-                    {{ form.state(class="form-control form-control-lg") }}
+                    {{ filter_form.state.label(class="form-control-label") }}
+                    {{ filter_form.state(class="form-control form-control-lg") }}
                 </div>
 
                 <div class="form-group col-md-4">
-                    {{ form.district.label(class="form-control-label") }}
-                    {{ form.district(class="form-control form-control-lg") }}
+                    {{ filter_form.district.label(class="form-control-label") }}
+                    {{ filter_form.district(class="form-control form-control-lg") }}
                 </div>
 
                 <div class="form-group col-md-4">
-                    {{ form.owner_type.label(class="form-control-label") }}
-                    {{ form.owner_type(class="form-control form-control-lg") }}
+                    {{ filter_form.owner_type.label(class="form-control-label") }}
+                    {{ filter_form.owner_type(class="form-control form-control-lg") }}
                 </div>
 
                 <div class="form-group col-md-4">
-                    {{ form.submit(class="btn btn-primary") }}
+                    {{ filter_form.submit(class="btn btn-primary") }}
                 </div>
             </form>
-        </div>
-    </section>
-
+    </div>
+</section>
     <!-- Featured Listings -->
     <section class="featured-listings">
         <div class="container">
