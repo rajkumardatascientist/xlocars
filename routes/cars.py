@@ -85,10 +85,13 @@ def home():
     if request.method == 'POST':
         # Handle district choices based on state selection
         state = request.form.get('state')
+        print(f"Selected state from form: {state}") # ADDED THIS LINE
         if state and state in indian_states_districts:
             filter_form.district.choices = [('', 'All Districts')] + [(d, d) for d in indian_states_districts[state]]
+            print(f"District choices after setting: {filter_form.district.choices}") # ADDED THIS LINE
         else:
             filter_form.district.choices = [('', 'All Districts')]
+            print("State not found in indian_states_districts or no state selected.") # ADDED THIS LINE
 
     if state:
         session['selected_state'] = state
