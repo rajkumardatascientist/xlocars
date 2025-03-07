@@ -20,7 +20,6 @@ from forms.appointment_forms import AppointmentForm
 from models.payment import PaymentStatus, BuyerPayments
 import requests  # For Imgur upload
 from models.car import CarStatus  # Import the CarStatus Enum
-from forms.home_forms import MinimalForm  # Import MinimalForm
 from forms.filter_forms import CarFilterForm  # Import filter form
 
 try:
@@ -78,10 +77,10 @@ def upload_to_imgur(image):
 def home():
     """Displays the homepage with car listings."""
     filter_form = CarFilterForm(request.form)
-    minimal_form = MinimalForm(request.form)  # Instantiate the filter form for base
     state = request.args.get('state')
     district = request.args.get('district')
 
+    # Set district choice list
     if request.method == 'POST':
         # Handle district choices based on state selection
         state = request.form.get('state')
@@ -108,20 +107,23 @@ def home():
             cars_query = Car.query.filter_by(status=CarStatus.ACTIVE).options(joinedload(Car.images))
 
             if filter_form.validate_on_submit(): #Apply filters if the forms is submitted
-              if filter_form.state.data:
-                 cars_query = cars_query.filter_by(state=filter_form.state.data)
-              if filter_form.district.data:
-                 cars_query = cars_query.filter_by(district=filter_form.district.data)
-              if filter_form.make.data:
-                 cars_query = cars_query.filter_by(make=filter_form.make.data)
-              if filter_form.model.data:
-                 cars_query = cars_query.filter_by(model=filter_form.model.data)
+                print("validated")
+                #Apply filters if the forms is submitted
+                if filter_form.state.data:
+                     cars_query = cars_query.filter_by(state=filter_form.state.data)
+                if filter_form.district.data:
+                     cars_query = cars_query.filter_by(district=filter_form.district.data)
+                if filter_form.make.data:
+                     cars_query = cars_query.filter_by(make=filter_form.make.data)
+                if filter_form.model.data:
+                     cars_query = cars_query.filter_by(model=filter_form.model.data)
 
               # New filters
-              if filter_form.owner_type.data == 'first':
-                    cars_query = cars_query.filter(Car.no_of_owners == 1)  # Filter for first owner
-              elif filter_form.owner_type.data == 'second':
-                  cars_query = cars_query.filter(Car.no_of_owners == 2)  # Adjust based on how owner numbers are modeled
+                if filter_form.owner_type.data:
+                    if filter_form.owner_type.data == '1':
+                        cars_query = cars_query.filter(Car.no_of_owners == 1)  # Filter for first owner
+                    elif filter_form.owner_type.data == '2':
+                        cars_query = cars_query.filter(Car.no_of_owners == 2)  # Adjust based on how owner numbers are modeled
 
             elif state:
                 cars_query = cars_query.filter_by(state=state)
@@ -137,7 +139,6 @@ def home():
                                    indian_states_districts=indian_states_districts,
                                    selected_state=state,
                                    selected_district=district,
-                                   form=minimal_form, #Pass the minimal_form here, for base page
                                    filter_form=filter_form
                                    )
     except Exception as e:
