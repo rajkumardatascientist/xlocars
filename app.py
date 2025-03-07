@@ -39,6 +39,8 @@ except ImportError as e:
     print(f"ImportError: Could not import indian_states_districts from locations.py.  Please verify the file exists and is in the correct directory. {e}") # ADDED THIS LINE FOR DIAGNOSTICS
     indian_states_districts = {}  # Fallback, so the app doesn't crash during development. REMOVE in production!
 
+# Import Forms that are needed to be loaded
+from forms.home_forms import MinimalForm  # IMPORT IT HERE
 
 
 # Define Indian states (moved here to be accessible globally within the app)
@@ -57,7 +59,8 @@ def inject_template_globals():
         current_user=current_user,
         indian_states_districts = indian_states_districts,  # ADD THIS LINE
         datetime=datetime, # ADD THIS LINE
-        timezone=timezone
+        timezone=timezone,
+        form=MinimalForm()  # Load the minimal form so this is called on ALL templates
        )
 
 # Define a Jinja2 filter to get the current date and time
