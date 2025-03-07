@@ -19,4 +19,12 @@ class CarFilterForm(FlaskForm):
             self.state.choices = [('', 'All States')] + [(state, state) for state in indian_states_districts.keys()]
         except:
             self.state.choices = [('', 'All States')] # Default State
-        self.district.choices = [('', 'All Districts')]
+
+        # Add the following line to initialise the states!
+        if 'state' in kwargs and kwargs['state']:
+            try:
+                self.district.choices = [('', 'All Districts')] + [(d, d) for d in indian_states_districts.get(kwargs['state'], [])]
+            except:
+                self.district.choices = [('', 'All Districts')]
+        else:
+            self.district.choices = [('', 'All Districts')] # Default
