@@ -59,8 +59,7 @@ def inject_template_globals():
         current_user=current_user,
         indian_states_districts = indian_states_districts,  # ADD THIS LINE
         datetime=datetime, # ADD THIS LINE
-        timezone=timezone,
-        form=MinimalForm()  # Load the minimal form so this is called on ALL templates
+        timezone=timezone
        )
 
 # Define a Jinja2 filter to get the current date and time
@@ -81,7 +80,7 @@ def about():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template('404.html', form = MinimalForm()), 404
 
 # Create database tables within the application context
 with app.app_context():
