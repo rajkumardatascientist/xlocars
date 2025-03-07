@@ -20,6 +20,8 @@ from forms.appointment_forms import AppointmentForm
 from models.payment import PaymentStatus, BuyerPayments
 import requests  # For Imgur upload
 from models.car import CarStatus  # Import the CarStatus Enum
+from forms.home_forms import MinimalForm  # Import MinimalForm
+from forms.filter_forms import CarFilterForm  # Import filter form
 
 try:
     from locations import indian_states_districts
@@ -75,8 +77,18 @@ def upload_to_imgur(image):
 @cars_bp.route("/", methods=['GET', 'POST'])
 def home():
     """Displays the homepage with car listings."""
+    filter_form = CarFilterForm(request.form)
+    minimal_form = MinimalForm(request.form)  # Instantiate the filter form for base
     state = request.args.get('state')
     district = request.args.get('district')
+
+    if request.method == 'POST':
+        # Handle district choices based on state selection
+        state = request.form.get('state')
+        if state and state in indian_states_districts:
+            filter_form.district.choices = [('', 'All Districts')] + [(d, d) for d in indian_states_districts[state]]
+        else:
+            filter_form.district.choices = [('', 'All Districts')]
 
     if state:
         session['selected_state'] = state
@@ -88,10 +100,30 @@ def home():
 
     try:
         with app.app_context():
+            # Populate filter form choices (for display)
             makes, models = populate_filters()
+            filter_form.make.choices = [('', 'All Makes')] + [(m.make, m.make) for m in makes]  # Populate 'make' choices
+            filter_form.model.choices = [('', 'All Models')] + [(m.model, m.model) for m in models]  # Populate 'model' choices
+
             cars_query = Car.query.filter_by(status=CarStatus.ACTIVE).options(joinedload(Car.images))
 
-            if state:
+            if filter_form.validate_on_submit(): #Apply filters if the forms is submitted
+              if filter_form.state.data:
+                 cars_query = cars_query.filter_by(state=filter_form.state.data)
+              if filter_form.district.data:
+                 cars_query = cars_query.filter_by(district=filter_form.district.data)
+              if filter_form.make.data:
+                 cars_query = cars_query.filter_by(make=filter_form.make.data)
+              if filter_form.model.data:
+                 cars_query = cars_query.filter_by(model=filter_form.model.data)
+
+              # New filters
+              if filter_form.owner_type.data == 'first':
+                    cars_query = cars_query.filter(Car.no_of_owners == 1)  # Filter for first owner
+              elif filter_form.owner_type.data == 'second':
+                  cars_query = cars_query.filter(Car.no_of_owners == 2)  # Adjust based on how owner numbers are modeled
+
+            elif state:
                 cars_query = cars_query.filter_by(state=state)
             if district:
                 cars_query = cars_query.filter_by(district=district)
@@ -105,6 +137,8 @@ def home():
                                    indian_states_districts=indian_states_districts,
                                    selected_state=state,
                                    selected_district=district,
+                                   form=minimal_form, #Pass the minimal_form here, for base page
+                                   filter_form=filter_form
                                    )
     except Exception as e:
         logging.exception("Error in home route: %s", e)
