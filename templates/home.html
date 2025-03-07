@@ -259,12 +259,12 @@
 
                 <div class="form-group col-sm-6 col-md-4">
                     {{ filter_form.state.label(class="form-control-label") }}
-                    {{ filter_form.state(class="form-control form-control-lg") }}
+                    {{ filter_form.state(class="form-control form-control-lg", id="state") }}
                 </div>
 
                 <div class="form-group col-sm-6 col-md-4">
                     {{ filter_form.district.label(class="form-control-label") }}
-                    {{ filter_form.district(class="form-control form-control-lg") }}
+                    {{ filter_form.district(class="form-control form-control-lg", id="district") }}
                 </div>
 
                 <div class="form-group col-sm-6 col-md-4">
@@ -366,6 +366,43 @@
             });
         });
     </script>
+
+  <!-- Dynamic District Dropdown Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const stateSelect = document.getElementById("state"); // Get the state select element
+
+      if (stateSelect) { // Check if the select exists (important for pages where state is not present)
+        stateSelect.addEventListener("change", function() {
+          let state = this.value;
+          let districtDropdown = document.getElementById("district");
+
+          // Clear previous options
+          districtDropdown.innerHTML = '<option value="">All Districts</option>';
+
+          if (state) {
+            fetch(`/cars/get-districts?state=${state}`) // Corrected URL to use Blueprint
+              .then(response => response.json())
+              .then(data => {
+                console.log("Districts:", data.districts)
+                data.districts.forEach(district => {
+                  let option = document.createElement("option");
+                  option.value = district;
+                  option.textContent = district;
+                  districtDropdown.appendChild(option);
+                });
+              })
+              .catch(error => console.error("Error fetching districts:", error));
+          }
+        });
+
+        // Trigger change event on initial load if a state is already selected
+        if (stateSelect.value) {
+          stateSelect.dispatchEvent(new Event('change'));
+        }
+      }
+    });
+  </script>
 
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script>
