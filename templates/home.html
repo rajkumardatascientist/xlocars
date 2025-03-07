@@ -308,6 +308,12 @@
                 <form method="POST" action="{{ url_for('cars.home') }}" class="row">
                     {{ filter_form.hidden_tag() }}
 
+                    <!-- New Search Form -->
+                    <div class="form-group col-12">
+                        <input type="text" name="query" class="form-control" placeholder="Search Cars">
+                        <button type="submit" class="btn btn-primary mt-2">Search</button>
+                    </div>
+
                     <div class="form-group col-sm-6 col-md-4">
                         {{ filter_form.make.label(class="form-control-label") }}
                         {{ filter_form.make(class="form-control form-control-lg") }}
