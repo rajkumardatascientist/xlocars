@@ -247,32 +247,32 @@
             <form method="POST" action="{{ url_for('cars.home') }}" class="row">
                 {{ filter_form.hidden_tag() }}
 
-                <div class="form-group col-md-4">
+                <div class="form-group col-sm-6 col-md-4">
                     {{ filter_form.make.label(class="form-control-label") }}
                     {{ filter_form.make(class="form-control form-control-lg") }}
                 </div>
 
-                <div class="form-group col-md-4">
+                <div class="form-group col-sm-6 col-md-4">
                     {{ filter_form.model.label(class="form-control-label") }}
                     {{ filter_form.model(class="form-control form-control-lg") }}
                 </div>
 
-                <div class="form-group col-md-4">
+                <div class="form-group col-sm-6 col-md-4">
                     {{ filter_form.state.label(class="form-control-label") }}
                     {{ filter_form.state(class="form-control form-control-lg") }}
                 </div>
 
-                <div class="form-group col-md-4">
+                <div class="form-group col-sm-6 col-md-4">
                     {{ filter_form.district.label(class="form-control-label") }}
                     {{ filter_form.district(class="form-control form-control-lg") }}
                 </div>
 
-                <div class="form-group col-md-4">
+                <div class="form-group col-sm-6 col-md-4">
                     {{ filter_form.owner_type.label(class="form-control-label") }}
                     {{ filter_form.owner_type(class="form-control form-control-lg") }}
                 </div>
 
-                <div class="form-group col-md-4">
+                <div class="form-group col-sm-6 col-md-4">
                     {{ filter_form.submit(class="btn btn-primary") }}
                 </div>
             </form>
