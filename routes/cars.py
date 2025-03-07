@@ -1,6 +1,6 @@
 # routes/cars.py
 import os
-from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, session
+from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, session, jsonify
 from forms.car_forms import CarForm
 from forms.interested_forms import InterestedForm
 from models import Car, InterestedBuyers, Wishlist, Appointment, Image, ReportedAds
@@ -235,6 +235,14 @@ def new_car():
                            form=form,
                            legend='New Car Ad')
 
+@cars_bp.route("/get-districts", methods=["GET"])
+def get_districts():
+    state = request.args.get("state")
+    try:
+        districts = indian_states_districts.get(state, [])
+    except NameError:
+        districts = []
+    return jsonify({"districts": districts})
 
 def save_picture(form_image):
     """Saves the uploaded picture and returns the filename."""
