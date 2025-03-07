@@ -302,8 +302,35 @@ footer a:hover {
         gap: 10px;
         padding: 10px;
     }
-    .car-card {
-        border-radius: 12px;
+
+    .listing-card {
+        min-height: 250px; /* Reduced minimum height */
+    }
+
+    .car-details {
+        padding: 10px; /* Reduced padding for mobile */
+    }
+
+    .car-title {
+        font-size: 1rem; /* Smaller title size */
+        margin-bottom: 3px;
+    }
+
+    .car-price {
+        font-size: 0.9rem; /* Smaller price size */
+        margin-bottom: 5px;
+    }
+
+    .car-info, .car-specs {
+        font-size: 0.8rem; /* Smaller info/specs size */
+    }
+
+    .view-details {
+        font-size: 0.8rem; /* Smaller button size */
+        padding: 6px 10px;
+    }
+     .image-slider {
+        height: 200px; /* Reduce image slider height */
     }
 }
 
@@ -890,8 +917,8 @@ label {
         padding: 10px;
     }
 
-     .listing-card {
-        min-height: auto; /* Let content determine height */
+    .listing-card {
+        min-height: 250px; /* Reduced minimum height */
     }
 
     .car-details {
@@ -900,10 +927,12 @@ label {
 
     .car-title {
         font-size: 1rem; /* Smaller title size */
+        margin-bottom: 3px;
     }
 
     .car-price {
         font-size: 0.9rem; /* Smaller price size */
+        margin-bottom: 5px;
     }
 
     .car-info, .car-specs {
@@ -913,5 +942,8 @@ label {
     .view-details {
         font-size: 0.8rem; /* Smaller button size */
         padding: 6px 10px;
+    }
+     .image-slider {
+        height: 200px; /* Reduce image slider height */
     }
 }
