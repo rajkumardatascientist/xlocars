@@ -20,6 +20,7 @@ from forms.appointment_forms import AppointmentForm
 from models.payment import PaymentStatus, BuyerPayments
 import requests  # For Imgur upload
 from models.car import CarStatus  # Import the CarStatus Enum
+from forms.home_forms import MinimalForm  # Import MinimalForm
 from forms.filter_forms import CarFilterForm  # Import filter form
 
 try:
