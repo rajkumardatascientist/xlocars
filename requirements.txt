@@ -10,4 +10,5 @@ Pillow
 pytesseract
 email_validator
 requests
+pytz
 
