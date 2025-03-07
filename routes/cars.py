@@ -77,26 +77,25 @@ def upload_to_imgur(image):
 @cars_bp.route("/", methods=['GET', 'POST'])
 def home():
     """Displays the homepage with car listings."""
-    filter_form = CarFilterForm(request.form)
+    # Pre-populate based on URL query parameters
     state = request.args.get('state')
     district = request.args.get('district')
 
-    # Set district choice list
-    if request.method == 'POST':
-        # Handle district choices based on state selection
-        state = request.form.get('state')
-        print(f"Selected state from form: {state}") # ADDED THIS LINE
-        if state and state in indian_states_districts:
-            filter_form.district.choices = [('', 'All Districts')] + [(d, d) for d in indian_states_districts[state]]
-            print(f"District choices after setting: {filter_form.district.choices}") # ADDED THIS LINE
-        else:
-            filter_form.district.choices = [('', 'All Districts')]
-            print("State not found in indian_states_districts or no state selected.") # ADDED THIS LINE
+    filter_form = CarFilterForm(request.form, state=state, district=district) #Populate it
 
+    # Initialise State (from the FilterForm first)
+    if state:
+        if state in indian_states_districts:
+            filter_form.district.choices = [('', 'All Districts')] + [(d, d) for d in indian_states_districts[state]] #Set state if state
+        else:
+            filter_form.district.choices = [('', 'All Districts')] #No State
+
+    # Handle storing the selection into the session
     if state:
         session['selected_state'] = state
     if district:
         session['selected_district'] = district
+
     elif 'selected_state' in session and 'selected_district' in session:  # If location is not available in args, read it from session
         state = session['selected_state']
         district = session['selected_district']
