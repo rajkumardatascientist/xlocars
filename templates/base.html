@@ -473,31 +473,41 @@
         });
     </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const stateSelect = document.getElementById('state'); // Get the state select element
-            if (stateSelect) { // Check if the select exists (important for pages where state is not present)
-                stateSelect.addEventListener('change', function() {
-                    var state = this.value;
-                    var districtSelect = document.getElementById('district');
-                    if (districtSelect) {
-                        districtSelect.innerHTML = '<option value="">All Districts</option>';  // Clear existing options
+  <!-- Dynamic District Dropdown Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const stateSelect = document.getElementById("state"); // Get the state select element
 
-                        {% for state, districts in indian_states_districts.items() %}
-                            if (state === '{{ state }}') {
-                                {% for district in districts %}
-                                    var option = document.createElement('option');
-                                    option.value = '{{ district }}';
-                                    option.text = '{{ district }}';
-                                    districtSelect.add(option);
-                                {% endfor %}
-                            }
-                        {% endfor %}
-                    }
+      if (stateSelect) { // Check if the select exists (important for pages where state is not present)
+        stateSelect.addEventListener("change", function() {
+          let state = this.value;
+          let districtDropdown = document.getElementById("district");
+
+          // Clear previous options
+          districtDropdown.innerHTML = '<option value="">All Districts</option>';
+
+          if (state) {
+            fetch(`/cars/get-districts?state=${state}`) // Corrected URL to use Blueprint
+              .then(response => response.json())
+              .then(data => {
+                data.districts.forEach(district => {
+                  let option = document.createElement("option");
+                  option.value = district;
+                  option.textContent = district;
+                  districtDropdown.appendChild(option);
                 });
-            }
+              })
+              .catch(error => console.error("Error fetching districts:", error));
+          }
         });
-    </script>
+
+        // Trigger change event on initial load if a state is already selected
+        if (stateSelect.value) {
+          stateSelect.dispatchEvent(new Event('change'));
+        }
+      }
+    });
+  </script>
 
     {% block scripts %}
         <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
