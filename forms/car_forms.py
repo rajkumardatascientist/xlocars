@@ -13,7 +13,7 @@ class CarForm(FlaskForm):
     description = TextAreaField("Description", validators=[DataRequired()])
     price = IntegerField("Price (INR)", validators=[DataRequired(), NumberRange(min=1)])
     year = IntegerField(
-        "Year", validators=[DataRequired(), NumberRange(min=2015, max=datetime.now().year)]
+        "Year", validators=[DataRequired(), NumberRange(min=1900, max=datetime.now().year)] #Modify to allow 1900 years and up
     )
     make = StringField("Make", validators=[DataRequired()])
     model = StringField("Model", validators=[DataRequired()])
@@ -64,6 +64,7 @@ class CarForm(FlaskForm):
             self.state.choices = [("No Locations", "No Locations")]  # if can't find location file
             self.district.choices = [("No Locations", "No Locations")]  # if can't find location file
 
-    def validate_year(self, year):
-        if year.data < 2015:
-            raise ValidationError("Year must be 2015 or later.")
+    # Delete this Validate_Year to allow any year
+    # def validate_year(self, year):
+    #    if year.data < 2015:
+    #        raise ValidationError("Year must be 2015 or later.")
