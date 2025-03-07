@@ -173,13 +173,15 @@
 
         /* Mobile Specific Styles */
         @media (max-width: 768px) {
-          .filter-section .content {
-            display: none; /* Initially hide filter content */
-          }
-          .filter-section h2 {
-            margin-bottom: 0; /* Adjust spacing for mobile */
-          }
-          /* Style the button that is used to open and close the collapsible content */
+            .filter-section .content {
+                display: none; /* Initially hide filter content */
+            }
+
+            .filter-section h2 {
+                margin-bottom: 0; /* Adjust spacing for mobile */
+            }
+
+            /* Style the button that is used to open and close the collapsible content */
             .collapsible {
                 background-color: #777;
                 color: white;
@@ -208,76 +210,113 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark top-tier">
-        <div class="container">
-            <a class="navbar-brand" href="/">Xlocars</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNavbarDropdown"
-                    aria-controls="topNavbarDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="topNavbarDropdown">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="locationDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-map-marker-alt fa-lg"></i>
-                            <span class="ml-1 d-none d-md-inline">
-                                {% if selected_state and selected_district %}
-                                    {{ selected_district }}, {{ selected_state }}
-                                {% else %}
-                                    Select Location
-                                {% endif %}
-                            </span>
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="locationDropdown">
-                            {% for state, districts in indian_states_districts.items() %}
-                                <div class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#">{{ state }}</a>
-                                    <div class="dropdown-menu">
-                                        {% for district in districts %}
-                                            <a class="dropdown-item"
-                                               href="{{ url_for('cars.home', state=state, district=district) }}">{{ district }}</a>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Search</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('cars.home') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('about.about') }}">About Us</a>
-                    </li>
-
-                    {# Account Dropdown #}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Account
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="accountDropdown">
-                            {% if current_user.is_authenticated %}
-                                <a class="dropdown-item" href="{{ url_for('cars.show_wishlist') }}">Wishlist</a>
-                                {% if current_user.is_admin %}
-                                    <a class="dropdown-item" href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
-                                {% endif %}
-                                <a class="dropdown-item" href="{{ url_for('cars.new_car') }}">Post Ad</a>
-                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
-                            {% else %}
-                                <a class="dropdown-item" href="{{ url_for('auth.login') }}">Login</a>
-                                <a class="dropdown-item" href="{{ url_for('auth.register') }}">Register</a>
-                            {% endif %}
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<nav class="navbar navbar-expand-lg navbar-dark top-tier">
     <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-car fa-lg mr-2"></i>  <!-- Car Icon -->
+            Xlocars
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNavbarDropdown"
+                aria-controls="topNavbarDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="topNavbarDropdown">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="locationDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-map-marker-alt fa-lg mr-1"></i>  <!-- Map Marker Icon -->
+                        <span class="ml-1 d-none d-md-inline">
+                            {% if selected_state and selected_district %}
+                                {{ selected_district }}, {{ selected_state }}
+                            {% else %}
+                                Select Location
+                            {% endif %}
+                        </span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="locationDropdown">
+                        {% for state, districts in indian_states_districts.items() %}
+                            <div class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">
+                                    <i class="fas fa-flag mr-2"></i> <!-- Flag Icon -->
+                                    {{ state }}
+                                </a>
+                                <div class="dropdown-menu">
+                                    {% for district in districts %}
+                                        <a class="dropdown-item"
+                                           href="{{ url_for('cars.home', state=state, district=district) }}">
+                                            <i class="fas fa-city mr-2"></i> <!-- City Icon -->
+                                            {{ district }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-search fa-lg mr-1"></i>  <!-- Search Icon -->
+                        Search
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('cars.home') }}">
+                        <i class="fas fa-home fa-lg mr-1"></i>  <!-- Home Icon -->
+                        Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('about.about') }}">
+                        <i class="fas fa-info-circle fa-lg mr-1"></i>  <!-- Info Circle Icon -->
+                        About Us
+                    </a>
+                </li>
+
+                {# Account Dropdown #}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user-circle fa-lg mr-1"></i> <!-- User Circle Icon -->
+                        Account
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="accountDropdown">
+                        {% if current_user.is_authenticated %}
+                            <a class="dropdown-item" href="{{ url_for('cars.show_wishlist') }}">
+                                <i class="fas fa-heart mr-2"></i> <!-- Heart Icon -->
+                                Wishlist
+                            </a>
+                            {% if current_user.is_admin %}
+                                <a class="dropdown-item" href="{{ url_for('admin.dashboard') }}">
+                                    <i class="fas fa-user-shield mr-2"></i> <!-- User Shield Icon -->
+                                    Admin Dashboard
+                                </a>
+                            {% endif %}
+                            <a class="dropdown-item" href="{{ url_for('cars.new_car') }}">
+                                <i class="fas fa-plus-circle mr-2"></i> <!-- Plus Circle Icon -->
+                                Post Ad
+                            </a>
+                            <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                <i class="fas fa-sign-out-alt mr-2"></i> <!-- Sign Out Icon -->
+                                Logout
+                            </a>
+                        {% else %}
+                            <a class="dropdown-item" href="{{ url_for('auth.login') }}">
+                                <i class="fas fa-sign-in-alt mr-2"></i> <!-- Sign In Icon -->
+                                Login
+                            </a>
+                            <a class="dropdown-item" href="{{ url_for('auth.register') }}">
+                                <i class="fas fa-user-plus mr-2"></i> <!-- User Plus Icon -->
+                                Register
+                            </a>
+                        {% endif %}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -289,227 +328,236 @@
     {% endwith %}
 </div>
 <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <h1>XloCars: Buy & Sell Cars Directly!</h1>
-            <p class="lead">First/Second Owner Cars (2015+) | No Brokers | List FREE | Nationwide Reach</p>
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('cars.new_car') }}" class="btn btn-success">Post an Ad</a>
-            {% endif %}
+<section class="hero-section">
+    <div class="container">
+        <h1>XloCars: Buy & Sell Cars Directly!</h1>
+        <p class="lead">First/Second Owner Cars (2015+) | No Brokers | List FREE | Nationwide Reach</p>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('cars.new_car') }}" class="btn btn-success">
+                <i class="fas fa-plus-circle mr-2"></i> <!-- Plus Circle Icon -->
+                Post an Ad
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Filter Section -->
+<section class="filter-section">
+    <div class="container">
+        <h2>Filter Cars</h2>
+        <button type="button" class="collapsible">Show/Hide Filters</button>
+        <div class="content">
+            <form method="POST" action="{{ url_for('cars.home') }}" class="row">
+                {{ filter_form.hidden_tag() }}
+
+                <div class="form-group col-sm-6 col-md-4">
+                    {{ filter_form.make.label(class="form-control-label") }}
+                    {{ filter_form.make(class="form-control form-control-lg") }}
+                </div>
+
+                <div class="form-group col-sm-6 col-md-4">
+                    {{ filter_form.model.label(class="form-control-label") }}
+                    {{ filter_form.model(class="form-control form-control-lg") }}
+                </div>
+
+                <div class="form-group col-sm-6 col-md-4">
+                    {{ filter_form.state.label(class="form-control-label") }}
+                    {{ filter_form.state(class="form-control form-control-lg", id="state") }}
+                </div>
+
+                <div class="form-group col-sm-6 col-md-4">
+                    {{ filter_form.district.label(class="form-control-label") }}
+                    {{ filter_form.district(class="form-control form-control-lg", id="district") }}
+                </div>
+
+                <div class="form-group col-sm-6 col-md-4">
+                    {{ filter_form.owner_type.label(class="form-control-label") }}
+                    {{ filter_form.owner_type(class="form-control form-control-lg") }}
+                </div>
+
+                <div class="form-group col-sm-6 col-md-4">
+                    {{ filter_form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
         </div>
-    </section>
+    </div>
+</section>
+<!-- Featured Listings -->
+<section class="featured-listings">
+    <div class="container">
+        <h2>Featured Cars</h2>
+        <div class="grid-container">
+            {% with cars=featured_cars, makes=makes, models=models, datetime=datetime, timezone=timezone, indian_states_districts=indian_states_districts, selected_state=selected_district %}
+                {% include 'car_grid.html' %}
+            {% endwith %}
+        </div>
+    </div>
+</section>
 
-    <!-- Filter Section -->
-    <section class="filter-section">
-        <div class="container">
-            <h2>Filter Cars</h2>
-            <button type="button" class="collapsible">Show/Hide Filters</button>
-            <div class="content">
-                <form method="POST" action="{{ url_for('cars.home') }}" class="row">
-                    {{ filter_form.hidden_tag() }}
+<!-- Car Listings -->
+<section class="all-listings">
+    <div class="container">
+        <h2>Latest Listings</h2>
+        <div class="grid-container">
+            {% with cars=cars, makes=makes, models=models, datetime=datetime, timezone=timezone, indian_states_districts=indian_states_districts, selected_state=selected_district %}
+                {% include 'car_grid.html' %}
+            {% endwith %}
+        </div>
+    </div>
+</section>
 
-                    <!-- New Search Form -->
-                    <div class="form-group col-12">
-                        <input type="text" name="query" class="form-control" placeholder="Search Cars">
-                        <button type="submit" class="btn btn-primary mt-2">Search</button>
-                    </div>
+<a href="https://wa.me/919380002829" class="whatsapp-float" target="_blank">
+    <i class="fab fa-whatsapp"></i>  <!-- WhatsApp Icon -->
+</a>
 
-                    <div class="form-group col-sm-6 col-md-4">
-                        {{ filter_form.make.label(class="form-control-label") }}
-                        {{ filter_form.make(class="form-control form-control-lg") }}
-                    </div>
-
-                    <div class="form-group col-sm-6 col-md-4">
-                        {{ filter_form.model.label(class="form-control-label") }}
-                        {{ filter_form.model(class="form-control form-control-lg") }}
-                    </div>
-
-                    <div class="form-group col-sm-6 col-md-4">
-                        {{ filter_form.state.label(class="form-control-label") }}
-                        {{ filter_form.state(class="form-control form-control-lg", id="state") }}
-                    </div>
-
-                    <div class="form-group col-sm-6 col-md-4">
-                        {{ filter_form.district.label(class="form-control-label") }}
-                        {{ filter_form.district(class="form-control form-control-lg", id="district") }}
-                    </div>
-
-                    <div class="form-group col-sm-6 col-md-4">
-                        {{ filter_form.owner_type.label(class="form-control-label") }}
-                        {{ filter_form.owner_type(class="form-control form-control-lg") }}
-                    </div>
-
-                    <div class="form-group col-sm-6 col-md-4">
-                        {{ filter_form.submit(class="btn btn-primary") }}
-                    </div>
-                </form>
+<footer class="bg-dark text-light text-center py-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mb-2">
+                <p class="small">📍 XloCars – India’s Trusted Car Marketplace</p>
+            </div>
+            <div class="col-md-12 mb-2">
+                <h6 class="small">Quick Links:</h6>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('cars.new_car') }}" class="btn btn-sm btn-outline-light me-1">
+                        <i class="fas fa-plus-circle mr-1"></i>  <!-- Plus Circle Icon -->
+                        Post Your Ad
+                    </a>
+                {% endif %}
+                <a href="{{ url_for('cars.home') }}" class="btn btn-sm btn-outline-light me-1">
+                    <i class="fas fa-car mr-1"></i>  <!-- Car Icon -->
+                    Browse Cars
+                </a>
+                <a href="#" class="btn btn-sm btn-outline-light me-1">
+                    <i class="fas fa-star mr-1"></i>  <!-- Star Icon -->
+                    Feature Your Ad
+                </a>
+                <a href="#" class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-envelope mr-1"></i>  <!-- Envelope Icon -->
+                    Contact Us
+                </a>
+            </div>
+            <div class="col-md-12 mb-2">
+                <p class="small">
+                    📧 Email: support@xlocars.com<br>
+                    📲 Call/WhatsApp: <a href="https://wa.me/919380002829" target="_blank"
+                                        class="text-light">+91-9380002829</a>
+                </p>
+            </div>
+            <div class="col-md-12 mb-2">
+                <h6 class="small">Follow Us on Social Media</h6>
+                <a href="#" class="me-1 text-light"><i class="fab fa-facebook-square fa-lg"></i></a>
+                <a href="#" class="me-1 text-light"><i class="fab fa-instagram fa-lg"></i></a>
+                <a href="#" class="me-1 text-light"><i class="fab fa-twitter-square fa-lg"></i></a>
+                <a href="#" class="text-light"><i class="fab fa-linkedin fa-lg"></i></a>
             </div>
         </div>
-    </section>
-    <!-- Featured Listings -->
-    <section class="featured-listings">
-        <div class="container">
-            <h2>Featured Cars</h2>
-            <div class="grid-container">
-                {% with cars=featured_cars, makes=makes, models=models, datetime=datetime, timezone=timezone, indian_states_districts=indian_states_districts, selected_state=selected_district %}
-                    {% include 'car_grid.html' %}
-                {% endwith %}
-            </div>
-        </div>
-    </section>
+    </div>
+</footer>
 
-    <!-- Car Listings -->
-    <section class="all-listings">
-        <div class="container">
-            <h2>Latest Listings</h2>
-            <div class="grid-container">
-                {% with cars=cars, makes=makes, models=models, datetime=datetime, timezone=timezone, indian_states_districts=indian_states_districts, selected_state=selected_district %}
-                    {% include 'car_grid.html' %}
-                {% endwith %}
-            </div>
-        </div>
-    </section>
+<!-- All scripts moved here -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <a href="https://wa.me/919380002829" class="whatsapp-float" target="_blank">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+<script>
+    $(document).ready(function () {
+        const locationSelector = document.getElementById('location-selector');
+        const citySelectorContainer = document.getElementById('city-selector-container');
+        const cityList = document.getElementById('city-list');
 
-    <footer class="bg-dark text-light text-center py-2">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 mb-2">
-                    <p class="small">📍 XloCars – India’s Trusted Car Marketplace</p>
-                </div>
-                <div class="col-md-12 mb-2">
-                    <h6 class="small">Quick Links:</h6>
-                    {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('cars.new_car') }}" class="btn btn-sm btn-outline-light me-1">Post Your Ad</a>
-                    {% endif %}
-                    <a href="{{ url_for('cars.home') }}" class="btn btn-sm btn-outline-light me-1">Browse Cars</a>
-                    <a href="#" class="btn btn-sm btn-outline-light me-1">Feature Your Ad</a>
-                    <a href="#" class="btn btn-sm btn-outline-light">Contact Us</a>
-                </div>
-                <div class="col-md-12 mb-2">
-                    <p class="small">
-                        📧 Email: support@xlocars.com<br>
-                        📲 Call/WhatsApp: <a href="https://wa.me/919380002829" target="_blank"
-                                            class="text-light">+91-9380002829</a>
-                    </p>
-                </div>
-                <div class="col-md-12 mb-2">
-                    <h6 class="small">Follow Us on Social Media</h6>
-                    <a href="#" class="me-1 text-light"><i class="fab fa-facebook-square fa-lg"></i></a>
-                    <a href="#" class="me-1 text-light"><i class="fab fa-instagram fa-lg"></i></a>
-                    <a href="#" class="me-1 text-light"><i class="fab fa-twitter-square fa-lg"></i></a>
-                    <a href="#" class="text-light"><i class="fab fa-linkedin fa-lg"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- All scripts moved here -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            const locationSelector = document.getElementById('location-selector');
-            const citySelectorContainer = document.getElementById('city-selector-container');
-            const cityList = document.getElementById('city-list');
-
-            if (locationSelector) {
-                locationSelector.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    if (citySelectorContainer) {
-                        citySelectorContainer.style.display = (citySelectorContainer.style.display === 'block') ? 'none' : 'block';
-                    }
-                });
-            }
-
-            $('.dropdown-submenu a.dropdown-toggle').on("click", function (e) {
-                $(this).next('ul').toggle();
-                e.stopPropagation();
-                e.preventDefault();
+        if (locationSelector) {
+            locationSelector.addEventListener('click', function (event) {
+                event.preventDefault();
+                if (citySelectorContainer) {
+                    citySelectorContainer.style.display = (citySelectorContainer.style.display === 'block') ? 'none' : 'block';
+                }
             });
-        });
-    </script>
-
-  <!-- Dynamic District Dropdown Script -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const stateSelect = document.getElementById("state"); // Get the state select element
-
-      if (stateSelect) { // Check if the select exists (important for pages where state is not present)
-        stateSelect.addEventListener("change", function() {
-          let state = this.value;
-          let districtDropdown = document.getElementById("district");
-
-          // Clear previous options
-          districtDropdown.innerHTML = '<option value="">All Districts</option>';
-
-          if (state) {
-            fetch(`/cars/get-districts?state=${state}`) // Corrected URL to use Blueprint
-              .then(response => response.json())
-              .then(data => {
-                console.log("Districts:", data.districts)
-                data.districts.forEach(district => {
-                  let option = document.createElement("option");
-                  option.value = district;
-                  option.textContent = district;
-                  districtDropdown.appendChild(option);
-                });
-              })
-              .catch(error => console.error("Error fetching districts:", error));
-          }
-        });
-
-        // Trigger change event on initial load if a state is already selected
-        if (stateSelect.value) {
-          stateSelect.dispatchEvent(new Event('change'));
         }
-      }
 
-      // Collapsible Filter Section JavaScript
-      var coll = document.getElementsByClassName("collapsible");
-      var i;
-
-      for (i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function() {
-          this.classList.toggle("active");
-          var content = this.nextElementSibling;
-          if (content.style.display === "block") {
-            content.style.display = "none";
-          } else {
-            content.style.display = "block";
-          }
+        $('.dropdown-submenu a.dropdown-toggle').on("click", function (e) {
+            $(this).next('ul').toggle();
+            e.stopPropagation();
+            e.preventDefault();
         });
-      }
     });
-  </script>
+</script>
 
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const swipers = document.querySelectorAll('.swiper-container');
+<!-- Dynamic District Dropdown Script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const stateSelect = document.getElementById("state"); // Get the state select element
 
-            swipers.forEach(swiperElement => {
-                new Swiper(swiperElement, {
-                    direction: 'horizontal',
-                    loop: true,
+        if (stateSelect) { // Check if the select exists (important for pages where state is not present)
+            stateSelect.addEventListener("change", function () {
+                let state = this.value;
+                let districtDropdown = document.getElementById("district");
 
-                    pagination: {
-                        el: '.swiper-pagination',
-                    },
+                // Clear previous options
+                districtDropdown.innerHTML = '<option value="">All Districts</option>';
 
-                    navigation: {
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev',
-                    },
-                    spaceBetween: 30,
-                });
+                if (state) {
+                    fetch(`/cars/get-districts?state=${state}`) // Corrected URL to use Blueprint
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("Districts:", data.districts)
+                            data.districts.forEach(district => {
+                                let option = document.createElement("option");
+                                option.value = district;
+                                option.textContent = district;
+                                districtDropdown.appendChild(option);
+                            });
+                        })
+                        .catch(error => console.error("Error fetching districts:", error));
+                }
+            });
+
+            // Trigger change event on initial load if a state is already selected
+            if (stateSelect.value) {
+                stateSelect.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Collapsible Filter Section JavaScript
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+    });
+</script>
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const swipers = document.querySelectorAll('.swiper-container');
+
+        swipers.forEach(swiperElement => {
+            new Swiper(swiperElement, {
+                direction: 'horizontal',
+                loop: true,
+
+                pagination: {
+                    el: '.swiper-pagination',
+                },
+
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                spaceBetween: 30,
             });
         });
-    </script>
+    });
+</script>
 </body>
 </html>
