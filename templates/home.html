@@ -146,6 +146,65 @@
             left: 100%;
             margin-top: -6px;
         }
+
+        /* Styles for filter section collapse */
+        .filter-section .collapsible {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .active, .collapsible:hover {
+            background-color: #ccc;
+        }
+
+        .filter-section .content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: #f1f1f1;
+        }
+
+        /* Mobile Specific Styles */
+        @media (max-width: 768px) {
+          .filter-section .content {
+            display: none; /* Initially hide filter content */
+          }
+          .filter-section h2 {
+            margin-bottom: 0; /* Adjust spacing for mobile */
+          }
+          /* Style the button that is used to open and close the collapsible content */
+            .collapsible {
+                background-color: #777;
+                color: white;
+                cursor: pointer;
+                padding: 18px;
+                width: 100%;
+                border: none;
+                text-align: left;
+                outline: none;
+                font-size: 15px;
+            }
+
+            /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+            .active, .collapsible:hover {
+                background-color: #555;
+            }
+
+            /* Style the collapsible content. Note: hidden by default */
+            .content {
+                padding: 0 18px;
+                display: none;
+                overflow: hidden;
+                background-color: #f1f1f1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -244,40 +303,43 @@
     <section class="filter-section">
         <div class="container">
             <h2>Filter Cars</h2>
-            <form method="POST" action="{{ url_for('cars.home') }}" class="row">
-                {{ filter_form.hidden_tag() }}
+            <button type="button" class="collapsible">Show/Hide Filters</button>
+            <div class="content">
+                <form method="POST" action="{{ url_for('cars.home') }}" class="row">
+                    {{ filter_form.hidden_tag() }}
 
-                <div class="form-group col-sm-6 col-md-4">
-                    {{ filter_form.make.label(class="form-control-label") }}
-                    {{ filter_form.make(class="form-control form-control-lg") }}
-                </div>
+                    <div class="form-group col-sm-6 col-md-4">
+                        {{ filter_form.make.label(class="form-control-label") }}
+                        {{ filter_form.make(class="form-control form-control-lg") }}
+                    </div>
 
-                <div class="form-group col-sm-6 col-md-4">
-                    {{ filter_form.model.label(class="form-control-label") }}
-                    {{ filter_form.model(class="form-control form-control-lg") }}
-                </div>
+                    <div class="form-group col-sm-6 col-md-4">
+                        {{ filter_form.model.label(class="form-control-label") }}
+                        {{ filter_form.model(class="form-control form-control-lg") }}
+                    </div>
 
-                <div class="form-group col-sm-6 col-md-4">
-                    {{ filter_form.state.label(class="form-control-label") }}
-                    {{ filter_form.state(class="form-control form-control-lg", id="state") }}
-                </div>
+                    <div class="form-group col-sm-6 col-md-4">
+                        {{ filter_form.state.label(class="form-control-label") }}
+                        {{ filter_form.state(class="form-control form-control-lg", id="state") }}
+                    </div>
 
-                <div class="form-group col-sm-6 col-md-4">
-                    {{ filter_form.district.label(class="form-control-label") }}
-                    {{ filter_form.district(class="form-control form-control-lg", id="district") }}
-                </div>
+                    <div class="form-group col-sm-6 col-md-4">
+                        {{ filter_form.district.label(class="form-control-label") }}
+                        {{ filter_form.district(class="form-control form-control-lg", id="district") }}
+                    </div>
 
-                <div class="form-group col-sm-6 col-md-4">
-                    {{ filter_form.owner_type.label(class="form-control-label") }}
-                    {{ filter_form.owner_type(class="form-control form-control-lg") }}
-                </div>
+                    <div class="form-group col-sm-6 col-md-4">
+                        {{ filter_form.owner_type.label(class="form-control-label") }}
+                        {{ filter_form.owner_type(class="form-control form-control-lg") }}
+                    </div>
 
-                <div class="form-group col-sm-6 col-md-4">
-                    {{ filter_form.submit(class="btn btn-primary") }}
-                </div>
-            </form>
-    </div>
-</section>
+                    <div class="form-group col-sm-6 col-md-4">
+                        {{ filter_form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
     <!-- Featured Listings -->
     <section class="featured-listings">
         <div class="container">
@@ -400,6 +462,22 @@
         if (stateSelect.value) {
           stateSelect.dispatchEvent(new Event('change'));
         }
+      }
+
+      // Collapsible Filter Section JavaScript
+      var coll = document.getElementsByClassName("collapsible");
+      var i;
+
+      for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+          this.classList.toggle("active");
+          var content = this.nextElementSibling;
+          if (content.style.display === "block") {
+            content.style.display = "none";
+          } else {
+            content.style.display = "block";
+          }
+        });
       }
     });
   </script>
