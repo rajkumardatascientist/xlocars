@@ -83,7 +83,8 @@ def home():
     state = request.args.get('state')
     district = request.args.get('district')
 
-    filter_form = CarFilterForm(request.form, state=state, district=districtdata=state, district=district) #Populate it
+    # Corrected the syntax error here:
+    filter_form = CarFilterForm(request.form, state=state, district=district) #Populate it
 
     # Initialise State (from the FilterForm first)
     if state:
