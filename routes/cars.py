@@ -625,4 +625,3 @@ def update_car(car_id):
                            title='Update Car',
                            form=form,
                            legend='Update Car Ad', car=car)
---- END OF FILE cars.py ---
