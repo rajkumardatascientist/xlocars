@@ -75,27 +75,29 @@
             object-fit: cover;
         }
 
+        /* Updated Top Tier Styles */
         .top-tier {
-            background-color: #2c3e50;
+            background-color: #34495e; /* Darker Blue */
             padding: 0.3rem 0;
             font-size: 0.9rem;
+            color: #fff; /* White text */
         }
 
-
+        /* Updated Dropdown Menu Styles */
         .dropdown-menu {
-            background-color: #2c3e50;
+            background-color: #34495e; /* Darker Blue */
             border: none;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         .dropdown-item {
-            color: white;
+            color: #fff; /* White text */
             padding: 0.5rem 1rem;
         }
 
         .dropdown-item:hover {
-            background-color: #1a242f;
-            color: white;
+            background-color: #2c3e50; /* Slightly darker on hover */
+            color: #fff;
         }
 
         .dropdown-submenu {
@@ -264,7 +266,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-           /* Styles specifically for mobile devices */
+        /* Styles specifically for mobile devices */
         @media (max-width: 768px) {
             /* Reduce padding on the navbar */
             .navbar {
@@ -309,13 +311,31 @@
                 padding: 0.25rem 0; /* Reduce padding on nav item dropdown */
             }
         }
+
+        /* New Styles for Footer */
+        footer {
+            background-color: #2c3e50; /* Darker Blue */
+            color: #fff; /* White text */
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
     </style>
     {% block styles %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark top-tier">
+    <nav class="navbar navbar-expand-lg navbar-dark top-tier">
         <div class="container">
-            <a class="navbar-brand" href="/">Car Listing</a>
+            <a class="navbar-brand" href="/"><i class="fas fa-car fa-lg mr-2"></i>XloCars</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNavbarDropdown"
                     aria-controls="topNavbarDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -323,7 +343,7 @@
             <div class="collapse navbar-collapse" id="topNavbarDropdown">
             {{ form.hidden_tag() }}
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item dropdown">
+                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="locationDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-map-marker-alt fa-lg"></i>
@@ -338,11 +358,11 @@
                         <div class="dropdown-menu" aria-labelledby="locationDropdown">
                             {% for state, districts in indian_states_districts.items() %}
                                 <div class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle" href="#">{{ state }}</a>
+                                    <a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-flag mr-2"></i>{{ state }}</a>
                                     <div class="dropdown-menu">
                                         {% for district in districts %}
                                             <a class="dropdown-item"
-                                               href="{{ url_for('cars.home', state=state, district=district) }}">{{ district }}</a>
+                                               href="{{ url_for('cars.home', state=state, district=district) }}"><i class="fas fa-city mr-2"></i>{{ district }}</a>
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -350,41 +370,41 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Search</a>
+                        <a class="nav-link" href="#"><i class="fas fa-search fa-lg mr-1"></i>Search</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('cars.home') }}">Home</a>
+                        <a class="nav-link" href="{{ url_for('cars.home') }}"><i class="fas fa-home fa-lg mr-1"></i>Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('about.about') }}">About Us</a>
+                        <a class="nav-link" href="{{ url_for('about.about') }}"><i class="fas fa-info-circle fa-lg mr-1"></i>About Us</a>
                     </li>
 
                     {# Account Dropdown #}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Account
+                            <i class="fas fa-user-circle fa-lg mr-1"></i>Account
                         </a>
                         <div class="dropdown-menu" aria-labelledby="accountDropdown">
                             {% if current_user.is_authenticated %}
 
                                 {% if current_user.role == 'buyer' %}
-                                    <a class="dropdown-item" href="{{ url_for('dashboard.buyer') }}">Buyer Dashboard</a>
+                                    <a class="dropdown-item" href="{{ url_for('dashboard.buyer') }}"><i class="fas fa-tachometer-alt mr-2"></i>Buyer Dashboard</a>
                                 {% elif current_user.role == 'seller' %}
-                                    <a class="dropdown-item" href="{{ url_for('dashboard.seller') }}">Seller Dashboard</a>
+                                    <a class="dropdown-item" href="{{ url_for('dashboard.seller') }}"><i class="fas fa-tachometer-alt mr-2"></i>Seller Dashboard</a>
                                 {% endif %}
 
-                                <a class="dropdown-item" href="{{ url_for('cars.show_wishlist') }}">Wishlist</a>
+                                <a class="dropdown-item" href="{{ url_for('cars.show_wishlist') }}"><i class="fas fa-heart mr-2"></i>Wishlist</a>
 
                                 {% if current_user.is_admin %}
-                                    <a class="dropdown-item" href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
-                                    <a class="dropdown-item" href="{{ url_for('admin.list_users') }}">List Users</a>
+                                    <a class="dropdown-item" href="{{ url_for('admin.dashboard') }}"><i class="fas fa-user-shield mr-2"></i>Admin Dashboard</a>
+                                    <a class="dropdown-item" href="{{ url_for('admin.list_users') }}"><i class="fas fa-users mr-2"></i>List Users</a>
                                 {% endif %}
-                                <a class="dropdown-item" href="{{ url_for('cars.new_car') }}">Post Ad</a>
-                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
+                                <a class="dropdown-item" href="{{ url_for('cars.new_car') }}"><i class="fas fa-plus-circle mr-2"></i>Post Ad</a>
+                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
                             {% else %}
-                                <a class="dropdown-item" href="{{ url_for('auth.login') }}">Login</a>
-                                <a class="dropdown-item" href="{{ url_for('auth.register') }}">Register</a>
+                                <a class="dropdown-item" href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt mr-2"></i>Login</a>
+                                <a class="dropdown-item" href="{{ url_for('auth.register') }}"><i class="fas fa-user-plus mr-2"></i>Register</a>
                             {% endif %}
                         </div>
                     </li>
