@@ -268,8 +268,8 @@ footer a:hover {
 /* Home page grid and card styling */
 .car-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Reduced minmax for smaller grid */
+    gap: 20px; /* Adjusted gap for smaller grid */
     padding: 20px;
     width: 100%;
     max-width: 1140px;
@@ -855,8 +855,8 @@ label {
 /* Use these classes in your listing page markup to get the same grid layout as the home page */
 .listing-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Reduced minmax for smaller grid */
+    gap: 20px; /* Adjusted gap for smaller grid */
     padding: 20px;
     width: 100%;
     max-width: 1140px;
