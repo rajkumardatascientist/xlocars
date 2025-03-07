@@ -22,10 +22,12 @@ import requests  # For Imgur upload
 from models.car import CarStatus  # Import the CarStatus Enum
 from forms.home_forms import MinimalForm  # Import MinimalForm
 from forms.filter_forms import CarFilterForm  # Import filter form
+import pytz # Import pytz for timezone
 
 try:
     from locations import indian_states_districts
     indian_states = list(indian_states_districts.keys())
+    indian_states_districts = indian_states_districts
 except ImportError as e:
     print(f"ImportError: Could not import indian_states_districts from locations.py: {e}")
     indian_states = []
@@ -81,7 +83,7 @@ def home():
     state = request.args.get('state')
     district = request.args.get('district')
 
-    filter_form = CarFilterForm(request.form, state=state, district=district) #Populate it
+    filter_form = CarFilterForm(request.form, state=state, district=districtdata=state, district=district) #Populate it
 
     # Initialise State (from the FilterForm first)
     if state:
@@ -135,6 +137,10 @@ def home():
 
             cars = cars_query.all()
             featured_cars = Car.query.filter_by(is_featured=True, status=CarStatus.ACTIVE).options(joinedload(Car.images)).limit(4).all()
+
+            # Timezone setup
+            tz = pytz.timezone('Asia/Kolkata')  # India timezone
+            now = datetime.now(tz)
 
             return render_template('home.html', cars=cars,
                                    featured_cars=featured_cars, makes=makes, models=models,
@@ -579,6 +585,7 @@ def update_car(car_id):
         car.price = form.price.data
         car.year = form.year.data
         car.make = form.make.data
+        car.model = form.model.data
         car.transmission = form.transmission.data
         car.state = form.state.data
         car.district = form.district.data
