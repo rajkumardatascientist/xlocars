@@ -1,4 +1,3 @@
---- START OF FILE config.py ---
 
 import os
 import secrets
