@@ -226,13 +226,16 @@ def new_car():
                 for image in request.files.getlist(form.images.name):
                     if image and allowed_file(image.filename):
                         try:
-                           # image_url = save_picture(image) # Saves images locally.
-                           image_url = upload_to_imgbb(image) # Saves the image in ImgBB server # CHANGE FUNCTION
-                           if image_url:
+                            # Simplify the filename:
+                            filename = secure_filename(image.filename)  #remove security problems or file issues.
+                            image.filename = "test.jpg" #Set new image 
+
+                            image_url = upload_to_imgbb(image)  # Or save_picture #CHANGE FUNCTION
+                            if image_url:
                                image_db = Image(url=image_url, car_id=car.id)
                                db.session.add(image_db)
                                db.session.commit()  # Commit each image immediately
-                           else:
+                            else:
                                db.session.rollback()
                                logging.error("IMGBB upload failed for one of the images.")  #CHANGER OR ERRORS with ImgBB or IMG UPLOAD NAME!
                                flash("IMGBB upload failed for one of the images.", "error")
@@ -625,6 +628,10 @@ def update_car(car_id):
         for image in request.files.getlist(form.images.name):
             if image and allowed_file(image.filename):
                 try:
+                     # Simplify the filename:
+                    filename = secure_filename(image.filename)  #remove security problems or file issues.
+                    image.filename = "test.jpg" #Set new image 
+
                     image_url = upload_to_imgbb(image)  # Or save_picture #changed IMGUR
                     if image_url:
                         image_db = Image(url=image_url, car_id=car.id)
