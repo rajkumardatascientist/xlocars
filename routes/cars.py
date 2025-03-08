@@ -22,10 +22,11 @@ import requests  # For Imgur upload
 from models.car import CarStatus  # Import the CarStatus Enum
 from forms.home_forms import MinimalForm  # Import MinimalForm
 from forms.filter_forms import CarFilterForm  # Import filter form
-import pytz # Import pytz for timezone
+import pytz  # Import pytz for timezone
 
 try:
     from locations import indian_states_districts
+
     indian_states = list(indian_states_districts.keys())
     indian_states_districts = indian_states_districts
 except ImportError as e:
@@ -69,26 +70,26 @@ def upload_to_imgur(image):
         logging.info("Starting Imgur upload...")  # Debug start marker
         response = requests.post(url, headers=headers, files={"image": image})
         response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
-        response_json = response.json() #Try this first to load jason if there is any errors
+        response_json = response.json()  # Try this first to load json if there is any errors
         logging.debug(f"Imgur API response: {response_json}")
 
-        if response_json["success"] != True :  #Check if success is true, to trap error quickly from JSON data
-            error_message = response_json["data"].get("error", "No error message available from imgur API")
+        if not response_json["success"]:  # Check if success is true, to trap error quickly from JSON data
+            error_message = response_json["data"].get("error", "No error message available from Imgur API")
             logging.error(f"Imgur upload API failure: {error_message}")
-            return None #Return the error since it cannot processed.
+            return None  # Return the error since it cannot processed.
 
         return response_json["data"]["link"]  # Returns Imgur URL
 
-    except requests.exceptions.RequestException as e: #Use request.exeptions here, easy to manage
+    except requests.exceptions.RequestException as e:  # Use request.exceptions here, easy to manage
         logging.error(f"Network error during Imgur upload: {e}")
         return None
 
     except KeyError as e:
-         logging.error(f"KeyError during Imgur upload check your JSON object, the data return wrong {e}")
-         return None # return the error
-    except Exception as e: #LAST EXCEPTION
+        logging.error(f"KeyError during Imgur upload check your JSON object, the data return wrong {e}")
+        return None  # return the error
+    except Exception as e:  # LAST EXCEPTION
         logging.exception(f"Unexpected error during Imgur upload: {e}")
-        return None #Most default
+        return None  # Most default
 
 
 @cars_bp.route("/", methods=['GET', 'POST'])
@@ -99,14 +100,15 @@ def home():
     district = request.args.get('district')
 
     # Corrected the syntax error here:
-    filter_form = CarFilterForm(request.form, state=state, district=district) #Populate it
+    filter_form = CarFilterForm(request.form, state=state, district=district)  # Populate it
 
     # Initialise State (from the FilterForm first)
     if state:
         if state in indian_states_districts:
-            filter_form.district.choices = [('', 'All Districts')] + [(d, d) for d in indian_states_districts[state]] #Set state if state
+            filter_form.district.choices = [('', 'All Districts')] + [(d, d) for d in
+                                                                        indian_states_districts[state]]  # Set state if state
         else:
-            filter_form.district.choices = [('', 'All Districts')] #No State
+            filter_form.district.choices = [('', 'All Districts')]  # No State
 
     # Handle storing the selection into the session
     if state:
@@ -123,23 +125,25 @@ def home():
             # Populate filter form choices (for display)
             makes, models = populate_filters()
             filter_form.make.choices = [('', 'All Makes')] + [(m.make, m.make) for m in makes]  # Populate 'make' choices
-            filter_form.model.choices = [('', 'All Models')] + [(m.model.model, m.model) for m in models]  # Populate 'model' choices
-
+            filter_form.model.choices = [('', 'All Models')] + [(m.model, m.model) for m in models]  # Populate 'model' choices
+            # Correct these statements
+            filter_form.make.choices = [('', 'All Makes')] + [(m.make, m.make) for m in makes]  # Populate 'make' choices
+            filter_form.model.choices = [('', 'All Models')] + [(m.model, m.model) for m in models]
             cars_query = Car.query.filter_by(status=CarStatus.ACTIVE).options(joinedload(Car.images))
 
-            if filter_form.validate_on_submit(): #Apply filters if the forms is submitted
+            if filter_form.validate_on_submit():  # Apply filters if the forms is submitted
                 print("validated")
-                #Apply filters if the forms is submitted
+                # Apply filters if the forms is submitted
                 if filter_form.state.data:
-                     cars_query = cars_query.filter_by(state=filter_form.state.data)
+                    cars_query = cars_query.filter_by(state=filter_form.state.data)
                 if filter_form.district.data:
-                     cars_query = cars_query.filter_by(district=filter_form.district.data)
+                    cars_query = cars_query.filter_by(district=filter_form.district.data)
                 if filter_form.make.data:
-                     cars_query = cars_query.filter_by(make=filter_form.make.data)
+                    cars_query = cars_query.filter_by(make=filter_form.make.data)
                 if filter_form.model.data:
-                     cars_query = cars_query.filter_by(model=filter_form.model.data)
+                    cars_query = cars_query.filter_by(model=filter_form.model.data)
 
-              # New filters
+                # New filters
                 if filter_form.owner_type.data:
                     if filter_form.owner_type.data == '1':
                         cars_query = cars_query.filter(Car.no_of_owners == 1)  # Filter for first owner
@@ -152,7 +156,8 @@ def home():
                 cars_query = cars_query.filter_by(district=district)
 
             cars = cars_query.all()
-            featured_cars = Car.query.filter_by(is_featured=True, status=CarStatus.ACTIVE).options(joinedload(Car.images)).limit(4).all()
+            featured_cars = Car.query.filter_by(is_featured=True, status=CarStatus.ACTIVE).options(
+                joinedload(Car.images)).limit(4).all()
 
             # Timezone setup
             tz = pytz.timezone('Asia/Kolkata')  # India timezone
@@ -170,6 +175,7 @@ def home():
         logging.exception("Error in home route: %s", e)
         flash(f"Error displaying listings: {e}", "error")
         return render_template("error.html", error=str(e))
+
 
 @cars_bp.route("/car/new", methods=['GET', 'POST'])
 @login_required
@@ -206,7 +212,7 @@ def new_car():
             fuel_type=form.fuel_type.data,
             engine_type=form.engine_type.data,
             engine_capacity=form.engine_capacity.data,
-            seller_phone = form.seller_phone.data
+            seller_phone=form.seller_phone.data
         )
         #  car.status will default to PENDING
 
@@ -218,17 +224,17 @@ def new_car():
                 for image in request.files.getlist(form.images.name):
                     if image and allowed_file(image.filename):
                         try:
-                           # image_url = save_picture(image) # Saves images locally.
-                           image_url = upload_to_imgur(image) # Saves the image in Imgur server
-                           if image_url:
-                               image_db = Image(url=image_url, car_id=car.id)
-                               db.session.add(image_db)
-                               db.session.commit()  # Commit each image immediately
-                           else:
-                               db.session.rollback()
-                               logging.error("Imgur upload failed for one of the images.")
-                               flash("Imgur upload failed for one of the images.", "error")
-                               return render_template("error.html", error="Imgur upload failed.")
+                            # image_url = save_picture(image) # Saves images locally.
+                            image_url = upload_to_imgur(image)  # Saves the image in Imgur server
+                            if image_url:
+                                image_db = Image(url=image_url, car_id=car.id)
+                                db.session.add(image_db)
+                                db.session.commit()  # Commit each image immediately
+                            else:
+                                db.session.rollback()
+                                logging.error("Imgur upload failed for one of the images.")
+                                flash("Imgur upload failed for one of the images.", "error")
+                                return render_template("error.html", error="Imgur upload failed.")
 
 
                         except Exception as image_err:
@@ -258,6 +264,7 @@ def new_car():
                            form=form,
                            legend='New Car Ad')
 
+
 @cars_bp.route("/get-districts", methods=["GET"])
 def get_districts():
     state = request.args.get("state")
@@ -266,6 +273,7 @@ def get_districts():
     except NameError:
         districts = []
     return jsonify({"districts": districts})
+
 
 def save_picture(form_image):
     """Saves the uploaded picture and returns the filename."""
@@ -290,9 +298,9 @@ def car(car_id):
     """Displays a specific car's details."""
     car = Car.query.options(joinedload(Car.seller), joinedload(Car.images)).get_or_404(car_id)
 
-    #Only display to public when these are meet!
-    #if car.is_sold or not car.is_active or not car.is_approved:
-    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
+    # Only display to public when these are meet!
+    # if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE:
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -327,8 +335,8 @@ def interested(car_id):
     """Handles buyer interest in a car."""
     car = Car.query.get_or_404(car_id)
 
-    #if car.is_sold or not car.is_active or not car.is_approved:
-    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
+    # if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE:
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -371,8 +379,8 @@ def add_to_wishlist(car_id):
     """Adds a car to the user's wishlist."""
     car = Car.query.get_or_404(car_id)
 
-    #if car.is_sold or not car.is_active or not car.is_approved:
-    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
+    # if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE:
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -398,8 +406,8 @@ def remove_from_wishlist(car_id):
     """Removes a car from the user's wishlist."""
     car = Car.query.get_or_404(car_id)
 
-    #if car.is_sold or not car.is_active or not car.is_approved:
-    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
+    # if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE:
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
