@@ -1,3 +1,5 @@
+--- START OF FILE config.py ---
+
 import os
 import secrets
 
@@ -22,7 +24,3 @@ else:
     SQLALCHEMY_DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-# ImgBB API Key Configuration
-#IMG_BB_KEY = os.environ.get('IMG_BB_KEY')  # Preferred: Use environment variable
-IMG_BB_KEY = os.environ.get('IMG_BB_KEY', '749ddf476b54b886ceab5f3ccd34c1bf') # Use default if not set
