@@ -1,4 +1,3 @@
-
 # routes/cars.py
 import os
 from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, session, jsonify
@@ -19,14 +18,19 @@ from forms.report_forms import ReportForm
 from sqlalchemy import or_
 from forms.appointment_forms import AppointmentForm
 from models.payment import PaymentStatus, BuyerPayments
-import requests  # For Imgur upload
+import requests  # For Imgur upload REMOVE LATER
 from models.car import CarStatus  # Import the CarStatus Enum
 from forms.home_forms import MinimalForm  # Import MinimalForm
 from forms.filter_forms import CarFilterForm  # Import filter form
-import pytz # Import pytz for timezone
-import base64 #BASE 64 load file as type
+import pytz  # Import pytz for timezone
+import base64  # BASE 64 load file as type
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 try:
     from locations import indian_states_districts
+
     indian_states = list(indian_states_districts.keys())
     indian_states_districts = indian_states_districts
 except ImportError as e:
@@ -40,10 +44,17 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER = os.path.join('static', 'images')  # Use os.path.join
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # Important: Set in app config!
 
-# Imgur Configuration
-IMGUR_CLIENT_ID = os.environ.get("IMGUR_CLIENT_ID")  # Retrieve from environment
-if not IMGUR_CLIENT_ID:
-    raise ValueError("IMGUR_CLIENT_ID environment variable not set.")
+# Cloudinary Configuration Retrieve from config.py
+CLOUDINARY_CLOUD_NAME = app.config['CLOUDINARY_CLOUD_NAME']
+CLOUDINARY_API_KEY = app.config['CLOUDINARY_API_KEY']
+CLOUDINARY_API_SECRET = app.config['CLOUDINARY_API_SECRET']
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET,
+    secure=True
+)
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -61,32 +72,18 @@ def populate_filters():
         return makes, models
 
 
-# ADD IMGUR KEY:
-import time  # Import the time module
-def upload_to_imgur(image):
-    """Uploads an image file to Imgur and returns the image URL with a delay."""
-    url = "https://api.imgur.com/3/upload"  # Imgur API endpoint
-    headers = {"Authorization": f"Client-ID {IMGUR_CLIENT_ID}"}
-    files = {"image": image.read()}  # Image data
-
+# CLOUDINARY FUNCTION
+def upload_to_cloudinary(image):
+    """Uploads an image file to Cloudinary and returns the image URL."""
     try:
-        logging.debug(f"Imgur URL: {url}")
-        logging.debug(f"Imgur Headers: {headers}")
-
-        time.sleep(2)  # Add a 1-second delay
-
-        response = requests.post(url, headers=headers, files=files)
-        logging.debug(f"Imgur Response Status Code: {response.status_code}")
-        logging.debug(f"Imgur Response Content: {response.content}")
-        response.raise_for_status()  # Raise HTTPError for bad responses
-        return response.json()["data"]["link"]  # Returns Imgur image URL
-
-    except requests.exceptions.RequestException as e:
-        print(f"Error during Imgur upload: {e}")
+        upload_result = cloudinary.uploader.upload(image)  # Directly upload the file object
+        return upload_result['secure_url']  # Return the secure URL of the uploaded image
+    except Exception as e:
+        print(f"Error during Cloudinary upload: {e}")
         return None
 
 
-#The upper is good, we go with load in upload and test the file
+# The upper is good, we go with load in upload and test the file
 
 
 @cars_bp.route("/", methods=['GET', 'POST'])
@@ -97,14 +94,15 @@ def home():
     district = request.args.get('district')
 
     # Corrected the syntax error here:
-    filter_form = CarFilterForm(request.form, state=state, district=district) #Populate it
+    filter_form = CarFilterForm(request.form, state=state, district=district)  # Populate it
 
     # Initialise State (from the FilterForm first)
     if state:
         if state in indian_states_districts:
-            filter_form.district.choices = [('', 'All Districts')] + [(d, d) for d in indian_states_districts[state]] #Set state if state
+            filter_form.district.choices = [('', 'All Districts')] + [(d, d) for d in
+                                                                        indian_states_districts[state]]  # Set state if state
         else:
-            filter_form.district.choices = [('', 'All Districts')] #No State
+            filter_form.district.choices = [('', 'All Districts')]  # No State
 
     # Handle storing the selection into the session
     if state:
@@ -120,29 +118,32 @@ def home():
         with app.app_context():
             # Populate filter form choices (for display)
             makes, models = populate_filters()
-            filter_form.make.choices = [('', 'All Makes')] + [(m.make, m.make) for m in makes]  # Populate 'make' choices
-            filter_form.model.choices = [('', 'All Models')] + [(m.model, m.model) for m in models]  # Populate 'model' choices
+            filter_form.make.choices = [('', 'All Makes')] + [(m.make, m.make) for m in
+                                                               makes]  # Populate 'make' choices
+            filter_form.model.choices = [('', 'All Models')] + [(m.model, m.model) for m in
+                                                                 models]  # Populate 'model' choices
 
             cars_query = Car.query.filter_by(status=CarStatus.ACTIVE).options(joinedload(Car.images))
 
-            if filter_form.validate_on_submit(): #Apply filters if the forms is submitted
+            if filter_form.validate_on_submit():  # Apply filters if the forms is submitted
                 print("validated")
-                #Apply filters if the forms is submitted
+                # Apply filters if the forms is submitted
                 if filter_form.state.data:
-                     cars_query = cars_query.filter_by(state=filter_form.state.data)
+                    cars_query = cars_query.filter_by(state=filter_form.state.data)
                 if filter_form.district.data:
-                     cars_query = cars_query.filter_by(district=filter_form.district.data)
+                    cars_query = cars_query.filter_by(district=filter_form.district.data)
                 if filter_form.make.data:
-                     cars_query = cars_query.filter_by(make=filter_form.make.data)
+                    cars_query = cars_query.filter_by(make=filter_form.make.data)
                 if filter_form.model.data:
-                     cars_query = cars_query.filter_by(model=filter_form.model.data)
+                    cars_query = cars_query.filter_by(model=filter_form.model.data)
 
-              # New filters
+                # New filters
                 if filter_form.owner_type.data:
                     if filter_form.owner_type.data == '1':
                         cars_query = cars_query.filter(Car.no_of_owners == 1)  # Filter for first owner
                     elif filter_form.owner_type.data == '2':
-                        cars_query = cars_query.filter(Car.no_of_owners == 2)  # Adjust based on how owner numbers are modeled
+                        cars_query = cars_query.filter(
+                            Car.no_of_owners == 2)  # Adjust based on how owner numbers are modeled
 
             elif state:
                 cars_query = cars_query.filter_by(state=state)
@@ -150,7 +151,8 @@ def home():
                 cars_query = cars_query.filter_by(district=district)
 
             cars = cars_query.all()
-            featured_cars = Car.query.filter_by(is_featured=True, status=CarStatus.ACTIVE).options(joinedload(Car.images)).limit(4).all()
+            featured_cars = Car.query.filter_by(is_featured=True, status=CarStatus.ACTIVE).options(
+                joinedload(Car.images)).limit(4).all()
 
             # Timezone setup
             tz = pytz.timezone('Asia/Kolkata')  # India timezone
@@ -168,6 +170,7 @@ def home():
         logging.exception("Error in home route: %s", e)
         flash(f"Error displaying listings: {e}", "error")
         return render_template("error.html", error=str(e))
+
 
 @cars_bp.route("/car/new", methods=['GET', 'POST'])
 @login_required
@@ -203,7 +206,7 @@ def new_car():
             fuel_type=form.fuel_type.data,
             engine_type=form.engine_type.data,
             engine_capacity=form.engine_capacity.data,
-            seller_phone = form.seller_phone.data
+            seller_phone=form.seller_phone.data
         )
         #  car.status will default to PENDING
 
@@ -215,17 +218,18 @@ def new_car():
                 for image in request.files.getlist(form.images.name):
                     if image and allowed_file(image.filename):
                         try:
-                           # image_url = save_picture(image) # Saves images locally.
-                           image_url = upload_to_imgur(image) # Saves the image in Imgur server # CHANGE FUNCTION
-                           if image_url:
-                               image_db = Image(url=image_url, car_id=car.id)
-                               db.session.add(image_db)
-                               db.session.commit()  # Commit each image immediately
-                           else:
-                               db.session.rollback()
-                               logging.error("Imgur upload failed for one of the images.")  #CHANGER OR ERRORS with ImgBB or IMG UPLOAD NAME!
-                               flash("Imgur upload failed for one of the images.", "error")
-                               return render_template("error.html", error="Imgur upload failed.")  #CHANGER OR ERRORS with ImgBB or IMG UPLOAD NAME!
+                            # image_url = save_picture(image) # Saves images locally.
+                            image_url = upload_to_cloudinary(image)  # Saves the image in Cloudinary server # CHANGE FUNCTION
+                            if image_url:
+                                image_db = Image(url=image_url, car_id=car.id)
+                                db.session.add(image_db)
+                                db.session.commit()  # Commit each image immediately
+                            else:
+                                db.session.rollback()
+                                logging.error("Cloudinary upload failed for one of the images.")  # CHANGER OR ERRORS with Cloudinary or IMG UPLOAD NAME!
+                                flash("Cloudinary upload failed for one of the images.", "error")
+                                return render_template("error.html",
+                                                       error="Cloudinary upload failed.")  # CHANGER OR ERRORS with Cloudinary or IMG UPLOAD NAME!
 
 
                         except Exception as image_err:
@@ -255,6 +259,7 @@ def new_car():
                            form=form,
                            legend='New Car Ad')
 
+
 @cars_bp.route("/get-districts", methods=["GET"])
 def get_districts():
     state = request.args.get("state")
@@ -263,6 +268,7 @@ def get_districts():
     except NameError:
         districts = []
     return jsonify({"districts": districts})
+
 
 def save_picture(form_image):
     """Saves the uploaded picture and returns the filename."""
@@ -287,9 +293,9 @@ def car(car_id):
     """Displays a specific car's details."""
     car = Car.query.options(joinedload(Car.seller), joinedload(Car.images)).get_or_404(car_id)
 
-    #Only display to public when these are meet!
-    #if car.is_sold or not car.is_active or not car.is_approved:
-    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
+    # Only display to public when these are meet!
+    # if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE:
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -324,8 +330,8 @@ def interested(car_id):
     """Handles buyer interest in a car."""
     car = Car.query.get_or_404(car_id)
 
-    #if car.is_sold or not car.is_active or not car.is_approved:
-    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
+    # if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE:
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -368,8 +374,8 @@ def add_to_wishlist(car_id):
     """Adds a car to the user's wishlist."""
     car = Car.query.get_or_404(car_id)
 
-    #if car.is_sold or not car.is_active or not car.is_approved:
-    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
+    # if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE:
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -395,8 +401,8 @@ def remove_from_wishlist(car_id):
     """Removes a car from the user's wishlist."""
     car = Car.query.get_or_404(car_id)
 
-    #if car.is_sold or not car.is_active or not car.is_approved:
-    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
+    # if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE:
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -440,8 +446,8 @@ def request_appointment(car_id):
     """Handles appointment requests for a car."""
     car = Car.query.get_or_404(car_id)
 
-    #if car.is_sold or not car.is_active or not car.is_approved:
-    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
+    # if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE:
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -478,8 +484,8 @@ def report_ad(car_id):
     """Handles reporting of car ads."""
     car = Car.query.get_or_404(car_id)
 
-    #if car.is_sold or not car.is_active or not car.is_approved:
-    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE :
+    # if car.is_sold or not car.is_active or not car.is_approved:
+    if car.status == CarStatus.SOLD or car.status != CarStatus.ACTIVE:
         flash("This car listing is no longer available.", "info")
         return redirect(url_for('cars.home'))
 
@@ -537,7 +543,7 @@ def pause_car(car_id):
         flash("You are not authorized to pause this listing.", "error")
         return redirect(url_for('cars.home'))  # Or appropriate error page
 
-    #car.is_active = False #Set Car model to active or inactive
+    # car.is_active = False #Set Car model to active or inactive
     car.status = CarStatus.PENDING
     try:
         db.session.commit()
@@ -550,6 +556,7 @@ def pause_car(car_id):
 
     return redirect(url_for('dashboard.seller'))  # Redirect to seller dashboard
 
+
 @cars_bp.route("/unpause_car/<int:car_id>", methods=['POST'])
 @login_required
 def unpause_car(car_id):
@@ -560,7 +567,7 @@ def unpause_car(car_id):
         flash("You are not authorized to unpause this listing.", "error")
         return redirect(url_for('cars.home'))  # Or appropriate error page
 
-    #car.is_active = True
+    # car.is_active = True
     car.status = CarStatus.ACTIVE
     try:
         db.session.commit()
@@ -572,6 +579,7 @@ def unpause_car(car_id):
         return render_template("error.html", error=str(e))
 
     return redirect(url_for('dashboard.seller'))  # Redirect to seller dashboard
+
 
 @cars_bp.route("/car/<int:car_id>/update", methods=['GET', 'POST'])
 @login_required
@@ -614,13 +622,15 @@ def update_car(car_id):
         for image in request.files.getlist(form.images.name):
             if image and allowed_file(image.filename):
                 try:
-                    image_url = upload_to_imgur(image)  # Or save_picture #changed IMGUR
+                    image_url = upload_to_cloudinary(image)  # Or save_picture #changed IMGUR
                     if image_url:
                         image_db = Image(url=image_url, car_id=car.id)
                         db.session.add(image_db)
                     else:
-                        flash("Imgur upload failed for one of the images.", "error") #Imgur error with UPLOAD or UPLOAD issues on images!!
-                        return render_template("error.html", error="Imgur upload failed.")  #Upload to IMG BB
+                        flash("Cloudinary upload failed for one of the images.",
+                              "error")  # Imgur error with UPLOAD or UPLOAD issues on images!!
+                        return render_template("error.html",
+                                               error="Cloudinary upload failed.")  # Upload to IMG BB
                 except Exception as image_err:
                     db.session.rollback()
                     logging.error(f"Error saving image: {image_err}")
