@@ -12,4 +12,5 @@ email_validator
 requests
 pytz
 cloudinary
+python-dotenv
 
