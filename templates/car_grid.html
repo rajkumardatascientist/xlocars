@@ -24,7 +24,6 @@
                                              <!-- This is the critical section (Check URLs here). Log/Print them or view it to see it if exist!  -->
                                             {% if image.url %} <!-- Adding a check to make sure the variable exists -->
                                             <img src="{{ image.url }}" alt="{{ car.title }}" class="imageTag">
-                                            <p>DEBUG: Image URL = {{ image.url }}</p>
                                             {% else %}
                                                  <p>No Image URL found for car {{ car.title }}</p>
                                                 <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="No Image Available" class="imageTag">
