@@ -15,7 +15,51 @@
             border-radius: 8px;
             overflow: hidden; /* Ensure carousel images don't overflow rounded corners */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            position: relative; /* Required for thumbnail positioning */
+        }
+
+        .carousel-inner {
             height: 400px;  /* Standard Slider Size */
+        }
+
+        .carousel-item img {
+            height: 400px;
+            object-fit: cover; /* Cover the area, cropping if needed */
+        }
+
+        /* Thumbnail container */
+        .thumbnail-container {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: center; /* Center the thumbnails */
+            align-items: center;
+            gap: 5px; /* Space between thumbnails */
+            z-index: 10; /* Ensure thumbnails are above carousel */
+        }
+
+
+        .thumbnail {
+            width: 60px; /* Smaller thumbnails */
+            height: 40px;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            overflow: hidden; /* Ensures image doesn't overflow rounded corners */
+        }
+
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Maintain aspect ratio, cropping if necessary */
+            display: block; /* Remove any default spacing */
+        }
+
+        .thumbnail.active {
+            border-color: #3498db; /* Highlight active thumbnail */
         }
 
         /* Updated Car Details List Styling */
@@ -126,13 +170,13 @@
                     <div class="carousel-inner">
                         {% if car.images %}
                             {% for image in car.images %}
-                                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                <div class="carousel-item {% if loop.first %}active{% endif %}" data-slide-to="{{ loop.index0 }}">
                                     <img src="{{ image.url }}"
                                          class="d-block w-100" alt="Car Image" style="height: 400px; object-fit: cover;">
                                 </div>
                             {% endfor %}
                         {% else %}
-                            <div class="carousel-item active">
+                            <div class="carousel-item active" data-slide-to="0">
                                 <img src="{{ url_for('static', filename='images/default.jpg') }}"
                                      class="d-block w-100" alt="Default Image" style="height: 400px; object-fit: cover;">
                             </div>
@@ -148,6 +192,21 @@
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="sr-only">Next</span>
                     </a>
+
+                    <!-- Image Thumbnails -->
+                    <div class="thumbnail-container">
+                        {% if car.images %}
+                            {% for image in car.images %}
+                                <div class="thumbnail {% if loop.first %}active{% endif %}" data-slide-to="{{ loop.index0 }}">
+                                    <img src="{{ image.url }}" alt="Car Thumbnail">
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="thumbnail active" data-slide-to="0">
+                                <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="Default Thumbnail">
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
 
                 <p>{{ car.description }}</p>
@@ -250,5 +309,24 @@
 {% endblock %}
 
 {% block scripts %}
+    <script>
+        $(document).ready(function () {
+            // Thumbnail click event
+            $('.thumbnail-container .thumbnail').on('click', function () {
+                var slideTo = $(this).data('slide-to');
+                $('#carouselExampleControls').carousel(slideTo);
+            });
 
+            // Carousel slide event
+            $('#carouselExampleControls').on('slide.bs.carousel', function (e) {
+                var currentIndex = $(e.relatedTarget).data('slide-to');
+
+                // Remove active class from all thumbnails
+                $('.thumbnail-container .thumbnail').removeClass('active');
+
+                // Add active class to the corresponding thumbnail
+                $('.thumbnail-container .thumbnail[data-slide-to="' + currentIndex + '"]').addClass('active');
+            });
+        });
+    </script>
 {% endblock %}
