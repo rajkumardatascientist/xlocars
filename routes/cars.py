@@ -1,5 +1,8 @@
 # routes/cars.py
 import os
+from dotenv import load_dotenv  # 1. Load dotenv at the top
+load_dotenv()  # Load environment variables from .env file
+
 from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, session, jsonify
 from forms.car_forms import CarForm
 from forms.interested_forms import InterestedForm
@@ -9,7 +12,6 @@ from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 import secrets
 from PIL import Image as PILImage
-import os
 from datetime import datetime, timezone
 from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError
@@ -30,7 +32,6 @@ import cloudinary.api
 
 try:
     from locations import indian_states_districts
-
     indian_states = list(indian_states_districts.keys())
     indian_states_districts = indian_states_districts
 except ImportError as e:
@@ -44,10 +45,10 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER = os.path.join('static', 'images')  # Use os.path.join
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # Important: Set in app config!
 
-# Cloudinary Configuration Retrieve from config.py
-CLOUDINARY_CLOUD_NAME = app.config['CLOUDINARY_CLOUD_NAME']
-CLOUDINARY_API_KEY = app.config['CLOUDINARY_API_KEY']
-CLOUDINARY_API_SECRET = app.config['CLOUDINARY_API_SECRET']
+# Cloudinary Configuration Retrieve from environment variables
+CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME')  # Use os.environ.get
+CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY')  # Use os.environ.get
+CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET')  # Use os.environ.get
 
 cloudinary.config(
     cloud_name=CLOUDINARY_CLOUD_NAME,
@@ -81,9 +82,6 @@ def upload_to_cloudinary(image):
     except Exception as e:
         print(f"Error during Cloudinary upload: {e}")
         return None
-
-
-# The upper is good, we go with load in upload and test the file
 
 
 @cars_bp.route("/", methods=['GET', 'POST'])
