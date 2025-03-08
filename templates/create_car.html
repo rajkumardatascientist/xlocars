@@ -268,7 +268,7 @@
                             <small class="form-text text-muted">
                                 Upload up to 10 high-quality images showcasing your car's interior, exterior, and any notable features.
                             </small>
-                            {{ form.images(class="form-control-file") }}
+                            {{ form.images(class="form-control-file", multiple=True) }}  <!-- MULTIPLE TRUE for several images -->
                             {% if form.images.errors %}
                                 <div class="invalid-feedback">
                                     {% for error in form.images.errors %}
