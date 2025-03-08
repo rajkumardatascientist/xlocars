@@ -1,3 +1,5 @@
+--- START OF FILE cars.py ---
+
 # routes/cars.py
 import os
 from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, session, jsonify
@@ -39,10 +41,10 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER = os.path.join('static', 'images')  # Use os.path.join
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # Important: Set in app config!
 
-# Imgur Configuration -- NO imgur KEY here we use ImgBB Key with code.
-#IMGUR_CLIENT_ID = os.environ.get("IMGUR_CLIENT_ID")  # Retrieve from environment
-#if not IMGUR_CLIENT_ID:
-#    raise ValueError("IMGUR_CLIENT_ID environment variable not set.")
+# Imgur Configuration
+IMGUR_CLIENT_ID = os.environ.get("IMGUR_CLIENT_ID")  # Retrieve from environment
+if not IMGUR_CLIENT_ID:
+    raise ValueError("IMGUR_CLIENT_ID environment variable not set.")
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -60,42 +62,45 @@ def populate_filters():
         return makes, models
 
 
-#Now we edit Imgur key or other Keys. (here there are no other keys but if other key exist put with try and exept
-
 # ADD IMG BB key: change it all
 def upload_to_imgbb(image):
     """Uploads an image file to ImgBB and returns the image URL."""
     url = "https://api.imgbb.com/1/upload"
-    api_key = app.config["IMG_BB_KEY"]  # Get the api key
-    logging.debug(f"IMG_BB_KEY: {api_key}")  # Log the API key
+    payload = {
+        "key": app.config["IMG_BB_KEY"], #Take keys from AP configurations, not other environment to not give problems keys
+        "image": base64.b64encode(image.read()).decode(), #load images with byte type settings for the system.
+        }
 
     try:
-        # Prepare the files dictionary for multipart/form-data
-        files = {"image": image}  # 'image' is the field name ImgBB expects
-        data = {"key": api_key}
+        response = requests.post(url, payload) #Add post URL and settings of api to set to system.
 
-        logging.debug(f"Request data: {data}")
-        logging.debug(f"Request files: {files}")
+        # check is has valid upload with proper status or key exist as valid!
+        response.raise_for_status()  # Raise HTTPError for bad responses
 
-        response = requests.post(url, files=files, data=data)  # Send data and files
-
-        response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
-
-        response_json = response.json()  # Check valid JSON, important for API testings
-        logging.debug(f"ImgBB API Response: {response_json}")  # Log the full response
-
-        if response_json and response_json.get("success"):  # Check successful JSON
-            return response_json["data"]["url"]  # Returns IMBB uploads url
-        else:
-            logging.error(f"ImgBB upload failed. Response: {response_json}")
-            return None
+        return response.json()["data"]["url"] # Returns IMBB uploads url
 
     except requests.exceptions.RequestException as e:
-        logging.error(f"Error during ImgBB upload: {e}")  # print errors on console or for logging porpuse.
-        return None  # Return settings as NONE or none.
-    except (ValueError, KeyError, TypeError) as e:
-        logging.error(f"Error processing ImgBB response: {e}")
+        print(f"Error during ImgBB upload: {e}") #print errors on console or for logging porpuse.
+        return None #Return settings as NONE or none.
+
+#Now we edit Imgur key or other Keys. (here there are no other keys but if other key exist put with try and exept
+
+# ADD IMGUR KEY:
+def upload_to_imgur(image):
+    """Uploads an image file to Imgur and returns the image URL."""
+    url = "https://api.imgur.com/3/upload"  # Imgur API endpoint
+    headers = {"Authorization": f"Client-ID {IMGUR_CLIENT_ID}"}
+    files = {"image": image.read()}  # Image data
+
+    try:
+        response = requests.post(url, headers=headers, files=files)
+        response.raise_for_status()  # Raise HTTPError for bad responses
+        return response.json()["data"]["link"]  # Returns Imgur image URL
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error during Imgur upload: {e}")
         return None
+
 
 #The upper is good, we go with load in upload and test the file
 
@@ -226,27 +231,24 @@ def new_car():
                 for image in request.files.getlist(form.images.name):
                     if image and allowed_file(image.filename):
                         try:
-                            # Simplify the filename:
-                            filename = secure_filename(image.filename)  #remove security problems or file issues.
-                            image.filename = "test.jpg" #Set new image 
-
-                            image_url = upload_to_imgbb(image)  # Or save_picture #CHANGE FUNCTION
-                            if image_url:
+                           # image_url = save_picture(image) # Saves images locally.
+                           image_url = upload_to_imgur(image) # Saves the image in Imgur server # CHANGE FUNCTION
+                           if image_url:
                                image_db = Image(url=image_url, car_id=car.id)
                                db.session.add(image_db)
                                db.session.commit()  # Commit each image immediately
-                            else:
+                           else:
                                db.session.rollback()
-                               logging.error("IMGBB upload failed for one of the images.")  #CHANGER OR ERRORS with ImgBB or IMG UPLOAD NAME!
-                               flash("IMGBB upload failed for one of the images.", "error")
-                               return render_template("create_car.html", form=form, error="ImgBB upload failed.")  #CHANGER OR ERRORS with ImgBB or IMG UPLOAD NAME!
+                               logging.error("Imgur upload failed for one of the images.")  #CHANGER OR ERRORS with ImgBB or IMG UPLOAD NAME!
+                               flash("Imgur upload failed for one of the images.", "error")
+                               return render_template("error.html", error="Imgur upload failed.")  #CHANGER OR ERRORS with ImgBB or IMG UPLOAD NAME!
 
 
                         except Exception as image_err:
                             db.session.rollback()
                             logging.error(f"Error saving image: {image_err}")
                             flash(f"Error saving image: {image_err}", "error")
-                            return render_template("create_car.html", form=form, error=str(image_err))
+                            return render_template("error.html", error=str(image_err))
 
                 flash('Your car ad has been created! It is pending approval.', 'success')
                 return redirect(url_for('cars.home'))
@@ -628,22 +630,18 @@ def update_car(car_id):
         for image in request.files.getlist(form.images.name):
             if image and allowed_file(image.filename):
                 try:
-                     # Simplify the filename:
-                    filename = secure_filename(image.filename)  #remove security problems or file issues.
-                    image.filename = "test.jpg" #Set new image 
-
-                    image_url = upload_to_imgbb(image)  # Or save_picture #changed IMGUR
+                    image_url = upload_to_imgur(image)  # Or save_picture #changed IMGUR
                     if image_url:
                         image_db = Image(url=image_url, car_id=car.id)
                         db.session.add(image_db)
                     else:
-                        flash("ImgBB upload failed for one of the images.", "error") #ImgBB error with UPLOAD or UPLOAD issues on images!!
-                        return render_template("create_car.html", form=form, error="ImgBB upload failed.")  #Upload to IMG BB
+                        flash("Imgur upload failed for one of the images.", "error") #Imgur error with UPLOAD or UPLOAD issues on images!!
+                        return render_template("error.html", error="Imgur upload failed.")  #Upload to IMG BB
                 except Exception as image_err:
                     db.session.rollback()
                     logging.error(f"Error saving image: {image_err}")
                     flash(f"Error saving image: {image_err}", "error")
-                    return render_template("create_car.html", form=form, error=str(image_err))
+                    return render_template("error.html", error=str(image_err))
 
         try:
             db.session.commit()
