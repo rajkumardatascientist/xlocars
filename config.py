@@ -22,3 +22,6 @@ else:
     SQLALCHEMY_DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+# ImgBB API Key Configuration
+IMG_BB_KEY = os.environ.get('IMG_BB_KEY', 'your_default_key_here')
