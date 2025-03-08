@@ -15,6 +15,7 @@
             border-radius: 8px;
             overflow: hidden; /* Ensure carousel images don't overflow rounded corners */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            height: 400px;  /* Standard Slider Size */
         }
 
         /* Updated Car Details List Styling */
@@ -127,13 +128,13 @@
                             {% for image in car.images %}
                                 <div class="carousel-item {% if loop.first %}active{% endif %}">
                                     <img src="{{ image.url }}"
-                                         class="d-block w-100" alt="Car Image">
+                                         class="d-block w-100" alt="Car Image" style="height: 400px; object-fit: cover;">
                                 </div>
                             {% endfor %}
                         {% else %}
                             <div class="carousel-item active">
                                 <img src="{{ url_for('static', filename='images/default.jpg') }}"
-                                     class="d-block w-100" alt="Default Image">
+                                     class="d-block w-100" alt="Default Image" style="height: 400px; object-fit: cover;">
                             </div>
                         {% endif %}
                     </div>
@@ -152,7 +153,7 @@
                 <p>{{ car.description }}</p>
 
                 <ul class="car-details-grid">
-                    <li><i class="fas fa-tag"></i> Price: ${{ car.price }}</li> <!-- Changed icon -->
+                    <li><i class="fas fa-tag"></i> Price: ₹{{ "{:,.0f}".format(car.price) }}</li> <!-- Changed icon -->
                     <li><i class="far fa-calendar-alt"></i> Year: {{ car.year }}</li> <!-- Changed icon -->
                     <li><i class="fas fa-industry"></i> Make: {{ car.make }}</li> <!-- Changed icon -->
                     <li><i class="fas fa-id-card"></i> Model: {{ car.model }}</li> <!-- Changed icon -->
