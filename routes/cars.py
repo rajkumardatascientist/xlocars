@@ -66,15 +66,29 @@ def upload_to_imgur(image):
     headers = {"Authorization": f"Client-ID {IMGUR_CLIENT_ID}"}
 
     try:
+        logging.info("Starting Imgur upload...")  # Debug start marker
         response = requests.post(url, headers=headers, files={"image": image})
         response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
+        response_json = response.json() #Try this first to load jason if there is any errors
+        logging.debug(f"Imgur API response: {response_json}")
 
-        return response.json()["data"]["link"]  # Returns Imgur URL
+        if response_json["success"] != True :  #Check if success is true, to trap error quickly from JSON data
+            error_message = response_json["data"].get("error", "No error message available from imgur API")
+            logging.error(f"Imgur upload API failure: {error_message}")
+            return None #Return the error since it cannot processed.
 
-    except requests.exceptions.RequestException as e:
-        print(f"Error during Imgur upload: {e}")
+        return response_json["data"]["link"]  # Returns Imgur URL
+
+    except requests.exceptions.RequestException as e: #Use request.exeptions here, easy to manage
+        logging.error(f"Network error during Imgur upload: {e}")
         return None
 
+    except KeyError as e:
+         logging.error(f"KeyError during Imgur upload check your JSON object, the data return wrong {e}")
+         return None # return the error
+    except Exception as e: #LAST EXCEPTION
+        logging.exception(f"Unexpected error during Imgur upload: {e}")
+        return None #Most default
 
 @cars_bp.route("/", methods=['GET', 'POST'])
 def home():
@@ -160,7 +174,7 @@ def home():
 @login_required
 def new_car():
     form = CarForm(request.form)
-
+    logging.info(f" Imgur Key value test  {os.environ.get('IMGUR_CLIENT_ID')}")  # Log it view properly with success
     if request.method == 'POST':
         state = request.form.get('state')
         if state and state in indian_states_districts:
