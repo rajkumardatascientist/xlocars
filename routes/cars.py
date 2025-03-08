@@ -66,22 +66,34 @@ def populate_filters():
 def upload_to_imgbb(image):
     """Uploads an image file to ImgBB and returns the image URL."""
     url = "https://api.imgbb.com/1/upload"
+    api_key = app.config["IMG_BB_KEY"] # Get the api key
+    logging.debug(f"IMG_BB_KEY: {api_key}")  # Log the API key
     payload = {
-        "key": app.config["IMG_BB_KEY"], #Take keys from AP configurations, not other environment to not give problems keys
-        "image": base64.b64encode(image.read()).decode(), #load images with byte type settings for the system.
+        "key": api_key,
+        "image": base64.b64encode(image.read()).decode(),
         }
 
     try:
-        response = requests.post(url, payload) #Add post URL and settings of api to set to system.
+        logging.debug(f"Request payload: {payload}") #Log the data
 
-        # check is has valid upload with proper status or key exist as valid!
-        response.raise_for_status()  # Raise HTTPError for bad responses
+        response = requests.post(url, data=payload)  # Send data as 'data', not 'payload'
+        response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
 
-        return response.json()["data"]["url"] # Returns IMBB uploads url
+        response_json = response.json() #Check valid JSON, important for API testings
+        logging.debug(f"ImgBB API Response: {response_json}")  # Log the full response
+
+        if response_json and response_json.get("success"): #Check succesfull JSON
+            return response_json["data"]["url"] # Returns IMBB uploads url
+        else:
+            logging.error(f"ImgBB upload failed. Response: {response_json}")
+            return None
 
     except requests.exceptions.RequestException as e:
-        print(f"Error during ImgBB upload: {e}") #print errors on console or for logging porpuse.
+        logging.error(f"Error during ImgBB upload: {e}") #print errors on console or for logging porpuse.
         return None #Return settings as NONE or none.
+    except (ValueError, KeyError, TypeError) as e:
+        logging.error(f"Error processing ImgBB response: {e}")
+        return None
 
 #The upper is good, we go with load in upload and test the file
 
@@ -222,14 +234,14 @@ def new_car():
                                db.session.rollback()
                                logging.error("IMGBB upload failed for one of the images.")  #CHANGER OR ERRORS with ImgBB or IMG UPLOAD NAME!
                                flash("IMGBB upload failed for one of the images.", "error")
-                               return render_template("error.html", error="ImgBB upload failed.")  #CHANGER OR ERRORS with ImgBB or IMG UPLOAD NAME!
+                               return render_template("create_car.html", form=form, error="ImgBB upload failed.")  #CHANGER OR ERRORS with ImgBB or IMG UPLOAD NAME!
 
 
                         except Exception as image_err:
                             db.session.rollback()
                             logging.error(f"Error saving image: {image_err}")
                             flash(f"Error saving image: {image_err}", "error")
-                            return render_template("error.html", error=str(image_err))
+                            return render_template("create_car.html", form=form, error=str(image_err))
 
                 flash('Your car ad has been created! It is pending approval.', 'success')
                 return redirect(url_for('cars.home'))
@@ -617,12 +629,12 @@ def update_car(car_id):
                         db.session.add(image_db)
                     else:
                         flash("ImgBB upload failed for one of the images.", "error") #ImgBB error with UPLOAD or UPLOAD issues on images!!
-                        return render_template("error.html", error="ImgBB upload failed.")  #Upload to IMG BB
+                        return render_template("create_car.html", form=form, error="ImgBB upload failed.")  #Upload to IMG BB
                 except Exception as image_err:
                     db.session.rollback()
                     logging.error(f"Error saving image: {image_err}")
                     flash(f"Error saving image: {image_err}", "error")
-                    return render_template("error.html", error=str(image_err))
+                    return render_template("create_car.html", form=form, error=str(image_err))
 
         try:
             db.session.commit()
