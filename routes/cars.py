@@ -73,7 +73,7 @@ def upload_to_imgur(image):
         logging.debug(f"Imgur URL: {url}")
         logging.debug(f"Imgur Headers: {headers}")
 
-        time.sleep(1)  # Add a 1-second delay
+        time.sleep(2)  # Add a 1-second delay
 
         response = requests.post(url, headers=headers, files=files)
         logging.debug(f"Imgur Response Status Code: {response.status_code}")
