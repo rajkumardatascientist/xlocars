@@ -66,31 +66,33 @@ def populate_filters():
 def upload_to_imgbb(image):
     """Uploads an image file to ImgBB and returns the image URL."""
     url = "https://api.imgbb.com/1/upload"
-    api_key = app.config["IMG_BB_KEY"] # Get the api key
+    api_key = app.config["IMG_BB_KEY"]  # Get the api key
     logging.debug(f"IMG_BB_KEY: {api_key}")  # Log the API key
-    payload = {
-        "key": api_key,
-        "image": base64.b64encode(image.read()).decode(),
-        }
 
     try:
-        logging.debug(f"Request payload: {payload}") #Log the data
+        # Prepare the files dictionary for multipart/form-data
+        files = {"image": image}  # 'image' is the field name ImgBB expects
+        data = {"key": api_key}
 
-        response = requests.post(url, data=payload)  # Send data as 'data', not 'payload'
+        logging.debug(f"Request data: {data}")
+        logging.debug(f"Request files: {files}")
+
+        response = requests.post(url, files=files, data=data)  # Send data and files
+
         response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
 
-        response_json = response.json() #Check valid JSON, important for API testings
+        response_json = response.json()  # Check valid JSON, important for API testings
         logging.debug(f"ImgBB API Response: {response_json}")  # Log the full response
 
-        if response_json and response_json.get("success"): #Check succesfull JSON
-            return response_json["data"]["url"] # Returns IMBB uploads url
+        if response_json and response_json.get("success"):  # Check successful JSON
+            return response_json["data"]["url"]  # Returns IMBB uploads url
         else:
             logging.error(f"ImgBB upload failed. Response: {response_json}")
             return None
 
     except requests.exceptions.RequestException as e:
-        logging.error(f"Error during ImgBB upload: {e}") #print errors on console or for logging porpuse.
-        return None #Return settings as NONE or none.
+        logging.error(f"Error during ImgBB upload: {e}")  # print errors on console or for logging porpuse.
+        return None  # Return settings as NONE or none.
     except (ValueError, KeyError, TypeError) as e:
         logging.error(f"Error processing ImgBB response: {e}")
         return None
