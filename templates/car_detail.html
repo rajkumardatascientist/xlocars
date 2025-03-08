@@ -24,7 +24,8 @@
 
         .carousel-item img {
             height: 350px; /* Reduced height */
-            object-fit: cover; /* Cover the area, cropping if needed */
+            object-fit: contain; /* Changed from cover to contain */
+            width: 100%; /* Ensure the image takes up the full width */
         }
 
         /* Thumbnail container */
