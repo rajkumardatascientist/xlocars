@@ -24,4 +24,5 @@ else:
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # ImgBB API Key Configuration
-IMG_BB_KEY = os.environ.get('IMG_BB_KEY', 'your_default_key_here')
+#IMG_BB_KEY = os.environ.get('IMG_BB_KEY')  # Preferred: Use environment variable
+IMG_BB_KEY = os.environ.get('IMG_BB_KEY', '749ddf476b54b886ceab5f3ccd34c1bf') # Use default if not set
