@@ -90,6 +90,7 @@ def upload_to_imgur(image):
         logging.exception(f"Unexpected error during Imgur upload: {e}")
         return None #Most default
 
+
 @cars_bp.route("/", methods=['GET', 'POST'])
 def home():
     """Displays the homepage with car listings."""
@@ -122,7 +123,7 @@ def home():
             # Populate filter form choices (for display)
             makes, models = populate_filters()
             filter_form.make.choices = [('', 'All Makes')] + [(m.make, m.make) for m in makes]  # Populate 'make' choices
-            filter_form.model.choices = [('', 'All Models')] + [(m.model, m.model) for m in models]  # Populate 'model' choices
+            filter_form.model.choices = [('', 'All Models')] + [(m.model.model, m.model) for m in models]  # Populate 'model' choices
 
             cars_query = Car.query.filter_by(status=CarStatus.ACTIVE).options(joinedload(Car.images))
 
@@ -175,6 +176,7 @@ def home():
 def new_car():
     form = CarForm(request.form)
     logging.info(f" Imgur Key value test  {os.environ.get('IMGUR_CLIENT_ID')}")  # Log it view properly with success
+
     if request.method == 'POST':
         state = request.form.get('state')
         if state and state in indian_states_districts:
