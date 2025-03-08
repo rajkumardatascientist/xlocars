@@ -1,13 +1,13 @@
-
 import os
 import secrets
+import cloudinary
 
 # Generate a secret key if one doesn't exist
 SECRET_KEY = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
 
 DEBUG = True  # Disable in production
 
-# Use DATABASE_URL from Render, if available
+# Database Configuration (Render PostgreSQL)
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 if DATABASE_URL:
@@ -23,3 +23,12 @@ else:
     SQLALCHEMY_DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+# ✅ Cloudinary Configuration
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True  # Ensures HTTPS for images
+)
+
