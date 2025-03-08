@@ -61,38 +61,23 @@ def populate_filters():
         return makes, models
 
 
-# ADD IMG BB key: change it all
-def upload_to_imgbb(image):
-    """Uploads an image file to ImgBB and returns the image URL."""
-    url = "https://api.imgbb.com/1/upload"
-    payload = {
-        "key": app.config["IMG_BB_KEY"], #Take keys from AP configurations, not other environment to not give problems keys
-        "image": base64.b64encode(image.read()).decode(), #load images with byte type settings for the system.
-        }
-
-    try:
-        response = requests.post(url, payload) #Add post URL and settings of api to set to system.
-
-        # check is has valid upload with proper status or key exist as valid!
-        response.raise_for_status()  # Raise HTTPError for bad responses
-
-        return response.json()["data"]["url"] # Returns IMBB uploads url
-
-    except requests.exceptions.RequestException as e:
-        print(f"Error during ImgBB upload: {e}") #print errors on console or for logging porpuse.
-        return None #Return settings as NONE or none.
-
-#Now we edit Imgur key or other Keys. (here there are no other keys but if other key exist put with try and exept
-
 # ADD IMGUR KEY:
+import time  # Import the time module
 def upload_to_imgur(image):
-    """Uploads an image file to Imgur and returns the image URL."""
+    """Uploads an image file to Imgur and returns the image URL with a delay."""
     url = "https://api.imgur.com/3/upload"  # Imgur API endpoint
     headers = {"Authorization": f"Client-ID {IMGUR_CLIENT_ID}"}
     files = {"image": image.read()}  # Image data
 
     try:
+        logging.debug(f"Imgur URL: {url}")
+        logging.debug(f"Imgur Headers: {headers}")
+
+        time.sleep(1)  # Add a 1-second delay
+
         response = requests.post(url, headers=headers, files=files)
+        logging.debug(f"Imgur Response Status Code: {response.status_code}")
+        logging.debug(f"Imgur Response Content: {response.content}")
         response.raise_for_status()  # Raise HTTPError for bad responses
         return response.json()["data"]["link"]  # Returns Imgur image URL
 
