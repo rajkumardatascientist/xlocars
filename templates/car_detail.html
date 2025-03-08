@@ -19,11 +19,11 @@
         }
 
         .carousel-inner {
-            height: 400px;  /* Standard Slider Size */
+            height: 350px; /* Reduced height */
         }
 
         .carousel-item img {
-            height: 400px;
+            height: 350px; /* Reduced height */
             object-fit: cover; /* Cover the area, cropping if needed */
         }
 
@@ -42,8 +42,8 @@
 
 
         .thumbnail {
-            width: 60px; /* Smaller thumbnails */
-            height: 40px;
+            width: 50px; /* Smaller thumbnails */
+            height: 30px; /* Smaller thumbnails */
             border: 2px solid #fff;
             border-radius: 4px;
             cursor: pointer;
@@ -172,13 +172,13 @@
                             {% for image in car.images %}
                                 <div class="carousel-item {% if loop.first %}active{% endif %}" data-slide-to="{{ loop.index0 }}">
                                     <img src="{{ image.url }}"
-                                         class="d-block w-100" alt="Car Image" style="height: 400px; object-fit: cover;">
+                                         class="d-block w-100" alt="Car Image">
                                 </div>
                             {% endfor %}
                         {% else %}
                             <div class="carousel-item active" data-slide-to="0">
                                 <img src="{{ url_for('static', filename='images/default.jpg') }}"
-                                     class="d-block w-100" alt="Default Image" style="height: 400px; object-fit: cover;">
+                                     class="d-block w-100" alt="Default Image">
                             </div>
                         {% endif %}
                     </div>
