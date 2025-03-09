@@ -272,8 +272,30 @@ footer a:hover {
     gap: 20px; /* Adjusted gap for smaller grid */
     padding: 20px;
     width: 100%;
-    max-width: 1140px;
-    margin: 0 auto;
+    max-width: 100%; /* Override any max-width limitations */
+    margin: 0; /* Remove any default margins */
+    box-sizing: border-box; /* Ensures padding and border are included in the element's total width */
+}
+
+/* Addressing potential container width issues */
+.car-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    width: 100%; /* Ensure the grid takes full width */
+    max-width: 100%;  /* Override any max-width limitations */
+    margin: 0; /* Remove any default margins */
+}
+
+/* If there's a parent container (e.g., a <section> or <div>) */
+/* Replace .parent-container with the actual class or ID of the parent */
+.parent-container {
+    width: 100%;         /* Make it full width */
+    max-width: none;      /* Remove any max-width restrictions */
+    padding: 0;           /* Remove padding */
+    margin: 0;            /* Remove margins */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 .car-card {
@@ -313,7 +335,7 @@ footer a:hover {
     height: 250px;
     overflow: hidden;
     position: relative;
-    flex-grow: 1;
+    flex-grow: 1; /* Let the image-slider take available space */
 }
 
 .image-slider img {
@@ -710,6 +732,7 @@ label {
     height: 250px;
     overflow: hidden;
     position: relative;
+    flex-grow: 1; /* Let the image-slider take available space */
 }
 
 .image-slider img {
