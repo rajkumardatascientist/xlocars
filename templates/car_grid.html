@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Car Listings</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/car_grid.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <style>
         /* Optional: Adjust styles for the single image */
@@ -12,6 +12,16 @@
             width: 100%;
             height: 200px; /* Adjust height as needed */
             object-fit: cover;
+        }
+        /* Added to remove gap between image container and car details*/
+        .car-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 300px; /* Ensure each card has a minimum height */
+        }
+        .image-slider{
+            flex-grow: 1; /* Let the image-slider take available space */
         }
     </style>
 </head>
