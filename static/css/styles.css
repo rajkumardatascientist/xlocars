@@ -86,7 +86,7 @@ a:hover {
 
 /* Updated Container Styles */
 .container {
-    max-width: 1140px;
+    max-width: 1200px; /* Increased container width */
     margin: 0 auto;
     padding: 20px;
 }
@@ -268,49 +268,50 @@ footer a:hover {
 /* Home page grid and card styling */
 .car-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Reduced minmax for smaller grid */
-    gap: 20px; /* Adjusted gap for smaller grid */
-    padding: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Increased minmax width */
+    gap: 25px; /* Adjusted gap for better spacing */
+    padding: 25px; /* Adjusted padding */
     width: 100%;
-    max-width: 1140px;
+    max-width: 100%;
     margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .car-card {
     border: 1px solid #ddd;
-    border-radius: 12px; /* Increased roundness */
+    border-radius: 8px; /* Reduced border radius */
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    min-height: 300px;
+    justify-content: flex-start; /* Align items to the top */
+    min-height: 350px; /* Increased min-height */
     background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* Subtle shadow */
 }
 
 .car-card:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px) scale(1.01); /* Reduced hover effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* Adjusted shadow */
 }
 
 /* Mobile Specific Adjustments for Home Page Grid */
 @media (max-width: 768px) {
     .car-grid {
-        grid-template-columns: 1fr; /* Changed to single column */
-        gap: 10px;
-        padding: 10px;
+        grid-template-columns: 1fr; /* Single column */
+        gap: 15px; /* Reduced gap */
+        padding: 15px; /* Reduced padding */
     }
     .car-card {
-        border-radius: 12px;
+        border-radius: 6px; /* Reduced border radius */
     }
 }
 
 /* Style for Image Slider within Car Cards */
 .image-slider {
     width: 100%;
-    height: 250px;
+    height: 220px; /* Reduced height */
     overflow: hidden;
     position: relative;
 }
@@ -367,32 +368,33 @@ footer a:hover {
 }
 
 .car-title {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
+    font-size: 1.1rem; /* Reduced font size */
+    margin-bottom: 6px; /* Reduced margin */
     color: #333;
     font-weight: 600;
+    line-height: 1.3; /* Improved line height */
 }
 
 .car-price {
-    font-size: 1.1rem;
+    font-size: 1rem; /* Reduced font size */
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 8px; /* Reduced margin */
     color: #e74c3c;
 }
 
 .car-info {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 8px; /* Reduced margin */
 }
 
 .car-info-item {
-    font-size: 0.9rem;
+    font-size: 0.85rem; /* Reduced font size */
     color: #777;
 }
 
 .car-specs {
-    font-size: 0.9rem;
+    font-size: 0.85rem; /* Reduced font size */
     color: #777;
 }
 
@@ -405,6 +407,7 @@ footer a:hover {
     border-radius: 4px;
     text-decoration: none;
     transition: background-color 0.2s;
+    margin-top: auto; /* Push button to the bottom */
 }
 
 .view-details:hover {
@@ -706,7 +709,7 @@ label {
 /* Duplicate definitions preserved for specificity */
 .image-slider {
     width: 100%;
-    height: 250px;
+    height: 220px; /* Reduced height */
     overflow: hidden;
     position: relative;
 }
@@ -855,39 +858,40 @@ label {
 /* Use these classes in your listing page markup to get the same grid layout as the home page */
 .listing-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Reduced minmax for smaller grid */
-    gap: 20px; /* Adjusted gap for smaller grid */
-    padding: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Increased minmax width */
+    gap: 25px; /* Adjusted gap for better spacing */
+    padding: 25px; /* Adjusted padding */
     width: 100%;
-    max-width: 1140px;
+    max-width: 100%;
     margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .listing-card {
     border: 1px solid #ddd;
-    border-radius: 12px;
+    border-radius: 8px; /* Reduced border radius */
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    min-height: 300px;
+    justify-content: flex-start; /* Align items to the top */
+    min-height: 350px; /* Increased min-height */
     background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* Subtle shadow */
 }
 
 .listing-card:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px) scale(1.01); /* Reduced hover effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* Adjusted shadow */
 }
 
 /* Mobile adjustments for Listing Page Grid */
 @media (max-width: 768px) {
     .listing-grid {
-        grid-template-columns: 1fr; /* Single column grid */
-        gap: 10px;
-        padding: 10px;
+        grid-template-columns: 1fr; /* Single column */
+        gap: 15px; /* Reduced gap */
+        padding: 15px; /* Reduced padding */
     }
 
      .listing-card {
