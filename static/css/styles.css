@@ -262,67 +262,57 @@ footer a:hover {
 }
 
 /* ==========================================================================
-   Car Grid Styles (Home Page)
+   Car Grid Styles (Flexbox implementation - Moved from car_grid.css to styles.css)
    ========================================================================== */
 
-/* Home page grid and card styling */
-.car-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Increased minmax width */
-    gap: 25px; /* Adjusted gap for better spacing */
-    padding: 25px; /* Adjusted padding */
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    box-sizing: border-box;
+.car-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* or space-around, space-evenly depending on your design */
+    padding: 20px; /* Optional padding around the container */
 }
 
-.car-card {
-    border: 1px solid #ddd;
-    border-radius: 8px; /* Reduced border radius */
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Align items to the top */
-    min-height: 350px; /* Increased min-height */
+.car-item {
+    width: 23%; /* Slightly less than 25% to account for spacing.  Adjust as needed. */
+    margin-bottom: 20px; /* Space between rows */
+    border: 1px solid #ddd; /* Optional border for visual separation */
+    padding: 10px;
+    box-sizing: border-box; /* Important: Include padding and border in the width calculation */
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* Subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.car-card:hover {
+.car-item:hover {
     transform: translateY(-3px) scale(1.01); /* Reduced hover effect */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* Adjusted shadow */
 }
 
-/* Mobile Specific Adjustments for Home Page Grid */
-@media (max-width: 768px) {
-    .car-grid {
-        grid-template-columns: 1fr; /* Single column */
-        gap: 15px; /* Reduced gap */
-        padding: 15px; /* Reduced padding */
-    }
-    .car-card {
-        border-radius: 6px; /* Reduced border radius */
-    }
-}
-
-/* Style for Image Slider within Car Cards */
-.image-slider {
+.car-item img {
     width: 100%;
-    height: 220px; /* Reduced height */
-    overflow: hidden;
-    position: relative;
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Removes potential bottom margin from inline elements */
+    margin-bottom: 10px; /* Space between image and text */
 }
 
-.image-slider img {
-    width: auto;
-    height: 100%;
+/* Responsive adjustment for smaller screens (optional) */
+@media (max-width: 768px) {
+    .car-item {
+        width: 48%; /* Two items per row on smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .car-item {
+        width: 100%; /* One item per row on very small screens */
+    }
+}
+
+/* Optional: Adjust styles for the single image */
+.car-image {
+    width: 100%;
+    height: 200px; /* Adjust height as needed */
     object-fit: cover;
-    display: block;
-    margin: auto;
-    transition: opacity 0.3s ease;
 }
 
 /* Car Tag styling and positioning (top right of image) */
@@ -358,10 +348,6 @@ footer a:hover {
     z-index: 10;
     margin-left: auto;
 }
-
-/* ==========================================================================
-   Car Card Content Styles
-   ========================================================================== */
 
 .car-details {
     padding: 15px;
