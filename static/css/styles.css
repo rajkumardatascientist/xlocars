@@ -290,9 +290,9 @@ footer a:hover {
 
 .car-item img {
     width: 100%;
-    height: auto; /* Maintain aspect ratio */
-    display: block; /* Removes potential bottom margin from inline elements */
-    margin-bottom: 10px; /* Space between image and text */
+    height: auto;
+    object-fit: cover;  /* Essential! */
+    display: block;
 }
 
 /* Responsive adjustment for smaller screens (optional) */
