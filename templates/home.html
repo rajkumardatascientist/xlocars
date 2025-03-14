@@ -386,10 +386,39 @@
 <section class="featured-listings">
     <div class="container">
         <h2>Featured Cars</h2>
-        <div class="grid-container">
-            {% with cars=featured_cars, makes=makes, models=models, datetime=datetime, timezone=timezone, indian_states_districts=indian_states_districts, selected_state=selected_district %}
-                {% include 'car_grid.html' %}
-            {% endwith %}
+        <div class="car-container">  <!--  REPLACED grid-container with car-container -->
+            {% if featured_cars %}
+                {% for car in featured_cars %}
+                    <div class="car-item">  <!-- Added car-item -->
+                        <a href="{{ url_for('cars.car', car_id=car.id) }}">
+                            {% if car.images %}
+                                <img src="{{ car.images[0].url }}" alt="{{ car.title }}" class="car-image">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="No Image Available" class="car-image">
+                            {% endif %}
+                        </a>
+                        <div class="car-details">
+                            <h3 class="car-title">{{ car.title }}</h3>
+                            <p class="car-price">₹{{ "{:,.0f}".format(car.price) }}</p>
+                            <div class="car-info">
+                                <i class="fas fa-calendar"></i> {{ car.year }}
+                                <i class="fas fa-cog"></i> {{ car.transmission or 'N/A' }}
+                            </div>
+                            <div class="car-location">
+                                 <i class="fas fa-map-marker-alt"></i>
+                                 {{ car.city or 'N/A' }}, {{ car.state or 'N/A' }}
+                            </div>
+                            <div class="car-mileage">
+                                <i class="fas fa-tachometer-alt"></i>
+                                {{ car.kilometers or 'N/A' }} km
+                            </div>
+                            <a href="{{ url_for('cars.car', car_id=car.id) }}" class="view-details">View Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No featured cars found.</p>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -398,10 +427,39 @@
 <section class="all-listings">
     <div class="container">
         <h2>Latest Listings</h2>
-        <div class="grid-container">
-            {% with cars=cars, makes=makes, models=models, datetime=datetime, timezone=timezone, indian_states_districts=indian_states_districts, selected_state=selected_district %}
-                {% include 'car_grid.html' %}
-            {% endwith %}
+        <div class="car-container">  <!--  REPLACED grid-container with car-container -->
+            {% if cars %}
+                {% for car in cars %}
+                    <div class="car-item">  <!-- Added car-item -->
+                        <a href="{{ url_for('cars.car', car_id=car.id) }}">
+                            {% if car.images %}
+                                <img src="{{ car.images[0].url }}" alt="{{ car.title }}" class="car-image">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="No Image Available" class="car-image">
+                            {% endif %}
+                        </a>
+                        <div class="car-details">
+                            <h3 class="car-title">{{ car.title }}</h3>
+                            <p class="car-price">₹{{ "{:,.0f}".format(car.price) }}</p>
+                            <div class="car-info">
+                                <i class="fas fa-calendar"></i> {{ car.year }}
+                                <i class="fas fa-cog"></i> {{ car.transmission or 'N/A' }}
+                            </div>
+                            <div class="car-location">
+                                 <i class="fas fa-map-marker-alt"></i>
+                                 {{ car.city or 'N/A' }}, {{ car.state or 'N/A' }}
+                            </div>
+                            <div class="car-mileage">
+                                <i class="fas fa-tachometer-alt"></i>
+                                {{ car.kilometers or 'N/A' }} km
+                            </div>
+                            <a href="{{ url_for('cars.car', car_id=car.id) }}" class="view-details">View Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No cars found.</p>
+            {% endif %}
         </div>
     </div>
 </section>
