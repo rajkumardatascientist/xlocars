@@ -406,11 +406,16 @@
                             </div>
                             <div class="car-location">
                                  <i class="fas fa-map-marker-alt"></i>
-                                 {{ car.city or 'N/A' }}, {{ car.state or 'N/A' }}
+                                 {{ car.district or 'N/A' }}, {{ car.state or 'N/A' }}
                             </div>
                             <div class="car-mileage">
                                 <i class="fas fa-tachometer-alt"></i>
                                 {{ car.kilometers or 'N/A' }} km
+                            </div>
+                            <!-- ADD THIS LINE -->
+                            <div class="car-owner">
+                                <i class="fas fa-user"></i>
+                                {{ car.owner_type_string or 'N/A' }}
                             </div>
                             <a href="{{ url_for('cars.car', car_id=car.id) }}" class="view-details">View Details</a>
                         </div>
@@ -447,11 +452,16 @@
                             </div>
                             <div class="car-location">
                                  <i class="fas fa-map-marker-alt"></i>
-                                 {{ car.city or 'N/A' }}, {{ car.state or 'N/A' }}
+                                 {{ car.district or 'N/A' }}, {{ car.state or 'N/A' }}
                             </div>
                             <div class="car-mileage">
                                 <i class="fas fa-tachometer-alt"></i>
                                 {{ car.kilometers or 'N/A' }} km
+                            </div>
+                            <!-- ADD THIS LINE -->
+                            <div class="car-owner">
+                                <i class="fas fa-user"></i>
+                                {{ car.owner_type_string or 'N/A' }}
                             </div>
                             <a href="{{ url_for('cars.car', car_id=car.id) }}" class="view-details">View Details</a>
                         </div>
