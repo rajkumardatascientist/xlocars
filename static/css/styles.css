@@ -1,7 +1,7 @@
 /* static/css/styles.css */
 
 /* ==========================================================================
-   General Styles (Reset and Base) - No changes here
+   General Styles (Reset and Base)
    ========================================================================== */
 
 html {
@@ -81,7 +81,7 @@ a:hover {
 }
 
 /* ==========================================================================
-   Layout and Components - No changes here
+   Layout and Components
    ========================================================================== */
 
 /* Updated Container Styles */
@@ -148,7 +148,7 @@ a:hover {
     background-color: #2980b9;
 }
 
-/* Hero Section Styles - No changes here*/
+/* Hero Section Styles */
 .hero-section {
     background-color: #f0f8ff;
     padding: 4rem 0;
@@ -175,7 +175,7 @@ a:hover {
 }
 
 /* ==========================================================================
-   Footer Styles - No changes here
+   Footer Styles
    ========================================================================== */
 
 footer {
@@ -194,7 +194,7 @@ footer a:hover {
     color: #f8f9fa;
 }
 
-/* Custom Styles for Two-Tiered Nav - No changes here*/
+/* Custom Styles for Two-Tiered Nav */
 
 :root {
     --primary-color: #2c3e50;
@@ -227,7 +227,7 @@ footer a:hover {
     padding: 0.5rem 1rem;
 }
 
-/* Dropdown Menu Styles - No changes here*/
+/* Dropdown Menu Styles */
 .dropdown-menu {
     background-color: rgba(44, 62, 80, 0.95);
     border: none;
@@ -317,7 +317,7 @@ footer a:hover {
     object-fit: cover;
 }
 
-/* Car Tag styling and positioning (top right of image) - No changes here*/
+/* Car Tag styling and positioning (top right of image) */
 .car-tags {
     position: absolute;
     top: 10px;
@@ -356,7 +356,7 @@ footer a:hover {
     flex-grow: 1;    /* Take up remaining vertical space */
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Distribute space between elements */
+    justify-content: flex-start; /* change from space between to flex-start */
 }
 
 .car-title {
@@ -376,13 +376,16 @@ footer a:hover {
 
 .car-info {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 6px; /* Reduced margin */
+    justify-content: flex-start; /* change from space-between to flex-start */
+    margin-bottom: 2px; /* Reduced margin */
+    gap: 5px;    /* Added gap to separate inline */
+    align-items: center;  /* Align them veritcally */
 }
 
 .car-info-item {
     font-size: 0.75rem; /* Reduced font size */
     color: #777;
+    margin-right: 5px; /* Add right margin to separate items*/
 }
 
 .car-specs {
@@ -399,6 +402,7 @@ footer a:hover {
     border-radius: 4px;
     text-decoration: none;
     transition: background-color 0.2s;
+    margin-top: auto; /* Added to push to the bottom */
 }
 
 .view-details:hover {
@@ -483,7 +487,7 @@ footer a:hover {
 }
 
 /* ==========================================================================
-   Search Container Styles - No Changes here
+   Search Container Styles
    ========================================================================== */
 
 .search-container {
@@ -497,7 +501,7 @@ footer a:hover {
 }
 
 /* ==========================================================================
-   Forms - More specific and structured - No changes here
+   Forms - More specific and structured
    ========================================================================== */
 
 .form-group {
@@ -545,7 +549,7 @@ label {
 }
 
 /* ==========================================================================
-    Admin Dashboard Specific Styles - No changes here
+    Admin Dashboard Specific Styles
    ========================================================================== */
 
 .admin-dashboard {
@@ -645,7 +649,7 @@ label {
 }
 
 /* ==========================================================================
-   Car Actions Styling and Image Overlay - No changes here
+   Car Actions Styling and Image Overlay
    ========================================================================== */
 
 .car-actions-list {
@@ -759,7 +763,7 @@ label {
 }
 
 /* ==========================================================================
-   Dashboard Specific CSS - No changes here
+   Dashboard Specific CSS
    ========================================================================== */
 
 .dashboard-container {
