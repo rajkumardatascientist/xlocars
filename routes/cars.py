@@ -1,6 +1,7 @@
 # routes/cars.py
 import os
 from dotenv import load_dotenv  # 1. Load dotenv at the top
+
 load_dotenv()  # Load environment variables from .env file
 
 from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, session, jsonify
@@ -32,6 +33,7 @@ import cloudinary.api
 
 try:
     from locations import indian_states_districts
+
     indian_states = list(indian_states_districts.keys())
     indian_states_districts = indian_states_districts
 except ImportError as e:
@@ -151,6 +153,23 @@ def home():
             cars = cars_query.all()
             featured_cars = Car.query.filter_by(is_featured=True, status=CarStatus.ACTIVE).options(
                 joinedload(Car.images)).limit(4).all()
+
+            # Add owner type to each car object
+            def get_owner_string(no_of_owners):
+                if no_of_owners == 1:
+                    return "First Owner"
+                elif no_of_owners == 2:
+                    return "Second Owner"
+                elif no_of_owners == 3:
+                    return "Third Owner"
+                else:
+                    return f"{no_of_owners}th Owner"  # For 4th, 5th, etc.
+
+            for car in cars:
+                car.owner_type_string = get_owner_string(car.no_of_owners)
+
+            for car in featured_cars:
+                car.owner_type_string = get_owner_string(car.no_of_owners)
 
             # Timezone setup
             tz = pytz.timezone('Asia/Kolkata')  # India timezone
