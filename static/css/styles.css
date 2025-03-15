@@ -1,7 +1,7 @@
 /* static/css/styles.css */
 
 /* ==========================================================================
-   General Styles (Reset and Base)
+   General Styles (Reset and Base) - No changes here
    ========================================================================== */
 
 html {
@@ -81,7 +81,7 @@ a:hover {
 }
 
 /* ==========================================================================
-   Layout and Components
+   Layout and Components - No changes here
    ========================================================================== */
 
 /* Updated Container Styles */
@@ -148,7 +148,7 @@ a:hover {
     background-color: #2980b9;
 }
 
-/* Hero Section Styles */
+/* Hero Section Styles - No changes here*/
 .hero-section {
     background-color: #f0f8ff;
     padding: 4rem 0;
@@ -175,7 +175,7 @@ a:hover {
 }
 
 /* ==========================================================================
-   Footer Styles
+   Footer Styles - No changes here
    ========================================================================== */
 
 footer {
@@ -194,7 +194,7 @@ footer a:hover {
     color: #f8f9fa;
 }
 
-/* Custom Styles for Two-Tiered Nav */
+/* Custom Styles for Two-Tiered Nav - No changes here*/
 
 :root {
     --primary-color: #2c3e50;
@@ -227,7 +227,7 @@ footer a:hover {
     padding: 0.5rem 1rem;
 }
 
-/* Dropdown Menu Styles */
+/* Dropdown Menu Styles - No changes here*/
 .dropdown-menu {
     background-color: rgba(44, 62, 80, 0.95);
     border: none;
@@ -281,6 +281,8 @@ footer a:hover {
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* Subtle shadow */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;          /* Added for vertical content alignment */
+    flex-direction: column; /* Added for vertical content alignment */
 }
 
 .car-item:hover {
@@ -290,7 +292,7 @@ footer a:hover {
 
 .car-item img {
     width: 100%;
-    height: auto;
+    height: 150px; /* Reduced Image Height */
     object-fit: cover;  /* Essential! */
     display: block;
 }
@@ -311,11 +313,11 @@ footer a:hover {
 /* Optional: Adjust styles for the single image */
 .car-image {
     width: 100%;
-    height: 200px; /* Adjust height as needed */
+    height: 150px; /* Adjust height as needed - Reduced Height*/
     object-fit: cover;
 }
 
-/* Car Tag styling and positioning (top right of image) */
+/* Car Tag styling and positioning (top right of image) - No changes here*/
 .car-tags {
     position: absolute;
     top: 10px;
@@ -350,37 +352,41 @@ footer a:hover {
 }
 
 .car-details {
-    padding: 15px;
+    padding: 10px; /* Reduced padding */
+    flex-grow: 1;    /* Take up remaining vertical space */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space between elements */
 }
 
 .car-title {
-    font-size: 1.1rem; /* Reduced font size */
-    margin-bottom: 6px; /* Reduced margin */
+    font-size: 1rem; /* Reduced font size */
+    margin-bottom: 4px; /* Reduced margin */
     color: #333;
     font-weight: 600;
-    line-height: 1.3; /* Improved line height */
+    line-height: 1.2; /* Improved line height */
 }
 
 .car-price {
-    font-size: 1rem; /* Reduced font size */
+    font-size: 0.9rem; /* Reduced font size */
     font-weight: bold;
-    margin-bottom: 8px; /* Reduced margin */
+    margin-bottom: 6px; /* Reduced margin */
     color: #e74c3c;
 }
 
 .car-info {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px; /* Reduced margin */
+    margin-bottom: 6px; /* Reduced margin */
 }
 
 .car-info-item {
-    font-size: 0.85rem; /* Reduced font size */
+    font-size: 0.75rem; /* Reduced font size */
     color: #777;
 }
 
 .car-specs {
-    font-size: 0.85rem; /* Reduced font size */
+    font-size: 0.75rem; /* Reduced font size */
     color: #777;
 }
 
@@ -389,11 +395,10 @@ footer a:hover {
     text-align: center;
     background-color: #007bff;
     color: white;
-    padding: 8px 15px;
+    padding: 6px 12px; /* Reduced padding */
     border-radius: 4px;
     text-decoration: none;
     transition: background-color 0.2s;
-    margin-top: auto; /* Push button to the bottom */
 }
 
 .view-details:hover {
@@ -402,13 +407,13 @@ footer a:hover {
 
 /*location and mileage*/
 .car-location, .car-mileage {
-  font-size: 0.85rem;
+  font-size: 0.75rem;  /* Reduced font Size */
   color: #777;
-  margin-bottom: 4px;
+  margin-bottom: 3px; /* Reduced Margin */
 }
 
 .car-location i, .car-mileage i {
-  margin-right: 5px;
+  margin-right: 3px; /* Reduced Margin */
 }
 
 /* ==========================================================================
@@ -478,7 +483,7 @@ footer a:hover {
 }
 
 /* ==========================================================================
-   Search Container Styles
+   Search Container Styles - No Changes here
    ========================================================================== */
 
 .search-container {
@@ -492,7 +497,7 @@ footer a:hover {
 }
 
 /* ==========================================================================
-   Forms - More specific and structured
+   Forms - More specific and structured - No changes here
    ========================================================================== */
 
 .form-group {
@@ -540,7 +545,7 @@ label {
 }
 
 /* ==========================================================================
-    Admin Dashboard Specific Styles
+    Admin Dashboard Specific Styles - No changes here
    ========================================================================== */
 
 .admin-dashboard {
@@ -640,7 +645,7 @@ label {
 }
 
 /* ==========================================================================
-   Car Actions Styling and Image Overlay
+   Car Actions Styling and Image Overlay - No changes here
    ========================================================================== */
 
 .car-actions-list {
@@ -754,7 +759,7 @@ label {
 }
 
 /* ==========================================================================
-   Dashboard Specific CSS
+   Dashboard Specific CSS - No changes here
    ========================================================================== */
 
 .dashboard-container {
@@ -873,7 +878,7 @@ label {
     display: flex;
     flex-direction: column;
     justify-content: flex-start; /* Align items to the top */
-    min-height: 350px; /* Increased min-height */
+    /*min-height: 350px;   Removed min-height */
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* Subtle shadow */
 }
@@ -892,7 +897,7 @@ label {
     }
 
      .listing-card {
-        min-height: auto; /* Let content determine height */
+       /* min-height: auto;   Removed min-height  */ /* Let content determine height */
     }
 
     .car-details {
