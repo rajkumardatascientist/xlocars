@@ -333,21 +333,12 @@ def car(car_id):
 
         wishlist_status = is_car_in_wishlist(current_user.id, car_id)
 
-    # Get images and reorder to show image ID 55 first if it exists
-    images = car.images
-    image_id_to_prioritize = 55  # Replace with the actual image ID
-
-    # Sort the images to prioritize the image with the specified ID
-    images = sorted(images, key=lambda x: x.id != image_id_to_prioritize)
-
     return render_template('car_detail.html',
                            title=car.title,
                            car=car,
                            report_form=report_form,
                            buyer_can_view_contact=buyer_can_view_contact,
-                           wishlist_status=wishlist_status,
-                           images=images  # Pass the reordered images to the template
-                           )
+                           wishlist_status=wishlist_status)
 
 
 @cars_bp.route("/car/<int:car_id>/interested", methods=['GET', 'POST'])
